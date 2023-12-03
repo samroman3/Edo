@@ -7,12 +7,18 @@
 
 import SwiftUI
 
-struct FoodItemListView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+//struct FoodItemListView: View {
+//    // Dummy data for food items
+//    let foodItems = ["Oatmeal", "Salad", "Chicken Breast"]
+//    
+//    var body: some View {
+//        ForEach(foodItems, id: \.self) { foodItem in
+//            FoodItemView(foodItem: foodItem)
+//        }
+//    }
+//}
 
-#Preview {
-    FoodItemListView()
-}
+
+//#Preview {
+//    FoodItemListView()
+//}

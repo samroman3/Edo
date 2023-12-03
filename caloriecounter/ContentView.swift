@@ -6,56 +6,78 @@
 //
 
 import SwiftUI
-import SwiftData
+import CoreData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var dateSelectionManager: DateSelectionManager
+    @StateObject private var mealSelectionViewModel: MealSelectionViewModel
+    @StateObject private var nutritionDataStore: NutritionDataStore
+    @State private var showingAddItemForm = false
+    
+    let mealTypes = ["Breakfast", "Lunch", "Dinner", "Snacks"]
+    
+    
+    
+    init() {
+        let context = PersistenceController.shared.container.viewContext
+        let dataStore = NutritionDataStore(context: context)
+        let dateManager = DateSelectionManager(context: context)
+        _nutritionDataStore = StateObject(wrappedValue: dataStore)
+        _dateSelectionManager = StateObject(wrappedValue: dateManager)
+        _mealSelectionViewModel = StateObject(wrappedValue: MealSelectionViewModel(dataStore: dataStore, context: context))
+        
+    }
 
+    
+    private func colorForMealType(_ mealType: MealType) -> Color {
+        switch mealType {
+        case .breakfast:
+            return Color.orange
+        case .lunch:
+            return Color.green
+        case .dinner:
+            return Color.blue
+        case .snack:
+            return Color.indigo
+        }
+    }
+    
+    private func progressForMealType(_ mealType: String) -> Float {
+        // logic to calculate progress based on the meal type
+        // percentage of daily calorie goal achieved. water intake etc
+        // to be moved to model
+        return 0.5
+    }
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        NavigationView {
+            VStack(alignment: .center) {
+                TopBarView(dateSelectionManager: dateSelectionManager, nutritionDataStore: nutritionDataStore, selectedDate: $dateSelectionManager.selectedDate, onDateTapped: {
+                    withAnimation {
+                        dateSelectionManager.updateSelectedDate(newDate: Date())
                     }
-                }
-                .onDelete(perform: deleteItems)
+                }, onCalendarTapped: {})
+                .frame(maxWidth: .infinity)
+                Divider().background(AppTheme.lime)
+                MealsView(dateSelectionManager: dateSelectionManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
+                .frame(maxWidth: .infinity)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+            .navigationBarHidden(true)
+            .fullScreenCover(isPresented: $mealSelectionViewModel.showingAddItemForm) {
+                AddItemFormView(isPresented: $mealSelectionViewModel.showingAddItemForm, selectedDate: dateSelectionManager.selectedDate, mealType: $mealSelectionViewModel.currentMealType, dataStore: NutritionDataStore(context: viewContext), onDismiss: {dateSelectionManager.fetchDailyLogForSelectedDate()})
+                    
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle()) // Ensures NavigationView uses the full width on iPads
     }
-}
+    }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
+
+
+
+
+
+//#Preview {
+//    ContentView()
+//        .modelContainer(for: Item.self, inMemory: true)
+//}

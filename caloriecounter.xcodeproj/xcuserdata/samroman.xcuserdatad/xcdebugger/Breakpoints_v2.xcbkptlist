@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "D1D4656F-F213-43C9-946D-141434A80DA7"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D8B2C070-5D2C-4013-A3D9-E64604AE60D7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "caloriecounter/Views/DateViews/SnappingFlowLayout.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "collectionView(_:cellForItemAt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D8B2C070-5D2C-4013-A3D9-E64604AE60D7 - eddd3fb8bf2d5434"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.DateCollectionViewController.collectionView(_: __C.UICollectionView, didSelectItemAt: Foundation.IndexPath) -&gt; ()"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Views/DateViews/SnappingFlowLayout.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "121"
+                  endingLineNumber = "121"
+                  offsetFromSymbolStart = "564">
+               </Location>
+               <Location
+                  uuid = "D8B2C070-5D2C-4013-A3D9-E64604AE60D7 - eb73cee678c39006"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.DateCollectionViewController.collectionView(_: __C.UICollectionView, cellForItemAt: Foundation.IndexPath) -&gt; __C.UICollectionViewCell"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Views/DateViews/SnappingFlowLayout.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "121"
+                  endingLineNumber = "121"
+                  offsetFromSymbolStart = "1004">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "caloriecounter/Data Management/NutritionDataStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "fetchOrCreateMeal(in:type:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - 16f9bbf71a5fd2f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "738">
+               </Location>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - 16f9bbf71a5fd2f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "941">
+               </Location>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - dd0aa9132f65f9dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (caloriecounter.Meal) -&gt; Swift.Bool in caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "86">
+               </Location>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - 16f9bbf71a5fd2f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "944">
+               </Location>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - 16f9bbf71a5fd2f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "1188">
+               </Location>
+               <Location
+                  uuid = "126A859F-340C-49D6-962B-FAA0CBDECBA4 - dd0aa9132f65f9dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (caloriecounter.Meal) -&gt; Swift.Bool in caloriecounter.NutritionDataStore.fetchOrCreateMeal(in: caloriecounter.DailyLog, type: Swift.String) -&gt; caloriecounter.Meal"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "56">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

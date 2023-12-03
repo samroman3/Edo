@@ -6,13 +6,31 @@
 //
 
 import SwiftUI
+//
+//struct MealSectionView: View {
+//    var meal: String
+//    @Binding var showingAddItemForm: Bool // Expect a binding here
+//    
+//    var body: some View {
+//        VStack(alignment: .leading) {
+//            HStack {
+//                Text(meal)
+//                    .font(.headline)
+//                    .padding(.leading)
+//                Spacer()
+//                Button(action: {
+//                    self.showingAddItemForm = true // Use the binding to change the state
+//                }) {
+//                    Image(systemName: "plus")
+//                    .padding()
+//                }
+//            }
+//            FoodItemListView()
+//        }
+//    }
+//}
 
-struct MealSectionView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    MealSectionView()
-}
+//#Preview {
+//    MealSectionView(meal: "Lunch", showingAddItemForm: false)
+//}

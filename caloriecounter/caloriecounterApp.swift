@@ -10,23 +10,17 @@ import SwiftData
 
 @main
 struct caloriecounterApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    let persistenceController = PersistenceController.shared
+    let dataStore = NutritionDataStore(context: PersistenceController.shared.container.viewContext)
+    let dateSelectionManager = DateSelectionManager(context: PersistenceController.shared.container.viewContext)
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(dataStore)
+                .environmentObject(dateSelectionManager)
         }
-        .modelContainer(sharedModelContainer)
     }
 }
+
