@@ -32,27 +32,35 @@ struct MealsView: View {
                     )
                     if let meal = dateSelectionManager.meals.first(where: { $0.type == mealType.rawValue }) {
                         let entries = Array(meal.entries as? Set<NutritionEntry> ?? [])
-                        MealCardView(
-                            mealType: mealType.displayName,
-                            entries: entries,
-                            isExpanded: isExpandedBinding,
-                            onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
-                        )
-                        ChevronView(isExpanded: isExpandedBinding, totalCalories: calculateTotalCalories(entries: entries))
-                            .padding(.horizontal)
+                            MealCardView(
+                                mealType: mealType.displayName,
+                                entries: entries,
+                                isExpanded: isExpandedBinding,
+                                onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
+                                    deleteEntry(entry)})
+                        if !entries.isEmpty {
+                            ChevronView(isExpanded: isExpandedBinding, totalCalories: calculateTotalCalories(entries: entries))
+                                .padding(.horizontal)
+                        }
                         Divider().background(AppTheme.lime)
-                    } else {
-                        PlaceholderMealView(
-                            mealType: mealType.displayName,
-                            onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
-                        )
-                        Divider().background(AppTheme.lime)
-
+                        }
+                    else {
+                            PlaceholderMealView(
+                                mealType: mealType.displayName,
+                                onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
+                            )
+                            Divider().background(AppTheme.lime)
+                      
+                    }
                     }
                 }
             }
         }
-    }
+                            private func deleteEntry(_ entry: NutritionEntry) {
+                                nutritionDataStore.deleteEntry(entry)
+                                dateSelectionManager.fetchDailyLogForSelectedDate()
+                                
+                            }
     
     struct PlaceholderMealView: View {
         let mealType: String

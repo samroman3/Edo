@@ -21,6 +21,8 @@
 		3ABA27672B13091300DE4FB1 /* MealType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA27662B13091300DE4FB1 /* MealType.swift */; };
 		3ABA27692B1318E600DE4FB1 /* SnappingFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA27682B1318E600DE4FB1 /* SnappingFlowLayout.swift */; };
 		3ABA276C2B131A7C00DE4FB1 /* DateCollectionViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA276B2B131A7C00DE4FB1 /* DateCollectionViewWrapper.swift */; };
+		3AC3C3B42B1F8F5500C5F751 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3C3B32B1F8F5500C5F751 /* DiaryView.swift */; };
+		3AC3C3B62B1F936500C5F751 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3C3B52B1F936500C5F751 /* CustomTabBarView.swift */; };
 		3AD9CC802B19449D00B9A23E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */; };
 		3AF36CAC2B106C2300775DF6 /* caloriecounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */; };
 		3AF36CAE2B106C2300775DF6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CAD2B106C2300775DF6 /* ContentView.swift */; };
@@ -77,6 +79,8 @@
 		3ABA27662B13091300DE4FB1 /* MealType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealType.swift; sourceTree = "<group>"; };
 		3ABA27682B1318E600DE4FB1 /* SnappingFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnappingFlowLayout.swift; sourceTree = "<group>"; };
 		3ABA276B2B131A7C00DE4FB1 /* DateCollectionViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCollectionViewWrapper.swift; sourceTree = "<group>"; };
+		3AC3C3B32B1F8F5500C5F751 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
+		3AC3C3B52B1F936500C5F751 /* CustomTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
 		3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		3AF36CA82B106C2300775DF6 /* caloriecounter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = caloriecounter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = caloriecounterApp.swift; sourceTree = "<group>"; };
@@ -165,6 +169,46 @@
 			path = "UI Kit DateViews";
 			sourceTree = "<group>";
 		};
+		3AD9CC812B1D0A4C00B9A23E /* Diary */ = {
+			isa = PBXGroup;
+			children = (
+				3AF36CD92B106D6100775DF6 /* TopBarView.swift */,
+				3AF36CE92B106F5300775DF6 /* CalendarView.swift */,
+				3AB88BB42B13F85700739CDC /* MealsView.swift */,
+				3AF36CFD2B10750700775DF6 /* MealCardView.swift */,
+				3AF36CEB2B106F6600775DF6 /* NutritionEntryDetailView.swift */,
+				3ABA27532B128E4C00DE4FB1 /* NutritionEntryView.swift */,
+				3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */,
+				3AC3C3B32B1F8F5500C5F751 /* DiaryView.swift */,
+			);
+			path = Diary;
+			sourceTree = "<group>";
+		};
+		3AD9CC822B1D0AA100B9A23E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3AD9CC832B1D0ABE00B9A23E /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				3AF36CDB2B106DCB00775DF6 /* ProgressRingView.swift */,
+				3AF36CDF2B106F0300775DF6 /* NutrientProgressView.swift */,
+			);
+			path = Statistics;
+			sourceTree = "<group>";
+		};
+		3AD9CC842B1D0AD300B9A23E /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				3AF36CFB2B106FFA00775DF6 /* SettingsView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 		3AF36C9F2B106C2300775DF6 = {
 			isa = PBXGroup;
 			children = (
@@ -191,6 +235,7 @@
 				3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */,
 				3AF36CAD2B106C2300775DF6 /* ContentView.swift */,
 				3AF36D052B119EDA00775DF6 /* Views */,
+				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,
 				3AF36D072B119F3E00775DF6 /* Data Management */,
 				3ABA27502B11A8C600DE4FB1 /* CoreData */,
 				3AF36CB12B106C2400775DF6 /* Assets.xcassets */,
@@ -227,19 +272,12 @@
 		3AF36D052B119EDA00775DF6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3AF36CD92B106D6100775DF6 /* TopBarView.swift */,
-				3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */,
-				3AF36CFB2B106FFA00775DF6 /* SettingsView.swift */,
-				3AB88BB42B13F85700739CDC /* MealsView.swift */,
-				3AF36CFD2B10750700775DF6 /* MealCardView.swift */,
-				3AF36CE92B106F5300775DF6 /* CalendarView.swift */,
-				3AF36CDB2B106DCB00775DF6 /* ProgressRingView.swift */,
-				3AF36CDF2B106F0300775DF6 /* NutrientProgressView.swift */,
-				3ABA27532B128E4C00DE4FB1 /* NutritionEntryView.swift */,
-				3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */,
-				3AF36CEB2B106F6600775DF6 /* NutritionEntryDetailView.swift */,
+				3AD9CC832B1D0ABE00B9A23E /* Statistics */,
+				3AD9CC842B1D0AD300B9A23E /* Profile */,
+				3AD9CC812B1D0A4C00B9A23E /* Diary */,
 				3ABA27632B12CD3400DE4FB1 /* ViewModels */,
 				3ABA276A2B131A0A00DE4FB1 /* UI Kit DateViews */,
+				3AC3C3B52B1F936500C5F751 /* CustomTabBarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -405,6 +443,7 @@
 				3AB88BB52B13F85700739CDC /* MealsView.swift in Sources */,
 				3ABA27622B12B49400DE4FB1 /* NutritionEntry+CoreDataProperties.swift in Sources */,
 				3ABA27602B12B49400DE4FB1 /* DailyLog+CoreDataProperties.swift in Sources */,
+				3AC3C3B62B1F936500C5F751 /* CustomTabBarView.swift in Sources */,
 				3ABA275E2B12B49400DE4FB1 /* Meal+CoreDataProperties.swift in Sources */,
 				3AF36CAC2B106C2300775DF6 /* caloriecounterApp.swift in Sources */,
 				3AF36CE02B106F0300775DF6 /* NutrientProgressView.swift in Sources */,
@@ -414,6 +453,7 @@
 				3AF36CDC2B106DCB00775DF6 /* ProgressRingView.swift in Sources */,
 				3AF36CFE2B10750700775DF6 /* MealCardView.swift in Sources */,
 				3AF36CFC2B106FFA00775DF6 /* SettingsView.swift in Sources */,
+				3AC3C3B42B1F8F5500C5F751 /* DiaryView.swift in Sources */,
 				3ABA27562B12914100DE4FB1 /* DateSelectionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
