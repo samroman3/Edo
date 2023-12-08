@@ -100,8 +100,11 @@ struct ChevronView: View {
     
     var body: some View {
         VStack {
+            Spacer()
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                 .foregroundStyle(AppTheme.lime)
+                .font(.system(size: 25))
+            Spacer()
             Text("\(totalCalories) calories")
                 .font(.caption)
                 .foregroundStyle(AppTheme.lime)
@@ -119,3 +122,5 @@ struct ChevronView: View {
 //#Preview {
 //    MealEntryView()
 //}
+
+

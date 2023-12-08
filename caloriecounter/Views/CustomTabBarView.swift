@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CustomTabBarView: View {
+    
+    
     @State private var selectedTab: Tab = .diary
 
     var body: some View {
@@ -17,7 +19,7 @@ struct CustomTabBarView: View {
             case .diary:
                 DiaryView().background(AppTheme.prunes)
             case .statistics:
-                StatisticsView()
+                DailySummaryView()
             case .profile:
                 ProfileView()
             }
