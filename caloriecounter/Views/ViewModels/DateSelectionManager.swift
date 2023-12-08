@@ -12,7 +12,82 @@ class DateSelectionManager: ObservableObject {
     @Published var selectedDate: Date
     @Published var meals: [Meal] = []
     private var context: NSManagedObjectContext
+    @Published var calorieGoal: Double = 1900.0 // This could also come from user settings
+    @Published var breakfastCalories: Double = 0.0
+    @Published var lunchCalories: Double = 0.0
+    @Published var dinnerCalories: Double = 0.0
+    @Published var snackCalories: Double = 0.0
+ 
+    var totalCaloriesConsumed: Double {
+        return breakfastCalories + lunchCalories + dinnerCalories + snackCalories
+    }
 
+    func calculateMealCalories() {
+        // Clear previous values
+        breakfastCalories = 0.0
+        lunchCalories = 0.0
+        dinnerCalories = 0.0
+        snackCalories = 0.0
+
+        // Calculate calories for each meal
+        if meals.isEmpty {
+            return
+        }
+        for meal in meals {
+            let totalCalories = meal.entries?.allObjects.reduce(0) { (result, entry) in
+                guard let entry = entry as? NutritionEntry else { return result }
+                let calories = entry.calories
+                return result + calories
+            }
+            switch meal.type {
+            case MealType.breakfast.rawValue:
+                breakfastCalories = totalCalories ?? 0.0
+            case MealType.lunch.rawValue:
+                lunchCalories = totalCalories ?? 0.0
+            case MealType.dinner.rawValue:
+                dinnerCalories = totalCalories ?? 0.0
+            case MealType.snack.rawValue:
+                snackCalories = totalCalories ?? 0.0
+            default:
+                break // Handle unknown meal types if necessary
+            }
+        }
+    }
+    
+    public func calories(for mealType: MealType) -> Double {
+        switch mealType {
+        case MealType.breakfast:
+            return breakfastCalories
+        case MealType.lunch:
+            return lunchCalories
+        case MealType.dinner:
+           return dinnerCalories
+        case MealType.snack:
+           return snackCalories
+        }
+       }
+
+    var breakfastPercentage: Double {
+        return breakfastCalories / calorieGoal
+    }
+
+    var lunchPercentage: Double {
+        return lunchCalories / calorieGoal
+    }
+
+    var dinnerPercentage: Double {
+        return dinnerCalories / calorieGoal
+    }
+
+    var snackPercentage: Double {
+        return snackCalories / calorieGoal
+    }
+
+    // Call this method whenever the selected date changes or when the meals have been updated.
+    func refreshData() {
+        fetchDailyLogForSelectedDate()
+        calculateMealCalories()
+    }
     init(context: NSManagedObjectContext, initialDate: Date = Date()) {
         self.context = context
         self.selectedDate = initialDate
@@ -22,6 +97,7 @@ class DateSelectionManager: ObservableObject {
     func updateSelectedDate(newDate: Date) {
         selectedDate = newDate
         fetchDailyLogForSelectedDate()
+        calculateMealCalories()
     }
 
     func fetchDailyLogForSelectedDate() {

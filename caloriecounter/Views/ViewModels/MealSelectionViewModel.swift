@@ -27,12 +27,10 @@ class MealSelectionViewModel: ObservableObject {
     
     func selectEntry(_ entry: NutritionEntry) {
         selectedEntry = entry
-        // Here you can also set a state to show an edit form if you have one.
     }
     
     func deleteEntry(_ entry: NutritionEntry) {
         dataStore.deleteEntry(entry)
-        // After deleting, you might want to refresh the list of entries.
     }
     
     // Add other methods as needed for updating entries, etc.
