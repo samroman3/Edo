@@ -7,26 +7,68 @@
 
 import SwiftUI
 
-struct ProgressRingView: View {
-    var progress: CGFloat // Value between 0 and 1
+struct CalorieRingView: View {
+    var breakfastPercentage: Double
+    var lunchPercentage: Double
+    var dinnerPercentage: Double
+    var snacksPercentage: Double
+    var totalCaloriesConsumed: Double {
+        breakfastPercentage + lunchPercentage + dinnerPercentage + snacksPercentage
+    }
+    
     var body: some View {
         ZStack {
-            Circle()
-                .stroke(lineWidth: 20)
-                .opacity(0.3)
-                .foregroundColor(Color.gray)
+            // Breakfast
+            if breakfastPercentage > 0 {
+                RingSegmentView(color: AppTheme.carrot, startPercentage: 0, endPercentage: breakfastPercentage)
+            }
             
-            Circle()
-                .trim(from: 0.0, to: progress)
-                .stroke(style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round))
-                .foregroundColor(Color.green)
-                .rotationEffect(Angle(degrees: 270))
-                .animation(.easeIn)
+            // Lunch
+            if lunchPercentage > 0 {
+                RingSegmentView(color: AppTheme.lavender, startPercentage: breakfastPercentage, endPercentage: breakfastPercentage + lunchPercentage)
+            }
+            
+            // Dinner
+            if dinnerPercentage > 0 {
+                RingSegmentView(color: AppTheme.skyBlue, startPercentage: breakfastPercentage + lunchPercentage, endPercentage: breakfastPercentage + lunchPercentage + dinnerPercentage)
+            }
+            
+            // Snacks
+            if snacksPercentage > 0 {
+                RingSegmentView(color: AppTheme.teal, startPercentage: breakfastPercentage + lunchPercentage + dinnerPercentage, endPercentage: totalCaloriesConsumed)
+            }
+            
+            // Calories left to consume
+            if totalCaloriesConsumed < 1.0 {
+                RingSegmentView(color: AppTheme.grayDark, startPercentage: totalCaloriesConsumed, endPercentage: 1.0)
+            }
+        }
+        .frame(width: 200, height: 200) 
+    }
+}
+
+struct RingSegmentView: View {
+    var color: Color
+    var startPercentage: Double
+    var endPercentage: Double
+    var gapAngle: Double = 0.5 // degrees of separation between segments
+    
+    var body: some View {
+        GeometryReader { geometry in
+            let width: CGFloat = min(geometry.size.width, geometry.size.height)
+            let center = CGPoint(x: width / 2, y: width / 2)
+            let radius = width / 2
+            
+            // Adjust the start and end angles to create gaps
+            let startAngle = Angle(degrees: 360 * startPercentage - 90 + gapAngle/2)
+            let endAngle = Angle(degrees: 360 * endPercentage - 90 - gapAngle/2)
+            
+            Path { path in
+                path.addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+            }
+            .stroke(color, style: StrokeStyle(lineWidth: 70, lineCap: .butt))
         }
     }
 }
 
 
-#Preview {
-    ProgressRingView(progress: 33)
-}
