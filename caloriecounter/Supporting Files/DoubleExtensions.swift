@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+extension Double {
+    func formattedAsString() -> String {
+        return String(format: "%.2f", self)
+    }
+}

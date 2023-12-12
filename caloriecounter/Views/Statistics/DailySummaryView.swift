@@ -27,30 +27,40 @@ struct DailySummaryView: View {
                     withAnimation {
                         dateSelectionManager.updateSelectedDate(newDate: Date())
                     }
-                }, onCalendarTapped: {})
+                }, onCalendarTapped: {}, entryType: .summary)
                 .frame(maxWidth: .infinity)
 
                 // Daily calorie goal and intake display
                 HStack {
-                    VStack(alignment: .leading) {
-                        Text(String(Int(totalCaloriesConsumed)))
-                            .font(.title)
-                            .fontWeight(.bold)
+                    // Card for total calories consumed
+                    VStack(alignment: .center) {
+                        Text("\(Int(totalCaloriesConsumed)) calories")
+                            .font(.title3)
+                            .foregroundColor(.black)
+                            .fontWeight(.light)
                         Text(String(format: "%.2f%% of goal", (totalCaloriesConsumed / calorieGoal) * 100))
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.black)
                     }
-                    Spacer()
-                    VStack(alignment: .trailing) {
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppTheme.lime)
+                    // Card for calorie goal
+                    VStack(alignment: .center) {
                         Text("\(Int(calorieGoal)) calories")
-                            .font(.title)
-                            .fontWeight(.bold)
+                            .font(.title3)
+                            .fontWeight(.light)
+                            .foregroundStyle(AppTheme.lime)
                         Text("goal")
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(AppTheme.lime)
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppTheme.grayExtra)
                 }
-                .padding(.horizontal)
+                .edgesIgnoringSafeArea(.top)
+                Spacer()
                 CalorieRingView(
                     breakfastPercentage: breakfastPercentage,
                     lunchPercentage: lunchPercentage,

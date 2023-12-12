@@ -12,10 +12,11 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
-        CustomTabBarView()
-        .environmentObject(DateSelectionManager(context: viewContext))
-        .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
-        .environmentObject(NutritionDataStore(context: viewContext))
+        OnboardingView()
+//        CustomTabBarView()
+//        .environmentObject(DateSelectionManager(context: viewContext))
+//        .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
+//        .environmentObject(NutritionDataStore(context: viewContext))
     }
 }
 

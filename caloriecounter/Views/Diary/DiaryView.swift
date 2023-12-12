@@ -24,7 +24,7 @@ struct DiaryView: View {
                     withAnimation {
                         dateSelectionManager.updateSelectedDate(newDate: Date())
                     }
-                }, onCalendarTapped: {})
+                }, onCalendarTapped: {}, entryType: .diary)
                 .frame(maxWidth: .infinity)
                 Divider().background(AppTheme.lime)
                 MealsView(dateSelectionManager: dateSelectionManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
