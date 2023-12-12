@@ -13,6 +13,8 @@ struct TopBarView: View {
     
     var onDateTapped: () -> Void
     var onCalendarTapped: () -> Void
+    
+    var entryType: TopBarType
 
     @State var isExpanded = false
     
@@ -74,8 +76,8 @@ struct TopBarView: View {
                         
                     }
                 }
-                if !isExpanded {
-                    Text("259 out of 1900 cal")
+                if !isExpanded && entryType == .diary {
+                    Text("\(dateSelectionManager.totalCaloriesConsumed.formattedAsString()) out of \(dateSelectionManager.calorieGoal.formattedAsString()) cal")
                         .font(.headline)
                         .fontWeight(.light)
                         .foregroundStyle(AppTheme.grayLight)
@@ -91,6 +93,7 @@ struct TopBarView: View {
 
         }
     }
+
 
 
 
