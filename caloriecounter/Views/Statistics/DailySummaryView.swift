@@ -30,9 +30,7 @@ struct DailySummaryView: View {
                 }, onCalendarTapped: {}, entryType: .summary)
                 .frame(maxWidth: .infinity)
 
-                // Daily calorie goal and intake display
                 HStack {
-                    // Card for total calories consumed
                     VStack(alignment: .center) {
                         Text("\(Int(totalCaloriesConsumed)) calories")
                             .font(.title3)

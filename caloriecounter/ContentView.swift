@@ -10,13 +10,15 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    
+    
 
     var body: some View {
-        OnboardingView()
-//        CustomTabBarView()
-//        .environmentObject(DateSelectionManager(context: viewContext))
-//        .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
-//        .environmentObject(NutritionDataStore(context: viewContext))
+        MainView()
+        .environmentObject(DateSelectionManager(context: viewContext))
+        .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
+        .environmentObject(NutritionDataStore(context: viewContext))
+        .environmentObject(UserSettingsManager(context: viewContext))
     }
 }
 

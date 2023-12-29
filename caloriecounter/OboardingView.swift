@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    
     @State private var showConsent = false
     @State private var consentGiven = false
 
@@ -22,7 +23,7 @@ struct OnboardingView: View {
                 .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
             }
             else if !showConsent && consentGiven {
-                CaloricCalculationFormView()
+                PersonalHealthDataFormView()
                     .transition(.asymmetric(insertion: .move(edge: .top), removal: .move(edge: .bottom)))
             } else {
                 ConsentView(consentGiven: $consentGiven, onConsentGiven: {

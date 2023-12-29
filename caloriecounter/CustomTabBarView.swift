@@ -14,6 +14,7 @@ struct CustomTabBarView: View {
 
     var body: some View {
         VStack {
+            
             // Content based on selected tab
             switch selectedTab {
             case .diary:
@@ -56,13 +57,10 @@ struct TabBarButton: View {
             .onTapGesture {
                 selectedTab = tab
             }
-            // Add more styling as needed
     }
 }
 
 //Dummy Views
-struct StatisticsView: View { var body: some View { Text("Statistics") } }
-struct ProfileView: View { var body: some View { Text("Profile") } }
 
 
 #Preview {
