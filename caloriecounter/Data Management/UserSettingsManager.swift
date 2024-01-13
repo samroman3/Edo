@@ -37,6 +37,7 @@ class UserSettingsManager: ObservableObject {
             if let user = results.first, user.userPassword == password {
                 UserDefaults.standard.set(true, forKey: "isLoggedIn")
                 UserDefaults.standard.set(email, forKey: "loggedInUserEmail")
+                loadUserSettings()
                 return true
             }
         } catch {
@@ -46,7 +47,30 @@ class UserSettingsManager: ObservableObject {
         return false
     }
     
+    func logoutUser() {
+           UserDefaults.standard.removeObject(forKey: "loggedInUserEmail")
+           clearUserSettings()
+       }
+    
+    private func clearUserSettings() {
+          DispatchQueue.main.async {
+              self.profileImage = nil
+              self.age = 0
+              self.weight = 0.0
+              self.height = 0.0
+              self.sex = ""
+              self.activity = ""
+              self.unitSystem = ""
+              self.userName = ""
+              self.userEmail = ""
+          }
+      }
+
+    
     func loadUserSettings() {
+        guard let email = UserDefaults.standard.string(forKey: "loggedInUserEmail") else { return }
+        let request: NSFetchRequest<UserSettings> = UserSettings.fetchRequest()
+        request.predicate = NSPredicate(format: "userEmail == %@", email)
         userSettings = fetchOrCreateUserSettings()
         if let settings = userSettings {
             DispatchQueue.main.async {

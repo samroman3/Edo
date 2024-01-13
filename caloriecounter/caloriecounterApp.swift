@@ -22,6 +22,7 @@ struct caloriecounterApp: App {
                 .environmentObject(dataStore)
                 .environmentObject(userSettingsManager)
                 .environmentObject(dateSelectionManager)
+                .environmentObject(AppState.shared)
         }
     }
 }
