@@ -24,6 +24,10 @@ extension UserSettings {
     @NSManaged public var age: Int16
     @NSManaged public var sex: String
     @NSManaged public var unitSystem: String
+    @NSManaged public var profileImage: NSData?
+    @NSManaged public var userName: String
+    @NSManaged public var userEmail: String
+    @NSManaged public var userPassword: String
     
     static var needsOnboarding: Bool {
             get {

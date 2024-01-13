@@ -18,7 +18,7 @@ struct ContentView: View {
         .environmentObject(DateSelectionManager(context: viewContext))
         .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
         .environmentObject(NutritionDataStore(context: viewContext))
-        .environmentObject(UserSettingsManager(context: viewContext))
+        .environmentObject(AppState.shared)
     }
 }
 

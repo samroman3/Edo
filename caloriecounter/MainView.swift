@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var userSettingsManager: UserSettingsManager
+    
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
-        OnboardingView()
+        CustomTabBarView()
 //        if UserSettings.needsOnboarding {
-//            OnboardingView()
-//        } else {
+//            OnboardingView(onOnboardingComplete: {
+//                UserSettings.needsOnboarding = false
+//            }, onLoginSuccess: { appState.login() })
+//        } else if appState.isLoggedIn {
 //            CustomTabBarView()
+//        } else {
+//            LoginSignupView(onLoginSuccess: { appState.login() })
 //        }
-        
     }
 }
-
 //#Preview {
 //    MainView()
 //}

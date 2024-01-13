@@ -15,13 +15,22 @@ struct PersonalHealthDataFormView: View {
     @State private var height: String = ""
     @State private var sex: String = ""
     @State private var activityLevel: String = ""
-    @State private var showHealthKitConsent = false
     @State private var unitSystem: UnitSystem = .metric
     @State private var feet = 0
     @State private var inches = 0
     @State private var formError: String? = nil
     
     @State private var selectedGoal: GoalSelectionView.Goal?
+    
+    @State private var showCaloricNeedsView = false
+    @State private var showHealthKitConsent = false
+    
+    var onBoardEntry: Bool
+    
+    var onOnboardingComplete: () -> Void
+    
+    var onLoginSuccess: () -> Void
+
     
     var body: some View {
         VStack {
@@ -80,7 +89,7 @@ struct PersonalHealthDataFormView: View {
                     Text(formError)
                         .foregroundColor(.red)
                 }
-                    Section(header: Text("Select Your Goal").foregroundColor(AppTheme.lime)) {
+                Section(header: Text("Select Your Goal").foregroundColor(AppTheme.lime)) {
                         HStack {
                             ForEach(GoalSelectionView.Goal.allCases, id: \.self) { goal in
                                 GoalIconView(goal: goal, isSelected: .init(
@@ -91,11 +100,17 @@ struct PersonalHealthDataFormView: View {
                         }
                         .padding(.vertical)
                     }
+                    
                 Button(action: {
                     if validateForm() {
-                        saveUserData()
+//                        saveUserData()
+                        withAnimation {
+                        showCaloricNeedsView = true
+                        
+                        }
+                        
                     }                   }) {
-                        Text("Save")
+                    Text("Calculate")
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -110,6 +125,7 @@ struct PersonalHealthDataFormView: View {
                             .foregroundColor(AppTheme.carrot)
                     })
             }
+            
             .sheet(isPresented: $showHealthKitConsent) {
                 HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex  in
                     self.age = age
@@ -117,6 +133,9 @@ struct PersonalHealthDataFormView: View {
                     self.height = height
                     self.sex = sex
                 }
+            }
+            .fullScreenCover(isPresented: $showCaloricNeedsView) {
+                CaloricNeedsView(onLoginSuccess: onLoginSuccess)
             }
         }
         }
@@ -136,7 +155,10 @@ struct PersonalHealthDataFormView: View {
         return true
     }
     private func saveUserData() {
-        userSettingsManager.saveUserSettings(age: Int(self.age) ?? 0, weight: Double(weight) ?? 0.0, height: Double(height) ?? 0.0, sex: sex, activity: activityLevel, unitSystem: unitSystem.rawValue)
+        userSettingsManager.saveUserSettings(age: Int(self.age) ?? 0, weight: Double(weight) ?? 0.0, height: Double(height) ?? 0.0, sex: sex, activity: activityLevel, unitSystem: unitSystem.rawValue, userName: "", userEmail: "")
+        userSettingsManager.loadUserSettings()
+        
+        
     }
 }
 
@@ -144,8 +166,8 @@ enum UnitSystem: String, CaseIterable {
     case metric = "Metric"
     case imperial = "Imperial"
 }
-#Preview {
-    PersonalHealthDataFormView()
-}
+//#Preview {
+//    PersonalHealthDataFormView()
+//}
 
 

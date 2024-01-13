@@ -1,5 +1,5 @@
 //
-//  OboardingView.swift
+//  OnboardingView.swift
 //  caloriecounter
 //
 //  Created by Sam Roman on 12/11/23.
@@ -11,6 +11,10 @@ struct OnboardingView: View {
     
     @State private var showConsent = false
     @State private var consentGiven = false
+    
+    var onOnboardingComplete: () -> Void
+    
+    var onLoginSuccess: () -> Void
 
     var body: some View {
         VStack {
@@ -23,7 +27,7 @@ struct OnboardingView: View {
                 .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
             }
             else if !showConsent && consentGiven {
-                PersonalHealthDataFormView()
+                PersonalHealthDataFormView(onBoardEntry: true, onOnboardingComplete: onOnboardingComplete, onLoginSuccess: onLoginSuccess)
                     .transition(.asymmetric(insertion: .move(edge: .top), removal: .move(edge: .bottom)))
             } else {
                 ConsentView(consentGiven: $consentGiven, onConsentGiven: {

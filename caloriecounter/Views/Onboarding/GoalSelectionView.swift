@@ -37,7 +37,6 @@ struct GoalSelectionView: View {
     @Binding var selectedGoal: Goal?
     
     var body: some View {
-        VStack {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(Goal.allCases, id: \.self) { goal in
@@ -60,7 +59,6 @@ struct GoalSelectionView: View {
                     .padding()
                     .transition(.scale)
             }
-        }
     }
 }
 
