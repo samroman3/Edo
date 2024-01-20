@@ -24,6 +24,20 @@ extension NutritionEntry: Identifiable {
     @NSManaged public var name: String
     @NSManaged public var meals: Meal
     
+    @NSManaged public var sugars: Double
+    @NSManaged public var addedSugars: Double
+    @NSManaged public var cholesterol: Double
+    @NSManaged public var sodium: Double
+    @NSManaged public var vitamins: [String: Double]
+    @NSManaged public var minerals: [String: Double] 
+    @NSManaged public var servingSize: String
+    @NSManaged public var timestamp: Date
+    @NSManaged public var foodGroup: String
+    @NSManaged public var userNotes: String
+    @NSManaged public var mealPhoto: Data
+    @NSManaged public var mealPhotoLink: String
+
+    
 
 }
 

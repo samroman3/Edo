@@ -19,6 +19,7 @@ extension DailyLog {
     @NSManaged public var date: Date?
     @NSManaged public var id: UUID?
     @NSManaged public var meals: NSSet?
+    @NSManaged public var waterIntake: Double
 
 }
 
@@ -30,12 +31,15 @@ extension DailyLog {
 
     @objc(removeMealsObject:)
     @NSManaged public func removeFromMeals(_ value: Meal)
-
+    
     @objc(addMeals:)
     @NSManaged public func addToMeals(_ values: NSSet)
 
     @objc(removeMeals:)
     @NSManaged public func removeFromMeals(_ values: NSSet)
+    
+    @objc(updateWaterIntake:)
+    @NSManaged public func updateWaterIntake(_ value: Double)
 
 }
 

@@ -39,6 +39,7 @@ extension Meal {
 
     @objc(removeEntries:)
     @NSManaged public func removeFromEntries(_ values: NSSet)
+    
 
 }
 

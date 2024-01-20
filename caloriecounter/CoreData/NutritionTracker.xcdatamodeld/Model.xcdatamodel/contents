@@ -3,6 +3,7 @@
     <entity name="DailyLog" representedClassName="DailyLog" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="waterIntake" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="meals" toMany="YES" deletionRule="Nullify" destinationEntity="Meal" inverseName="dailyLog" inverseEntity="Meal"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES">
@@ -14,12 +15,24 @@
         <relationship name="entries" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="NutritionEntry" inverseName="meals" inverseEntity="NutritionEntry"/>
     </entity>
     <entity name="NutritionEntry" representedClassName="NutritionEntry" syncable="YES">
+        <attribute name="addedSugars" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="calories" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="carbs" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="cholesterol" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="fat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="foodGroup" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="mealPhoto" optional="YES" attributeType="Binary"/>
+        <attribute name="mealPhotoLink" optional="YES" attributeType="String"/>
+        <attribute name="minerals" optional="YES" attributeType="Transformable"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="protein" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="servingSize" optional="YES" attributeType="String"/>
+        <attribute name="sodium" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="sugars" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timeStamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userNotes" optional="YES" attributeType="String"/>
+        <attribute name="vitamins" optional="YES" attributeType="Transformable"/>
         <relationship name="meals" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="entries" inverseEntity="Meal"/>
     </entity>
     <entity name="UserSettings" representedClassName="UserSettings" syncable="YES">
