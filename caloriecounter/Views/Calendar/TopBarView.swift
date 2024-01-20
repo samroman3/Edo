@@ -6,7 +6,7 @@
 //
 import SwiftUI
 struct TopBarView: View {
-    @ObservedObject var dateSelectionManager: DateSelectionManager
+    @ObservedObject var dailyLogManager: DailyLogManager
     @ObservedObject var nutritionDataStore: NutritionDataStore
     
     @Binding var selectedDate: Date
@@ -79,15 +79,15 @@ struct TopBarView: View {
                     }
                 }
                 if !isExpanded && entryType == .diary {
-                    Text("\(dateSelectionManager.totalCaloriesConsumed.formattedAsString()) out of \(dateSelectionManager.calorieGoal.formattedAsString()) cal")
+                    Text("\(dailyLogManager.totalCaloriesConsumed.formattedAsString()) out of \(dailyLogManager.calorieGoal.formattedAsString()) cal")
                         .font(.headline)
                         .fontWeight(.light)
                         .foregroundStyle(AppTheme.grayMiddle)
                 }
             }
                 .padding(.vertical)
-                if isExpanded{
-                DateSelectorView(selectionManager: dateSelectionManager, selectedDate: $dateSelectionManager.selectedDate)
+                if isExpanded {
+                DateSelectorView(selectionManager: dailyLogManager, selectedDate: $dailyLogManager.selectedDate)
                         .padding(.horizontal)
                 }
             

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DateSelectorView: View {
-    @StateObject var selectionManager: DateSelectionManager
+    @StateObject var selectionManager: DailyLogManager
     @Binding var selectedDate: Date
     @State private var weekDates: [Date] = []
     

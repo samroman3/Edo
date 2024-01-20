@@ -1,5 +1,5 @@
 //
-//  DateSelectionManager.swift
+//  DailyLogManager.swift
 //  caloriecounter
 //
 //  Created by Sam Roman on 11/25/23.
@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class DateSelectionManager: ObservableObject {
+class DailyLogManager: ObservableObject {
     @Published var selectedDate: Date
     @Published var meals: [Meal] = []
     private var context: NSManagedObjectContext

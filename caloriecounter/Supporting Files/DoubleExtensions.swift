@@ -11,4 +11,8 @@ extension Double {
     func formattedAsString() -> String {
         return String(format: "%.2f", self)
     }
+    
+    func formattedAsPrettyString() -> String {
+        return String(format: "%.1f", self)
+    }
 }

@@ -25,6 +25,7 @@ struct NutritionEntryView: View {
 
         }
         .padding(.vertical, 4)
+        .padding(.horizontal)
     }
 }
 

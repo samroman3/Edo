@@ -66,7 +66,7 @@ struct MealCardView: View {
                                     }) {
                                         Image(systemName: "minus")
                                             .foregroundStyle(AppTheme.prunes)
-                                            .frame(width: 30, height: 30)
+                                            .frame(width: 50, height: 50)
                                             .background(AppTheme.carrot)
                                     }
                                     .padding(.leading)

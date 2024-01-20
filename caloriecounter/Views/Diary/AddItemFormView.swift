@@ -121,7 +121,7 @@ struct AddItemFormView: View {
             .onDisappear{
                 self.onDismiss()
             }
-            .background(Color.black.edgesIgnoringSafeArea(.all))
+            .background(AppTheme.prunes)
         }
        private func selectedNutrientTextBinding() -> Binding<String> {
            Binding<String>(

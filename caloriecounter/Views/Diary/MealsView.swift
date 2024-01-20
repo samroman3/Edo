@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MealsView: View {
     
-    @ObservedObject var dateSelectionManager: DateSelectionManager
+    @ObservedObject var dailyLogManager: DailyLogManager
     @ObservedObject var mealSelectionViewModel: MealSelectionViewModel
     @ObservedObject var nutritionDataStore: NutritionDataStore
     
@@ -30,37 +30,45 @@ struct MealsView: View {
                         get: { self.expandedStates[mealType, default: true] },
                         set: { self.expandedStates[mealType] = $0 }
                     )
-                    if let meal = dateSelectionManager.meals.first(where: { $0.type == mealType.rawValue }) {
-                        let entries = Array(meal.entries as? Set<NutritionEntry> ?? [])
-                            MealCardView(
-                                mealType: mealType.displayName,
-                                entries: entries,
-                                isExpanded: isExpandedBinding,
-                                onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
-                                    deleteEntry(entry)})
+                    if let meal = dailyLogManager.meals.first(where: { $0.type == mealType.rawValue }) {
+                        let entries = Array(meal.entries as? Set<NutritionEntry> ?? []).sorted { n1, n2 in
+                            n1.calories < n2.calories
+                        }
+                        MealCardView(
+                            mealType: mealType.displayName,
+                            entries: entries,
+                            isExpanded: isExpandedBinding,
+                            onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
+                                deleteEntry(entry)})
                         if !entries.isEmpty {
                             ChevronView(isExpanded: isExpandedBinding, totalCalories: calculateTotalCalories(entries: entries))
                                 .padding(.horizontal)
                         }
                         Divider().background(AppTheme.lime)
-                        }
+                    }
                     else {
+                        if mealType == .water {
+                            WaterIntakeView(viewModel: WaterIntakeViewModel(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore))
+                        } else {
                             PlaceholderMealView(
                                 mealType: mealType.displayName,
                                 onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
                             )
-                            Divider().background(AppTheme.lime)
-                      
+                        }
+                        Divider().background(AppTheme.lime)
+                        
                     }
-                    }
+                    
                 }
+               
             }
         }
-                            private func deleteEntry(_ entry: NutritionEntry) {
-                                nutritionDataStore.deleteEntry(entry)
-                                dateSelectionManager.fetchDailyLogForSelectedDate()
-                                
-                            }
+    }
+    private func deleteEntry(_ entry: NutritionEntry) {
+        nutritionDataStore.deleteEntry(entry)
+        dailyLogManager.fetchDailyLogForSelectedDate()
+        
+    }
     
     struct PlaceholderMealView: View {
         let mealType: String
@@ -90,7 +98,8 @@ struct MealsView: View {
         }
     }
 }
-    
+
+
 
 
 

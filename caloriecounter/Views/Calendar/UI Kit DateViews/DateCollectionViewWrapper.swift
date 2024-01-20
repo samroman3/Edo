@@ -10,7 +10,7 @@ import SwiftUI
 // SwiftUI wrapper
 struct DateCollectionView: UIViewControllerRepresentable {
     @Binding var selectedDate: Date
-    var selectionManager: DateSelectionManager
+    var selectionManager: DailyLogManager
 
     func makeUIViewController(context: Context) -> DateCollectionViewController {
         return DateCollectionViewController(selectionManager: selectionManager)

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DailySummaryView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject private var dateSelectionManager: DateSelectionManager
+    @EnvironmentObject private var dailyLogManager: DailyLogManager
     @EnvironmentObject private var mealSelectionViewModel: MealSelectionViewModel
     @EnvironmentObject private var nutritionDataStore: NutritionDataStore
     
@@ -23,9 +23,9 @@ struct DailySummaryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                TopBarView(dateSelectionManager: dateSelectionManager, nutritionDataStore: nutritionDataStore, selectedDate: $dateSelectionManager.selectedDate, onDateTapped: {
+                TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
                     withAnimation {
-                        dateSelectionManager.updateSelectedDate(newDate: Date())
+                        dailyLogManager.updateSelectedDate(newDate: Date())
                     }
                 }, onCalendarTapped: {}, entryType: .summary)
                 .frame(maxWidth: .infinity)
@@ -60,7 +60,7 @@ struct DailySummaryView: View {
                 .edgesIgnoringSafeArea(.top)
                 // Meal breakdown display
                 ForEach(MealType.allCases, id: \.self) { mealType in
-                    MealSummaryRow(mealType: mealType, calories: Int(dateSelectionManager.calories(for: mealType)))
+                    MealSummaryRow(mealType: mealType, calories: Int(dailyLogManager.calories(for: mealType)))
                 }
                 Spacer()
                 CalorieRingView(
@@ -78,13 +78,13 @@ struct DailySummaryView: View {
         
         .onAppear {
             // Fetch data when the view appears
-            dateSelectionManager.refreshData()
-            breakfastPercentage = dateSelectionManager.breakfastPercentage
-            lunchPercentage = dateSelectionManager.lunchPercentage
-            dinnerPercentage = dateSelectionManager.dinnerPercentage
-            snacksPercentage = dateSelectionManager.snackPercentage
-            totalCaloriesConsumed = dateSelectionManager.totalCaloriesConsumed
-            calorieGoal = dateSelectionManager.calorieGoal
+            dailyLogManager.refreshData()
+            breakfastPercentage = dailyLogManager.breakfastPercentage
+            lunchPercentage = dailyLogManager.lunchPercentage
+            dinnerPercentage = dailyLogManager.dinnerPercentage
+            snacksPercentage = dailyLogManager.snackPercentage
+            totalCaloriesConsumed = dailyLogManager.totalCaloriesConsumed
+            calorieGoal = dailyLogManager.calorieGoal
         }
     }
 }

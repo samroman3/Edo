@@ -9,30 +9,29 @@ import SwiftUI
 
 struct DiaryView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject private var dateSelectionManager: DateSelectionManager
+    @EnvironmentObject private var dailyLogManager: DailyLogManager
     @EnvironmentObject private var mealSelectionViewModel: MealSelectionViewModel
     @EnvironmentObject private var nutritionDataStore: NutritionDataStore
     @State private var showingAddItemForm = false
     
-    let mealTypes = ["Breakfast", "Lunch", "Dinner", "Snacks"]
-
     
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
-                TopBarView(dateSelectionManager: dateSelectionManager, nutritionDataStore: nutritionDataStore, selectedDate: $dateSelectionManager.selectedDate, onDateTapped: {
+                TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
                     withAnimation {
-                        dateSelectionManager.updateSelectedDate(newDate: Date())
+                        dailyLogManager.updateSelectedDate(newDate: Date())
                     }
                 }, onCalendarTapped: {}, entryType: .diary)
                 .frame(maxWidth: .infinity)
                 Divider().background(AppTheme.lime)
-                MealsView(dateSelectionManager: dateSelectionManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
-                .frame(maxWidth: .infinity)
+                MealsView(dailyLogManager: dailyLogManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
+                    .frame(maxWidth: .infinity)
             }
+            .background(AppTheme.prunes)
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $mealSelectionViewModel.showingAddItemForm) {
-                AddItemFormView(isPresented: $mealSelectionViewModel.showingAddItemForm, selectedDate: dateSelectionManager.selectedDate, mealType: $mealSelectionViewModel.currentMealType, dataStore: NutritionDataStore(context: viewContext), onDismiss: {dateSelectionManager.fetchDailyLogForSelectedDate()})
+                AddItemFormView(isPresented: $mealSelectionViewModel.showingAddItemForm, selectedDate: dailyLogManager.selectedDate, mealType: $mealSelectionViewModel.currentMealType, dataStore: NutritionDataStore(context: viewContext), onDismiss: {dailyLogManager.fetchDailyLogForSelectedDate()})
                     
             }
         }

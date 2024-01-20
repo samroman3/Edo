@@ -80,9 +80,9 @@ class DateCollectionViewController: UIViewController, UICollectionViewDelegate, 
             scrollToSelectedDate(animated: false)
         }
     }
-    var selectionManager: DateSelectionManager
+    var selectionManager: DailyLogManager
 
-    init(selectionManager: DateSelectionManager) {
+    init(selectionManager: DailyLogManager) {
         self.selectionManager = selectionManager
         self.selectedDate = selectionManager.selectedDate
         super.init(nibName: nil, bundle: nil)

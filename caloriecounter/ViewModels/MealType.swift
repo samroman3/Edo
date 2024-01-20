@@ -13,6 +13,7 @@ enum MealType: String, CaseIterable, Hashable {
     case lunch = "Lunch"
     case dinner = "Dinner"
     case snack = "Snacks"
+    case water = "Water"
     
     var displayName: String {
             return self.rawValue

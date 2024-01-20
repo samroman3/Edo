@@ -12,7 +12,7 @@ import SwiftData
 struct caloriecounterApp: App {
     let persistenceController = PersistenceController.shared
     let dataStore = NutritionDataStore(context: PersistenceController.shared.container.viewContext)
-    let dateSelectionManager = DateSelectionManager(context: PersistenceController.shared.container.viewContext)
+    let dailyLogManager = DailyLogManager(context: PersistenceController.shared.container.viewContext)
     let userSettingsManager = UserSettingsManager(context: PersistenceController.shared.container.viewContext)
 
     var body: some Scene {
@@ -21,7 +21,7 @@ struct caloriecounterApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(dataStore)
                 .environmentObject(userSettingsManager)
-                .environmentObject(dateSelectionManager)
+                .environmentObject(dailyLogManager)
                 .environmentObject(AppState.shared)
         }
     }
