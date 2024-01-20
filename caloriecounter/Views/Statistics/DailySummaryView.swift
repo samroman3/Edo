@@ -29,7 +29,7 @@ struct DailySummaryView: View {
                     }
                 }, onCalendarTapped: {}, entryType: .summary)
                 .frame(maxWidth: .infinity)
-
+                
                 HStack {
                     VStack(alignment: .center) {
                         Text("\(Int(totalCaloriesConsumed)) calories")
@@ -58,6 +58,10 @@ struct DailySummaryView: View {
                     .background(AppTheme.grayExtra)
                 }
                 .edgesIgnoringSafeArea(.top)
+                // Meal breakdown display
+                ForEach(MealType.allCases, id: \.self) { mealType in
+                    MealSummaryRow(mealType: mealType, calories: Int(dateSelectionManager.calories(for: mealType)))
+                }
                 Spacer()
                 CalorieRingView(
                     breakfastPercentage: breakfastPercentage,
@@ -65,13 +69,13 @@ struct DailySummaryView: View {
                     dinnerPercentage: dinnerPercentage,
                     snacksPercentage: snacksPercentage
                 )
-                
-                // Meal breakdown display
-                ForEach(MealType.allCases, id: \.self) { mealType in
-                    MealSummaryRow(mealType: mealType, calories: Int(dateSelectionManager.calories(for: mealType)))
-                }
+                Spacer()
+                MacronutrientView()
+                Spacer()
             }
         }
+        .background(AppTheme.prunes)
+        
         .onAppear {
             // Fetch data when the view appears
             dateSelectionManager.refreshData()
@@ -93,10 +97,11 @@ struct MealSummaryRow: View {
         HStack {
             Text(mealType.rawValue)
                 .font(.headline)
+                .foregroundColor(AppTheme.milk)
             Spacer()
             Text("\(calories) cal")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(AppTheme.milk)
         }
         .padding(.horizontal)
     }
