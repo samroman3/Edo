@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var userSettingsManager: UserSettingsManager
-    
-    @EnvironmentObject var appState: AppState
-    
+        
     var body: some View {
         CustomTabBarView()
 //        if UserSettings.needsOnboarding {

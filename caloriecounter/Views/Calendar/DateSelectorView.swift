@@ -35,7 +35,7 @@ struct DateSelectorView: View {
                             provideHapticFeedback()
                         }) {
                             Text(dateFormatter.string(from: date))
-                                .foregroundColor(isDateSelected(date) ? .black : .primary)
+                                .foregroundColor(isDateSelected(date) ? .black : AppTheme.milk)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 12)
                                 .background(isDateSelected(date) ? AppTheme.lime : .clear)
@@ -92,7 +92,6 @@ struct DateSelectorView: View {
         let today = Date()
         selectedDate = today
         generateWeekDates(from: today)
-        // Update selection manager's date too
         selectionManager.updateSelectedDate(newDate: today)
     }
     private func isDateSelected(_ date: Date) -> Bool {

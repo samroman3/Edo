@@ -18,6 +18,8 @@ struct TopBarView: View {
 
     @State var isExpanded = false
     
+    var showMacronutrientWeeklyButton: Bool = false
+    
     var body: some View {
         VStack(alignment: .center) {
             HStack() {
@@ -80,7 +82,7 @@ struct TopBarView: View {
                     Text("\(dateSelectionManager.totalCaloriesConsumed.formattedAsString()) out of \(dateSelectionManager.calorieGoal.formattedAsString()) cal")
                         .font(.headline)
                         .fontWeight(.light)
-                        .foregroundStyle(AppTheme.grayLight)
+                        .foregroundStyle(AppTheme.grayMiddle)
                 }
             }
                 .padding(.vertical)
