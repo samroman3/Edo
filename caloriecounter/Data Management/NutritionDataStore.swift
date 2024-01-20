@@ -92,6 +92,20 @@ class NutritionDataStore: ObservableObject {
 
             saveContext()
         }
+    
+    func updateWaterIntake(intake: Double, date: Date) {
+        let dailyLog = fetchOrCreateDailyLog(for: date)
+        dailyLog.waterIntake = intake
+        saveContext()
+    }
+    
+    func resetWaterIntake(date: Date) {
+        let dailyLog = fetchOrCreateDailyLog(for: date)
+        dailyLog.waterIntake = 0.0
+        saveContext()
+    }
+    
+    
 
     
     // Read entries for a specific date

@@ -17,6 +17,7 @@ class DateSelectionManager: ObservableObject {
     @Published var lunchCalories: Double = 0.0
     @Published var dinnerCalories: Double = 0.0
     @Published var snackCalories: Double = 0.0
+    @Published var waterIntake: Double = 0.0
  
     var totalCaloriesConsumed: Double {
         return breakfastCalories + lunchCalories + dinnerCalories + snackCalories
@@ -64,6 +65,8 @@ class DateSelectionManager: ObservableObject {
            return dinnerCalories
         case MealType.snack:
            return snackCalories
+        case MealType.water:
+            return 0.0
         }
        }
 
@@ -113,14 +116,16 @@ class DateSelectionManager: ObservableObject {
         do {
             let results = try context.fetch(fetchRequest)
             if let dailyLog = results.first {
-                // DailyLog exists, update meals
+                // DailyLog exists, update meals and waterIntake
                 meals = Array(dailyLog.meals as? Set<Meal> ?? [])
+                waterIntake = dailyLog.waterIntake
             } else {
                 // No DailyLog found, create a new one
                 let newDailyLog = DailyLog(context: context)
                 newDailyLog.date = startOfDay
                 saveContext()
                 meals = [] // Initialize meals as empty for new log
+                waterIntake = 0.0
             }
         } catch {
             print("Error fetching DailyLog: \(error)")
