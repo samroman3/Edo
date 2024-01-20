@@ -18,7 +18,7 @@ struct CustomTabBarView: View {
             // Content based on selected tab
             switch selectedTab {
             case .diary:
-                DiaryView().background(AppTheme.prunes)
+                DiaryView()
             case .statistics:
                 DailySummaryView()
             case .profile:
@@ -33,8 +33,8 @@ struct CustomTabBarView: View {
                 
             }
             .padding(.horizontal)
-            .background(AppTheme.prunes) // Customize the background
         }
+        .background(AppTheme.prunes)
     }
 
     enum Tab {
