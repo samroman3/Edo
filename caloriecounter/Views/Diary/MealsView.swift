@@ -65,9 +65,11 @@ struct MealsView: View {
         }
     }
     private func deleteEntry(_ entry: NutritionEntry) {
-        nutritionDataStore.deleteEntry(entry)
-        dailyLogManager.fetchDailyLogForSelectedDate()
-        
+        withAnimation{
+            nutritionDataStore.deleteEntry(entry)
+            dailyLogManager.fetchDailyLogForSelectedDate()
+        }
+       
     }
     
     struct PlaceholderMealView: View {
