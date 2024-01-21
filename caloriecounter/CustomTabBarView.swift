@@ -55,7 +55,9 @@ struct TabBarButton: View {
             .imageScale(.medium)
             .font(.system(size: 25))
             .onTapGesture {
-                selectedTab = tab
+                withAnimation(.snappy) {
+                    selectedTab = tab
+                }
             }
     }
 }
