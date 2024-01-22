@@ -68,13 +68,6 @@ struct LoginSignupView: View {
     }
 }
 
-// Helper extensions or components
-extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
 // Preview
 //struct LoginSignupView_Previews: PreviewProvider {
 //    static var previews: some View {

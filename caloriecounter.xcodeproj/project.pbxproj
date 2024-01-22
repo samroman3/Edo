@@ -14,6 +14,7 @@
 		3A0829F72B3F620B001EB95E /* UserStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F62B3F620B001EB95E /* UserStatsView.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
+		3A9CAD5E2B5DB69300E4F306 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */; };
 		3AB88BB52B13F85700739CDC /* MealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB88BB42B13F85700739CDC /* MealsView.swift */; };
 		3ABA27522B11A8FF00DE4FB1 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */; };
 		3ABA27542B128E4C00DE4FB1 /* NutritionEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA27532B128E4C00DE4FB1 /* NutritionEntryView.swift */; };
@@ -88,6 +89,7 @@
 		3A0829F62B3F620B001EB95E /* UserStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsView.swift; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
+		3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		3AB88BB42B13F85700739CDC /* MealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsView.swift; sourceTree = "<group>"; };
 		3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		3ABA27532B128E4C00DE4FB1 /* NutritionEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionEntryView.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 			children = (
 				3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */,
 				3AC3C3C02B242B6B00C5F751 /* DoubleExtensions.swift */,
+				3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				3ABA27692B1318E600DE4FB1 /* SnappingFlowLayout.swift in Sources */,
 				3ABA27522B11A8FF00DE4FB1 /* PersistenceController.swift in Sources */,
 				3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */,
+				3A9CAD5E2B5DB69300E4F306 /* ViewExtensions.swift in Sources */,
 				3AF67D6C2B509AFC0013F078 /* AppState.swift in Sources */,
 				3AF36D0A2B119F9B00775DF6 /* NutritionTracker.xcdatamodeld in Sources */,
 				3AF36CDE2B106EED00775DF6 /* DateSelectorView.swift in Sources */,
