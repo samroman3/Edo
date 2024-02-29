@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CustomTabBarView: View {
     
-    
+    @EnvironmentObject private var dailyLogManager: DailyLogManager
     @State private var selectedTab: Tab = .diary
 
     var body: some View {
@@ -20,7 +20,7 @@ struct CustomTabBarView: View {
             case .diary:
                 DiaryView()
             case .statistics:
-                DailySummaryView()
+                DailySummaryView(viewModel: DailySummaryViewModel(dailyLogManager: dailyLogManager))
             case .profile:
                 ProfileView()
             }

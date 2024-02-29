@@ -6,22 +6,23 @@
 //
 
 import SwiftUI
-
 struct MainView: View {
-        
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var userSettingsManager: UserSettingsManager
+
     var body: some View {
-        CustomTabBarView()
-//        if UserSettings.needsOnboarding {
-//            OnboardingView(onOnboardingComplete: {
-//                UserSettings.needsOnboarding = false
-//            }, onLoginSuccess: { appState.login() })
-//        } else if appState.isLoggedIn {
-//            CustomTabBarView()
-//        } else {
-//            LoginSignupView(onLoginSuccess: { appState.login() })
-//        }
+        Group {
+            if !appState.hasCompletedOnboarding {
+                OnboardingView(onOnboardingComplete: {
+                    appState.completeOnboarding()
+                    userSettingsManager.loadUserSettings()
+                })
+            } else {
+                CustomTabBarView()
+            }
+        }
+        .onAppear {
+            // Perform iCloud availability check here and handle accordingly
+        }
     }
 }
-//#Preview {
-//    MainView()
-//}

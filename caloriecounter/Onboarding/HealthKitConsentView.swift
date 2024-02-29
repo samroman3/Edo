@@ -20,8 +20,9 @@ struct HealthKitConsentView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
-                Text("Eazeat would like to use data from the Health app to personalize your experience. This includes your gender, date of birth, height, and weight.")
+                Text("Edo would like to use data from the Health app to streamline your experience. This includes your gender, date of birth, height, and weight. All data is stored privately and only accessible to you through iCloud.")
                     .font(.body)
+                    .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
                     .padding()
                 
@@ -44,7 +45,6 @@ struct HealthKitConsentView: View {
                 Spacer()
             }
             .padding()
-            .navigationBarTitle("HealthKit Integration", displayMode: .inline)
             .navigationBarItems(trailing: Button("Close") {
                 isPresented = false
             })
@@ -148,4 +148,10 @@ struct HealthKitConsentView: View {
             }
         }
     }
+
+struct HealthKitConsentView_Previews: PreviewProvider {
+    static var previews: some View {
+        HealthKitConsentView(isPresented: .constant(true), onFetchComplete: {_,_,_,_ in })
+    }
+}
 

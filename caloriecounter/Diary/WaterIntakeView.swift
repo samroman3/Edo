@@ -16,7 +16,7 @@ class WaterIntakeViewModel: ObservableObject {
     @ObservedObject var nutritionDataStore: NutritionDataStore
     
     var goalMet: Bool {
-        roundl(currentIntake) >= goalIntake
+        round(currentIntake) >= round(goalIntake)
     }
     
     init(dailyLogManager: DailyLogManager, nutritionDataStore: NutritionDataStore) {

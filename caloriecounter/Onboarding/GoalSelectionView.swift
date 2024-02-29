@@ -14,7 +14,7 @@ struct GoalSelectionView: View {
         case gainWeight = "Gain Weight"
         case improveFitness = "Improve Fitness"
         case buildMuscle = "Build Muscle"
-        case enhancePerformance = "Enhance Athletic Performance"
+        case enhancePerformance = "Enhance Performance"
         
         var description: String {
             switch self {

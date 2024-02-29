@@ -10,22 +10,29 @@ import Foundation
 class AppState: ObservableObject {
     static let shared = AppState()
 
-    @Published var isLoggedIn: Bool {
+    @Published var hasCompletedOnboarding: Bool {
         didSet {
-            UserDefaults.standard.set(isLoggedIn, forKey: "isLoggedIn")
+            UserDefaults.standard.set(hasCompletedOnboarding, forKey: "hasCompletedOnboarding")
+        }
+    }
+    
+    @Published var iCloudConsentGiven: Bool {
+        didSet {
+            UserDefaults.standard.set(iCloudConsentGiven, forKey: "iCloudConsentGiven")
         }
     }
 
     init() {
-        // Initialize the logged in state from UserDefaults
-        isLoggedIn = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        iCloudConsentGiven = UserDefaults.standard.bool(forKey: "iCloudConsentGiven")
+    }
+    
+    func completeOnboarding() {
+        hasCompletedOnboarding = true
     }
 
-    func login() {
-        isLoggedIn = true
-    }
-
-    func logout() {
-        isLoggedIn = false
+    func giveiCloudConsent() {
+        iCloudConsentGiven = true
     }
 }
+

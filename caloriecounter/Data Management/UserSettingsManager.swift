@@ -23,34 +23,48 @@ class UserSettingsManager: ObservableObject {
     @Published var userName: String = ""
     @Published var userEmail: String = ""
     
+    @Published var dailyCaloricNeeds: Double = 0.0
+    @Published var proteinGoal: Double = 0.0
+    @Published var carbsGoal: Double = 0.0
+    @Published var fatGoal: Double = 0.0
+    @Published var dietaryPlan: String = ""
+    
     init(context: NSManagedObjectContext) {
         self.context = context
         self.loadUserSettings()
-    }
+        NotificationCenter.default.addObserver(self, selector: #selector(ubiquitousKeyValueStoreDidChange(_:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: NSUbiquitousKeyValueStore.default)
 
-    func loginUser(email: String, password: String) -> Bool {
-        let request: NSFetchRequest<UserSettings> = UserSettings.fetchRequest()
-        request.predicate = NSPredicate(format: "userEmail == %@", email)
-
-        do {
-            let results = try context.fetch(request)
-            if let user = results.first, user.userPassword == password {
-                UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                UserDefaults.standard.set(email, forKey: "loggedInUserEmail")
-                loadUserSettings()
-                return true
-            }
-        } catch {
-            print("Login error: \(error)")
-        }
-
-        return false
     }
     
-    func logoutUser() {
-           UserDefaults.standard.removeObject(forKey: "loggedInUserEmail")
-           clearUserSettings()
-       }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+
+    @objc private func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
+        // Handle changes as needed, for example, reload flags
+    }
+
+    
+    //Mark: Key Value iCloud Markers
+    
+    func saveOnboardingCompletedFlag(isCompleted: Bool) {
+        NSUbiquitousKeyValueStore.default.set(isCompleted, forKey: "onboardingCompleted")
+        NSUbiquitousKeyValueStore.default.synchronize() // Force sync, though not always necessary
+    }
+
+    func saveConsentFlag(isGiven: Bool) {
+        NSUbiquitousKeyValueStore.default.set(isGiven, forKey: "consentGiven")
+        NSUbiquitousKeyValueStore.default.synchronize()
+    }
+    
+    func isOnboardingCompleted() -> Bool {
+        return NSUbiquitousKeyValueStore.default.bool(forKey: "onboardingCompleted")
+    }
+
+    func isConsentGiven() -> Bool {
+        return NSUbiquitousKeyValueStore.default.bool(forKey: "consentGiven")
+    }
     
     private func clearUserSettings() {
           DispatchQueue.main.async {
@@ -68,21 +82,17 @@ class UserSettingsManager: ObservableObject {
 
     
     func loadUserSettings() {
-        guard let email = UserDefaults.standard.string(forKey: "loggedInUserEmail") else { return }
-        let request: NSFetchRequest<UserSettings> = UserSettings.fetchRequest()
-        request.predicate = NSPredicate(format: "userEmail == %@", email)
         userSettings = fetchOrCreateUserSettings()
         if let settings = userSettings {
             DispatchQueue.main.async {
                 self.age = Int(settings.age)
                 self.weight = settings.weight
                 self.height = settings.height
-                self.sex = settings.sex
-                self.activity = settings.activity
-                self.unitSystem = settings.unitSystem
-                self.userName = settings.userName
-                self.userEmail = settings.userEmail
-                self.profileImage = settings.profileImage?.uiImage
+                self.sex = settings.sex ?? ""
+                self.activity = settings.activity ?? ""
+                self.unitSystem = settings.unitSystem ?? "metric"
+                self.userName = settings.userName ?? ""
+                self.userEmail = settings.userEmail ?? ""
             }
         }
     }
@@ -90,7 +100,7 @@ class UserSettingsManager: ObservableObject {
     func uploadProfileImage(_ image: UIImage) {
         let settings = fetchOrCreateUserSettings()
         let imageData = image.jpegData(compressionQuality: 1.0)
-        settings.profileImage = imageData as NSData?
+//        settings.profileImage = imageData as NSData?
         saveContext()
     }
     
@@ -111,6 +121,17 @@ class UserSettingsManager: ObservableObject {
         settings.userName = userName
         settings.userEmail = userEmail
         saveContext()
+    }
+    
+    func saveDietaryGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
+        let settings = fetchOrCreateUserSettings()
+        // Assuming you have added corresponding attributes to your UserSettings CoreData entity
+        settings.dailyCalorieGoal = caloricNeeds
+        settings.proteinGoal = protein
+        settings.carbsGoal = carbs
+        settings.fatsGoal = fat
+        
+        saveContext() // Make sure to save the context
     }
     
     private func fetchOrCreateUserSettings() -> UserSettings {

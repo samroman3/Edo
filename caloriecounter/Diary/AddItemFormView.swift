@@ -28,19 +28,7 @@ struct AddItemFormView: View {
     enum FocusableField {
         case name, nutrientInput
     }
-    //clean up?
-    //    enum MacroNutrientType: String, CaseIterable {
-    //        case calories, protein, carbs, fat
-    //    }
-    //
-    //    enum AdditionalNutrientType: String, CaseIterable {
-    //        case vitaminA, vitaminC, vitaminD, vitaminE, vitaminB6, vitaminB12, folate
-    //    }
-    //
-    //    enum MineralType: String, CaseIterable {
-    //        case calcium, iron, magnesium, phosphorus, potassium, sodium, zinc
-    //    }
-    //
+    
     @State private var nutrientValues: [NutrientType: String] = [
         .calories: "0", .protein: "0", .carbs: "0", .fat: "0", .vitaminA: "0", .vitaminC: "0", .vitaminD: "0", .vitaminE: "0", .vitaminB6: "0", .vitaminB12: "0", .folate: "0", .calcium: "0", .iron: "0", .magnesium: "0", .phosphorus: "0", .potassium: "0", .sodium: "0", .zinc: "0"
     ]

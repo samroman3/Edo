@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftUI
 
 struct UserStatsView: View {
     @EnvironmentObject var userSettingsManager: UserSettingsManager
