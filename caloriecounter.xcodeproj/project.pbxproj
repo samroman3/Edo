@@ -174,13 +174,50 @@
 			children = (
 				3AC3C3C22B274AD200C5F751 /* OnboardingView.swift */,
 				3AC3C3C42B278AA000C5F751 /* HealthKitConsentView.swift */,
-				3AC3C3CA2B2B5E3900C5F751 /* PersonalHealthDataFormView.swift */,
-				3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		3ABA27502B11A8C600DE4FB1 /* CoreData */ = {
+		3A17D54C2B93B97000D74874 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		3A17D54D2B93B98700D74874 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				3AC3C3C82B2B52C900C5F751 /* MainView.swift */,
+				3AC3C3B52B1F936500C5F751 /* CustomTabBarView.swift */,
+				3AF67D6B2B509AFC0013F078 /* AppState.swift */,
+				3AC3C3BD2B22A90300C5F751 /* Calendar */,
+				3A0829F32B3F5F44001EB95E /* Onboarding */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
+		3A17D54E2B93B9C100D74874 /* Health Forms */ = {
+			isa = PBXGroup;
+			children = (
+				3AC3C3CA2B2B5E3900C5F751 /* PersonalHealthDataFormView.swift */,
+				3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */,
+			);
+			path = "Health Forms";
+			sourceTree = "<group>";
+		};
+		3A17D54F2B93BAAC00D74874 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3A17D54D2B93B98700D74874 /* Admin */,
+				3AD9CC812B1D0A4C00B9A23E /* Diary */,
+				3AD9CC832B1D0ABE00B9A23E /* Summary  */,
+				3AD9CC842B1D0AD300B9A23E /* Profile */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3ABA27502B11A8C600DE4FB1 /* CoreData Models */ = {
 			isa = PBXGroup;
 			children = (
 				3AF36D082B119F9B00775DF6 /* NutritionTracker.xcdatamodeld */,
@@ -193,7 +230,7 @@
 				3AF36D1C2B11A4BF00775DF6 /* UserSettings+CoreDataClass.swift */,
 				3AF36D1D2B11A4BF00775DF6 /* UserSettings+CoreDataProperties.swift */,
 			);
-			path = CoreData;
+			path = "CoreData Models";
 			sourceTree = "<group>";
 		};
 		3ABA276A2B131A0A00DE4FB1 /* UI Kit DateViews */ = {
@@ -236,6 +273,7 @@
 		3AD9CC822B1D0AA100B9A23E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */,
 				3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */,
 				3AC3C3C02B242B6B00C5F751 /* DoubleExtensions.swift */,
 				3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */,
@@ -243,15 +281,15 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		3AD9CC832B1D0ABE00B9A23E /* Statistics */ = {
+		3AD9CC832B1D0ABE00B9A23E /* Summary  */ = {
 			isa = PBXGroup;
 			children = (
-				3AF36CDB2B106DCB00775DF6 /* CalorieRingView.swift */,
 				3AC3C3BB2B229C8D00C5F751 /* DailySummaryView.swift */,
 				3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */,
+				3AF36CDB2B106DCB00775DF6 /* CalorieRingView.swift */,
 				3AF67D6D2B59C4CC0013F078 /* MacronutrientView.swift */,
 			);
-			path = Statistics;
+			path = "Summary ";
 			sourceTree = "<group>";
 		};
 		3AD9CC842B1D0AD300B9A23E /* Profile */ = {
@@ -262,6 +300,7 @@
 				3A0829F42B3F603A001EB95E /* ProfileImageView.swift */,
 				3A0829F62B3F620B001EB95E /* UserStatsView.swift */,
 				3AF67D672B4EA9200013F078 /* CaloricNeedsView.swift */,
+				3A17D54E2B93B9C100D74874 /* Health Forms */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -293,17 +332,11 @@
 				3AC3C3C62B2962A700C5F751 /* caloriecounter.entitlements */,
 				3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */,
 				3AF36CAD2B106C2300775DF6 /* ContentView.swift */,
-				3AC3C3C82B2B52C900C5F751 /* MainView.swift */,
-				3AC3C3B52B1F936500C5F751 /* CustomTabBarView.swift */,
-				3AF67D6B2B509AFC0013F078 /* AppState.swift */,
-				3A0829F32B3F5F44001EB95E /* Onboarding */,
-				3AC3C3BD2B22A90300C5F751 /* Calendar */,
-				3AD9CC812B1D0A4C00B9A23E /* Diary */,
-				3AD9CC832B1D0ABE00B9A23E /* Statistics */,
-				3AD9CC842B1D0AD300B9A23E /* Profile */,
-				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,
+				3A17D54F2B93BAAC00D74874 /* Views */,
+				3A17D54C2B93B97000D74874 /* Networking */,
 				3AF36D072B119F3E00775DF6 /* Data Management */,
-				3ABA27502B11A8C600DE4FB1 /* CoreData */,
+				3ABA27502B11A8C600DE4FB1 /* CoreData Models */,
+				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,
 				3AF36CB12B106C2400775DF6 /* Assets.xcassets */,
 				3AF36CB32B106C2400775DF6 /* Preview Content */,
 			);
@@ -342,7 +375,6 @@
 				3A0829ED2B2CB66B001EB95E /* UserSettingsManager.swift */,
 				3AF36CF92B106FEC00775DF6 /* NutritionDataStore.swift */,
 				3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */,
-				3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */,
 			);
 			path = "Data Management";
 			sourceTree = "<group>";
