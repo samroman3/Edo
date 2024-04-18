@@ -16,7 +16,7 @@ struct AddItemFormView: View {
     @State private var protein: String = "0"
     @State private var carbs: String = "0"
     @State private var fat: String = "0"
-    var dataStore: NutritionDataStore
+    var dataStore: NutritionDataStore?
     
     @State private var userNote: String = "Enter a note..."
     @State private var mealPhoto: UIImage?
@@ -60,11 +60,11 @@ struct AddItemFormView: View {
                 HStack {
                     Button(action: { isPresented = false }) {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.white)
+                            .foregroundColor(AppTheme.textColor)
                     }
                     TextField("Enter Name...", text: $name)
                         .focused($isNameTextFieldFocused)
-                        .foregroundColor(AppTheme.milk)
+                        .foregroundColor(AppTheme.textColor)
                         .font(.title3)
                         .fontWeight(.light)
                         .multilineTextAlignment(.center)
@@ -75,7 +75,6 @@ struct AddItemFormView: View {
                                 self.name = ""
                             }
                         }
-                        .background(Color.black.edgesIgnoringSafeArea([.leading,.trailing]))
                     Image(systemName: "star")
                         .foregroundColor(.yellow)
                 }
@@ -106,9 +105,9 @@ struct AddItemFormView: View {
                             Image(systemName: "chevron.down.circle")
                                 .resizable()
                                 .frame(width: 35, height: 35)
-                                .foregroundStyle(AppTheme.basic)
+                                .foregroundStyle(AppTheme.textColor)
                             Text("More")
-                                .foregroundStyle(AppTheme.basic)
+                                .foregroundStyle(AppTheme.textColor)
                         }
                         if microNutrientsExpanded == true && isNameTextFieldFocused == false {
                             // Vitamins and Minerals form section
@@ -120,7 +119,7 @@ struct AddItemFormView: View {
                                                 get: { selectedNutrient == nutrient },
                                                 set: { _ in selectedNutrient = nutrient }
                                             ))
-                                            .background(AppTheme.coral)
+                                            .background(AppTheme.reverse)
                                         }
                                         ForEach(mineralTypes, id: \.self) { nutrient in
                                             AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
@@ -148,14 +147,14 @@ struct AddItemFormView: View {
                         if isNameTextFieldFocused == false && notesExpanded == true {
                             TextField("Enter a note...", text: $userNote)
                                 .focused($isUserNoteFocused)
-                                .foregroundColor(AppTheme.milk)
+                                .foregroundColor(AppTheme.textColor)
                                 .font(.title2)
                                 .fontWeight(.light)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(0)
                                 .padding(.horizontal)
                                 .frame(maxWidth:.infinity, maxHeight: .infinity)
-                                .background(AppTheme.grayExtra.edgesIgnoringSafeArea([.leading,.trailing]))
+                                .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
                         }
                         if !isUserNoteFocused {
                             Button {
@@ -164,9 +163,9 @@ struct AddItemFormView: View {
                                 Image(systemName: "photo.artframe.circle")
                                     .resizable()
                                     .frame(width: 35, height: 35)
-                                    .foregroundStyle(AppTheme.basic)
+                                    .foregroundStyle(AppTheme.textColor)
                                 Text("Add Image")
-                                    .foregroundStyle(AppTheme.basic)
+                                    .foregroundStyle(AppTheme.textColor)
                             }
                         }
                     }
@@ -189,7 +188,7 @@ struct AddItemFormView: View {
                         Image(systemName: "keyboard.chevron.compact.down")
                             .resizable()
                             .frame(width: 20, height: 20)
-                            .foregroundStyle(AppTheme.basic)
+                            .foregroundStyle(AppTheme.textColor)
                     })
                     .padding([.vertical,.horizontal])
                 } else {
@@ -204,10 +203,8 @@ struct AddItemFormView: View {
                     .font(.largeTitle)
                     .frame(height: 70)
                     .fontWeight(.light)
-                    .padding([.leading, .trailing], 40)
-                    .background(Color.black.edgesIgnoringSafeArea(.all))
-                    .cornerRadius(10)
-                    .foregroundColor(AppTheme.basic)
+                    .padding(.horizontal)
+                    .foregroundColor(AppTheme.textColor)
                     Spacer()
                     if isInputActive {
                         Button(action: {
@@ -216,7 +213,7 @@ struct AddItemFormView: View {
                             Image(systemName: "keyboard.chevron.compact.down")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(AppTheme.basic)
+                                .foregroundStyle(AppTheme.textColor)
                         })
                         .padding([.vertical])
                     }
@@ -231,7 +228,7 @@ struct AddItemFormView: View {
                         .fontWeight(.light)
                         .frame(height: 70)
                         .frame(maxWidth: .infinity)
-                        .background(AppTheme.carrot)
+                        .background(AppTheme.lavender)
                         .foregroundColor(.white)
                 }
             }
@@ -260,7 +257,6 @@ struct AddItemFormView: View {
         .onDisappear{
             self.onDismiss()
         }
-        .background(AppTheme.prunes)
     }
     
     private func selectedNutrientTextBinding() -> Binding<String> {
@@ -287,18 +283,20 @@ struct AddItemFormView: View {
                             Text(value ?? "")
                             Text("mg")
                         }
-                        .foregroundColor(isSelected ? .black : AppTheme.basic)
+                        .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
                         .font(.headline)
                         .fontWeight(.light)
                         Text(nutrient.rawValue)
                     }
-                    .foregroundColor(isSelected ? .black : .white)
+                    .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
                     .font(.headline)
                     .fontWeight(.light)
                 }
                 .padding([.vertical,.horizontal])
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(isSelected ? AppTheme.basic : AppTheme.grayDark)
+                .frame(minWidth: 100, maxHeight: .infinity)
+                .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
+                .clipShape(.rect(cornerRadius: 10))
+                .padding(.horizontal, 4)
             }
             .focused($isInputActive)
         }
@@ -321,18 +319,21 @@ struct AddItemFormView: View {
                             Text(value ?? "")
                             Text("g")
                         }
-                        .foregroundColor(isSelected ? .black : AppTheme.basic)
+                        .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.basic)
                         .font(.headline)
-                        .fontWeight(.light)
+                        .fontWeight(.bold)
                         Text(nutrient.rawValue)
                     }
-                    .foregroundColor(isSelected ? .black : .white)
+                    .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
                     .font(.headline)
                     .fontWeight(.light)
                 }
                 .padding([.vertical,.horizontal],50)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(isSelected ? AppTheme.basic : AppTheme.grayDark)
+                .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
+                .clipShape(.rect(cornerRadius: 20))
+                .padding()
+                .shadow(radius: 4, x: 2, y: 4)
             }
             .focused($isInputActive)
         }
@@ -360,7 +361,7 @@ struct AddItemFormView: View {
             return
         }
         
-        dataStore.addEntryToMealAndDailyLog(
+        dataStore?.addEntryToMealAndDailyLog(
             date: selectedDate,
             mealType: mealType,
             name: name,
@@ -380,7 +381,7 @@ struct AddItemFormView: View {
             mealPhoto: mealPhoto?.jpegData(compressionQuality: 1.0) ?? Data(),
             mealPhotoLink: "" //TODO: generate a link
         )
-        print("adding food entry: name: \(name), type:\(mealType) , cals:\(caloriesValue), protein:\(proteinValue), carbs: \(carbsValue), fat: \(fatValue)")
+        print("adding food entry: name: \(name), type:\(mealType) , cals:\(caloriesValue), protein:\(proteinValue), carbs: \(carbsValue), fats: \(fatValue)")
         
         self.isPresented = false
         return
@@ -388,6 +389,14 @@ struct AddItemFormView: View {
     
 }
 
-
-
-
+struct AddItemFormView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddItemFormView(
+            isPresented: .constant(true),
+            selectedDate: Date(),
+            mealType: .constant(""),
+            dataStore: nil,
+            onDismiss: {}
+        )
+    }
+}

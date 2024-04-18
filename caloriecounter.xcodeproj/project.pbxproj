@@ -178,13 +178,6 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		3A17D54C2B93B97000D74874 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Networking;
-			sourceTree = "<group>";
-		};
 		3A17D54D2B93B98700D74874 /* Admin */ = {
 			isa = PBXGroup;
 			children = (
@@ -333,7 +326,6 @@
 				3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */,
 				3AF36CAD2B106C2300775DF6 /* ContentView.swift */,
 				3A17D54F2B93BAAC00D74874 /* Views */,
-				3A17D54C2B93B97000D74874 /* Networking */,
 				3AF36D072B119F3E00775DF6 /* Data Management */,
 				3ABA27502B11A8C600DE4FB1 /* CoreData Models */,
 				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,

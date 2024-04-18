@@ -98,8 +98,8 @@ class UserSettingsManager: ObservableObject {
     }
     
     func uploadProfileImage(_ image: UIImage) {
-        let settings = fetchOrCreateUserSettings()
-        let imageData = image.jpegData(compressionQuality: 1.0)
+//        let settings = fetchOrCreateUserSettings()
+//        let imageData = image.jpegData(compressionQuality: 1.0)
 //        settings.profileImage = imageData as NSData?
         saveContext()
     }
