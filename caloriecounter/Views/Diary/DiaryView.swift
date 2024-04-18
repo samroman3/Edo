@@ -24,11 +24,10 @@ struct DiaryView: View {
                     }
                 }, onCalendarTapped: {}, entryType: .diary)
                 .frame(maxWidth: .infinity)
-                Divider().background(AppTheme.lime)
+                Divider().background(AppTheme.textColor)
                 MealsView(dailyLogManager: dailyLogManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
                     .frame(maxWidth: .infinity)
             }
-            .background(AppTheme.prunes)
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $mealSelectionViewModel.showingAddItemForm) {
                 AddItemFormView(isPresented: $mealSelectionViewModel.showingAddItemForm, selectedDate: dailyLogManager.selectedDate, mealType: $mealSelectionViewModel.currentMealType, dataStore: NutritionDataStore(context: viewContext), onDismiss: {dailyLogManager.fetchDailyLogForSelectedDate()})

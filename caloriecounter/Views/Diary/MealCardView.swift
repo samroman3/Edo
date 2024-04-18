@@ -22,13 +22,13 @@ struct MealCardView: View {
                 Text(mealType)
                     .font(.largeTitle)
                     .fontWeight(.light)
-                    .foregroundStyle(AppTheme.lime)
+                    .foregroundStyle(AppTheme.textColor)
                 Spacer()
                 Button(action: onAddTapped) {
                     Image(systemName: "plus.circle")
                         .resizable()
                         .tint(Color.blue)
-                        .foregroundStyle(AppTheme.lime)
+                        .foregroundStyle(AppTheme.textColor)
                         .frame(width: 30, height: 30)
                 }
                 .padding(.vertical)
@@ -65,7 +65,7 @@ struct MealCardView: View {
                                         swipedEntry = nil
                                     }) {
                                         Image(systemName: "minus")
-                                            .foregroundStyle(AppTheme.prunes)
+                                            .foregroundStyle(AppTheme.textColor)
                                             .frame(width: 50, height: 50)
                                             .background(AppTheme.carrot)
                                     }
@@ -102,12 +102,10 @@ struct ChevronView: View {
         VStack {
             Spacer()
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
-                .foregroundStyle(AppTheme.lime)
                 .font(.system(size: 25))
             Spacer()
             Text("\(totalCalories) calories")
                 .font(.caption)
-                .foregroundStyle(AppTheme.lime)
         }
         .onTapGesture {
             withAnimation {

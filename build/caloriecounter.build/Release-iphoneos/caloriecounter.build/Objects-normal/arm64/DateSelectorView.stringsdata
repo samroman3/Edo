@@ -1,0 +1,16 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/DateSelectorView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "<"
+      },
+      {
+        "comment": "",
+        "key": ">"
+      }
+    ]
+  },
+  "version": 1
+}

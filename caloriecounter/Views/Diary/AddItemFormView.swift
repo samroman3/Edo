@@ -106,9 +106,9 @@ struct AddItemFormView: View {
                             Image(systemName: "chevron.down.circle")
                                 .resizable()
                                 .frame(width: 35, height: 35)
-                                .foregroundStyle(AppTheme.lime)
+                                .foregroundStyle(AppTheme.basic)
                             Text("More")
-                                .foregroundStyle(AppTheme.lime)
+                                .foregroundStyle(AppTheme.basic)
                         }
                         if microNutrientsExpanded == true && isNameTextFieldFocused == false {
                             // Vitamins and Minerals form section
@@ -141,9 +141,9 @@ struct AddItemFormView: View {
                             Image(systemName:"square.and.pencil.circle")
                                 .resizable()
                                 .frame(width: 35, height: 35)
-                                .foregroundStyle(AppTheme.lime)
+                                .foregroundStyle(AppTheme.basic)
                             Text("Add Note")
-                                .foregroundStyle(AppTheme.lime)
+                                .foregroundStyle(AppTheme.basic)
                         }
                         if isNameTextFieldFocused == false && notesExpanded == true {
                             TextField("Enter a note...", text: $userNote)
@@ -164,9 +164,9 @@ struct AddItemFormView: View {
                                 Image(systemName: "photo.artframe.circle")
                                     .resizable()
                                     .frame(width: 35, height: 35)
-                                    .foregroundStyle(AppTheme.lime)
+                                    .foregroundStyle(AppTheme.basic)
                                 Text("Add Image")
-                                    .foregroundStyle(AppTheme.lime)
+                                    .foregroundStyle(AppTheme.basic)
                             }
                         }
                     }
@@ -189,7 +189,7 @@ struct AddItemFormView: View {
                         Image(systemName: "keyboard.chevron.compact.down")
                             .resizable()
                             .frame(width: 20, height: 20)
-                            .foregroundStyle(AppTheme.lime)
+                            .foregroundStyle(AppTheme.basic)
                     })
                     .padding([.vertical,.horizontal])
                 } else {
@@ -207,7 +207,7 @@ struct AddItemFormView: View {
                     .padding([.leading, .trailing], 40)
                     .background(Color.black.edgesIgnoringSafeArea(.all))
                     .cornerRadius(10)
-                    .foregroundColor(AppTheme.lime)
+                    .foregroundColor(AppTheme.basic)
                     Spacer()
                     if isInputActive {
                         Button(action: {
@@ -216,7 +216,7 @@ struct AddItemFormView: View {
                             Image(systemName: "keyboard.chevron.compact.down")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(AppTheme.lime)
+                                .foregroundStyle(AppTheme.basic)
                         })
                         .padding([.vertical])
                     }
@@ -287,7 +287,7 @@ struct AddItemFormView: View {
                             Text(value ?? "")
                             Text("mg")
                         }
-                        .foregroundColor(isSelected ? .black : AppTheme.lime)
+                        .foregroundColor(isSelected ? .black : AppTheme.basic)
                         .font(.headline)
                         .fontWeight(.light)
                         Text(nutrient.rawValue)
@@ -298,7 +298,7 @@ struct AddItemFormView: View {
                 }
                 .padding([.vertical,.horizontal])
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(isSelected ? AppTheme.lime : AppTheme.grayDark)
+                .background(isSelected ? AppTheme.basic : AppTheme.grayDark)
             }
             .focused($isInputActive)
         }
@@ -321,7 +321,7 @@ struct AddItemFormView: View {
                             Text(value ?? "")
                             Text("g")
                         }
-                        .foregroundColor(isSelected ? .black : AppTheme.lime)
+                        .foregroundColor(isSelected ? .black : AppTheme.basic)
                         .font(.headline)
                         .fontWeight(.light)
                         Text(nutrient.rawValue)
@@ -332,7 +332,7 @@ struct AddItemFormView: View {
                 }
                 .padding([.vertical,.horizontal],50)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(isSelected ? AppTheme.lime : AppTheme.grayDark)
+                .background(isSelected ? AppTheme.basic : AppTheme.grayDark)
             }
             .focused($isInputActive)
         }

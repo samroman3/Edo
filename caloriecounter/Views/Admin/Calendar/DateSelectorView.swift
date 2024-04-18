@@ -25,7 +25,7 @@ struct DateSelectorView: View {
                 moveWeek(by: -1)
                 provideHapticFeedback()
             }
-            .foregroundStyle(AppTheme.lime)
+            .foregroundStyle(AppTheme.basic)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(weekDates, id: \.self) { date in
@@ -35,10 +35,10 @@ struct DateSelectorView: View {
                             provideHapticFeedback()
                         }) {
                             Text(dateFormatter.string(from: date))
-                                .foregroundColor(isDateSelected(date) ? .black : AppTheme.milk)
+                                .foregroundColor(isDateSelected(date) ? AppTheme.reverse : AppTheme.textColor)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 12)
-                                .background(isDateSelected(date) ? AppTheme.lime : .clear)
+                                .background(isDateSelected(date) ? AppTheme.basic : AppTheme.reverse)
                                 .cornerRadius(20)
                         }
                     }
@@ -57,7 +57,7 @@ struct DateSelectorView: View {
                 moveWeek(by: 1)
                 provideHapticFeedback()
             }
-            .foregroundStyle(AppTheme.lime)
+            .foregroundStyle(AppTheme.basic)
         }
     }
 

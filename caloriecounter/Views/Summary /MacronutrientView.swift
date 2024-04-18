@@ -16,7 +16,7 @@ struct MacronutrientView: View {
     var body: some View {
         HStack(spacing: 20) {
             MacronutrientRingView(label: "Carbs", consumed: macros.carbs, goal: carbGoal, color: AppTheme.lavender)
-            MacronutrientRingView(label: "Protein", consumed: macros.protein, goal: proteinGoal, color: AppTheme.lime)
+            MacronutrientRingView(label: "Protein", consumed: macros.protein, goal: proteinGoal, color: AppTheme.basic)
             MacronutrientRingView(label: "Fat", consumed: macros.fat, goal: fatGoal, color: AppTheme.carrot)
         }
         .padding()

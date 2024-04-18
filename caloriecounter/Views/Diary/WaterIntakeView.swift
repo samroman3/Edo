@@ -56,7 +56,7 @@ struct WaterIntakeView: View {
                 Text("Water")
                     .font(.largeTitle)
                     .fontWeight(.light)
-                    .foregroundStyle(AppTheme.lime)
+                    .foregroundStyle(AppTheme.textColor)
                 Spacer()
                 if viewModel.goalMet {
                     Button(action: {
@@ -67,7 +67,7 @@ struct WaterIntakeView: View {
                         Image(systemName: "arrow.counterclockwise.circle")
                             .resizable()
                             .frame(width: 30, height: 30)
-                            .foregroundColor(AppTheme.lime)
+                            .foregroundColor(AppTheme.textColor)
                     }
                 } else {
                     Button(action: {
@@ -78,7 +78,7 @@ struct WaterIntakeView: View {
                         Image(systemName: "plus.circle")
                             .resizable()
                             .frame(width: 30, height: 30)
-                            .foregroundColor(AppTheme.lime)
+                            .foregroundColor(AppTheme.textColor)
                     }
                     .padding(.vertical)
                 }
@@ -92,7 +92,7 @@ struct WaterIntakeView: View {
                     Image(systemName: viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? "drop.circle.fill" : "drop.circle")
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? .blue : AppTheme.grayExtra)
+                        .foregroundColor(viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? .blue : AppTheme.grayLight)
                         .onTapGesture(perform: {
                             
                         })
@@ -102,23 +102,22 @@ struct WaterIntakeView: View {
             
             if viewModel.goalMet {
                 Text("Water intake goal reached. \n Water needs are approximate, keep hydrated.")
-                    .foregroundStyle(AppTheme.milk)
+                    .foregroundStyle(AppTheme.grayDark)
                     .multilineTextAlignment(.center)
                     .font(.caption)
                     .padding(.bottom, 5)
             }
             
             Text("\(viewModel.currentIntake, specifier: "%.1f") out of \(viewModel.goalIntake.formattedAsPrettyString()) L")
-                .foregroundColor(AppTheme.milk)
+                .foregroundColor(AppTheme.textColor)
                 .font(.caption)
                 .padding(.bottom, 5)
             
             Text("One glass of water ≈ \((viewModel.glassSize * 1000).formattedAsPrettyString()) ml")
-                .foregroundColor(AppTheme.milk)
+                .foregroundColor(AppTheme.grayDark)
                 .font(.caption)
         }
         .frame(maxWidth: .infinity)
-        .background(AppTheme.prunes)
     }
 }
 

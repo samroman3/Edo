@@ -21,7 +21,7 @@ struct NutritionEntryView: View {
             }
             .font(.caption)
             .foregroundColor(.primary)
-            Divider().background(AppTheme.lime)
+            Divider().background(AppTheme.textColor)
 
         }
         .padding(.vertical, 4)

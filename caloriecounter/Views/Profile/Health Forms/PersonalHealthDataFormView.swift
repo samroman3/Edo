@@ -48,7 +48,7 @@ struct PersonalHealthDataFormView: View {
                 .padding()
                 
                 Form {
-                    Section(header: Text("Your Details").foregroundColor(AppTheme.lime)) {
+                    Section(header: Text("Your Details").foregroundColor(AppTheme.basic)) {
                         TextField("Age", text: $age)
                             .keyboardType(.numberPad)
                         

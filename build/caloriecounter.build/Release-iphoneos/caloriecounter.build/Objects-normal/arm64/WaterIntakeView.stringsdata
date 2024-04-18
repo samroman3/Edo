@@ -1,0 +1,24 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/WaterIntakeView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Water intake goal reached. \n Water needs are approximate, keep hydrated."
+      },
+      {
+        "comment": "",
+        "key": "%.1f out of %@ L"
+      },
+      {
+        "comment": "",
+        "key": "One glass of water ≈ %@ ml"
+      },
+      {
+        "comment": "",
+        "key": "Water"
+      }
+    ]
+  },
+  "version": 1
+}

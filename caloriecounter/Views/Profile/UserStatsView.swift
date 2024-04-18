@@ -24,7 +24,7 @@ struct UserStatsView: View {
             ProfileImageView(image: Image(uiImage: userSettingsManager.profileImage ?? UIImage(systemName: "person.crop.circle")!))
                 .frame(width: 100, height: 100)
                 .clipShape(Circle())
-                .overlay(Circle().stroke(AppTheme.lime, lineWidth: 4))
+                .overlay(Circle().stroke(AppTheme.basic, lineWidth: 4))
                 .shadow(radius: 10)
                 .onTapGesture {
                     showingImagePicker = true

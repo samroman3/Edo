@@ -44,7 +44,7 @@ struct MealsView: View {
                             ChevronView(isExpanded: isExpandedBinding, totalCalories: calculateTotalCalories(entries: entries))
                                 .padding(.horizontal)
                         }
-                        Divider().background(AppTheme.lime)
+                        Divider().background(AppTheme.textColor)
                     }
                     else {
                         if mealType == .water {
@@ -55,7 +55,7 @@ struct MealsView: View {
                                 onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
                             )
                         }
-                        Divider().background(AppTheme.lime)
+                        Divider().background(AppTheme.textColor)
                         
                     }
                     
@@ -82,14 +82,13 @@ struct MealsView: View {
                     Text(mealType)
                         .font(.largeTitle)
                         .fontWeight(.light)
-                        .foregroundStyle(AppTheme.lime)
                     Spacer()
                     Button(action: onAddTapped) {
                         Image(systemName: "plus.circle")
                             .resizable()
                             .tint(Color.blue)
                             .frame(width: 30, height: 30)
-                            .foregroundStyle(AppTheme.lime)
+                            .foregroundStyle(AppTheme.textColor)
                     }
                     .padding(.vertical)
                 }

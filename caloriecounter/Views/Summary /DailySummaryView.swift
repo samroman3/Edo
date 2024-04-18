@@ -43,16 +43,16 @@ struct DailySummaryView: View {
                     }
                     .padding()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppTheme.lime)
+                    .background(AppTheme.basic)
                     // Card for calorie goal
                     VStack(alignment: .center) {
                         Text("\(Int(viewModel.calorieGoal)) calories")
                             .font(.title3)
                             .fontWeight(.light)
-                            .foregroundStyle(AppTheme.lime)
+                            .foregroundStyle(AppTheme.basic)
                         Text("goal")
                             .font(.subheadline)
-                            .foregroundColor(AppTheme.lime)
+                            .foregroundColor(AppTheme.basic)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

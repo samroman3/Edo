@@ -1,0 +1,12 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/MealCardView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld calories"
+      }
+    ]
+  },
+  "version": 1
+}

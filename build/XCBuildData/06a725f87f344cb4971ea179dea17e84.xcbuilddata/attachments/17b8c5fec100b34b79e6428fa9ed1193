@@ -1,0 +1,50 @@
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Onboarding/HealthKitConsentView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/NutritionEntryView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/ContentView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/UserStatsView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/MealType.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Summary\ /DailySummaryView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Supporting\ Files/AppTheme.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Data\ Management/UserSettingsManager.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/Health\ Forms/PersonalHealthDataFormView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/AddItemFormView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/Health\ Forms/GoalSelectionView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/NutritionEntry+CoreDataClass.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/TopBarView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Data\ Management/NutritionDataStore.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/UI\ Kit\ DateViews/SnappingFlowLayout.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Data\ Management/PersistenceController.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Supporting\ Files/ImagePicker.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Supporting\ Files/ViewExtensions.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/AppState.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/DateSelectorView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/UserSettings+CoreDataProperties.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Onboarding/OnboardingView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/DailyLog+CoreDataClass.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/UserSettings+CoreDataClass.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/CalendarView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/NutritionEntryDetailView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/MealsView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/NutritionEntry+CoreDataProperties.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/DailyLog+CoreDataProperties.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/CustomTabBarView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/CaloricNeedsView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/MainView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/Meal+CoreDataProperties.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/caloriecounterApp.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/CoreData\ Models/Meal+CoreDataClass.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/UI\ Kit\ DateViews/DateCollectionViewWrapper.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Summary\ /DailySummaryViewModel.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Admin/Calendar/TopBarType.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/ProfileView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/MealSelectionViewModel.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Summary\ /CalorieRingView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/ProfileImageView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/MealCardView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/WaterIntakeView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/SettingsView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Supporting\ Files/DoubleExtensions.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Diary/DiaryView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Summary\ /MacronutrientView.swift
+/Users/samroman/Documents/caloriecounter/caloriecounter/Data\ Management/DailyLogManager.swift
+/Users/samroman/Documents/caloriecounter/build/caloriecounter.build/Release-iphoneos/caloriecounter.build/DerivedSources/GeneratedAssetSymbols.swift

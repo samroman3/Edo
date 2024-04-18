@@ -70,7 +70,7 @@ struct GoalIconView: View {
         VStack {
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                 .font(.largeTitle)
-                .foregroundColor(isSelected ? AppTheme.lime : .gray)
+                .foregroundColor(isSelected ? AppTheme.basic : .gray)
             Text(goal.rawValue)
                 .font(.caption)
                 .multilineTextAlignment(.center)

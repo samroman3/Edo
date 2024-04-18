@@ -1,0 +1,28 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/UserStatsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Your Stats"
+      },
+      {
+        "comment": "",
+        "key": "Weight: %@ kg"
+      },
+      {
+        "comment": "",
+        "key": "Height: %@ cm"
+      },
+      {
+        "comment": "",
+        "key": "BMI: Not Available"
+      },
+      {
+        "comment": "",
+        "key": "BMI: %@"
+      }
+    ]
+  },
+  "version": 1
+}

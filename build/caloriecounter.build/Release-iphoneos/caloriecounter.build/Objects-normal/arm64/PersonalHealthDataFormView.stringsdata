@@ -1,0 +1,96 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Profile/Health Forms/PersonalHealthDataFormView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Fill in with Health App"
+      },
+      {
+        "comment": "",
+        "key": "Your Details"
+      },
+      {
+        "comment": "",
+        "key": "Age"
+      },
+      {
+        "comment": "",
+        "key": "Unit System"
+      },
+      {
+        "comment": "",
+        "key": "Weight (kg)"
+      },
+      {
+        "comment": "",
+        "key": "Height (cm)"
+      },
+      {
+        "comment": "",
+        "key": "Weight (lb)"
+      },
+      {
+        "comment": "",
+        "key": "Sex"
+      },
+      {
+        "comment": "",
+        "key": "Activity Level"
+      },
+      {
+        "comment": "",
+        "key": "Feet"
+      },
+      {
+        "comment": "",
+        "key": "Inches"
+      },
+      {
+        "comment": "",
+        "key": "%lld ft"
+      },
+      {
+        "comment": "",
+        "key": "%lld in"
+      },
+      {
+        "comment": "",
+        "key": ""
+      },
+      {
+        "comment": "",
+        "key": "Male"
+      },
+      {
+        "comment": "",
+        "key": "Female"
+      },
+      {
+        "comment": "",
+        "key": "Other"
+      },
+      {
+        "comment": "",
+        "key": "Sedentary"
+      },
+      {
+        "comment": "",
+        "key": "Lightly Active"
+      },
+      {
+        "comment": "",
+        "key": "Moderately Active"
+      },
+      {
+        "comment": "",
+        "key": "Very Active"
+      },
+      {
+        "comment": "",
+        "key": "Calculate"
+      }
+    ]
+  },
+  "version": 1
+}

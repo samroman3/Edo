@@ -24,6 +24,29 @@ struct AppTheme {
             }
         })
 
+    
+    static let basic = Color(UIColor { traitCollection in
+            // Adjust colors for light and dark mode
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                // Use white color for dark mode
+                return .white
+            default:
+                // Use black for light
+                return .black
+            }
+        })
+    
+    static let reverse = Color(UIColor { traitCollection in
+            // Adjust colors for light and dark mode
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return .black
+            default:
+                return .white
+            }
+        })
+    
     static let milk = Color(red: 247 / 255, green: 247 / 255, blue: 247 / 255)
     static let carrot = Color(red: 255 / 255, green: 88 / 255, blue: 51 / 255)
     static let prunes = Color(red: 0, green: 0, blue: 0)

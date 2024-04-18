@@ -1,0 +1,12 @@
+{
+  "source": "/Users/samroman/Documents/caloriecounter/caloriecounter/Views/Summary /MacronutrientView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%.1f/%.1fg"
+      }
+    ]
+  },
+  "version": 1
+}

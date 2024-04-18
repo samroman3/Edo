@@ -31,7 +31,7 @@ struct TopBarView: View {
                 ) {
                     Image(systemName: "calendar")
                         .imageScale(.medium)
-                        .foregroundStyle(AppTheme.milk)
+                        .foregroundStyle(AppTheme.textColor)
                 }
                 Spacer()
                 VStack(alignment:.center){
@@ -48,14 +48,15 @@ struct TopBarView: View {
                                     Text("Today")
                                         .font(.title2)
                                         .fontWeight(.light)
-                                        .foregroundStyle(AppTheme.milk)
+                                        .foregroundStyle(AppTheme.textColor)
+
                                 }
                                 
                             }
                             Text(selectedDate, style: .date)
                                 .font(.title2)
                                 .fontWeight(.light)
-                                .foregroundStyle(AppTheme.milk)
+                                .foregroundStyle(AppTheme.textColor)
                             Spacer()
                         } else {
                             if todayComponents.year == selectedDateComponents.year &&
@@ -65,14 +66,14 @@ struct TopBarView: View {
                                     Text("Today")
                                         .font(.title2)
                                         .fontWeight(.light)
-                                        .foregroundStyle(AppTheme.milk)
+                                        .foregroundStyle(AppTheme.textColor)
                                 }
                                 Spacer()
                             } else {
                                 Text(selectedDate, style: .date)
                                     .font(.title2)
                                     .fontWeight(.light)
-                                    .foregroundStyle(AppTheme.milk)
+                                    .foregroundStyle(AppTheme.textColor)
                             }
                         }
                         
@@ -82,7 +83,7 @@ struct TopBarView: View {
                     Text("\(dailyLogManager.totalCaloriesConsumed.formattedAsString()) out of \(dailyLogManager.calorieGoal.formattedAsString()) cal")
                         .font(.headline)
                         .fontWeight(.light)
-                        .foregroundStyle(AppTheme.grayMiddle)
+                        .foregroundStyle(AppTheme.textColor)
                 }
             }
                 .padding(.vertical)
