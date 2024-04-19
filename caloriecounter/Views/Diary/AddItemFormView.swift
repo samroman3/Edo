@@ -11,7 +11,7 @@ struct AddItemFormView: View {
     @Binding var isPresented: Bool
     var selectedDate: Date
     @Binding var mealType: String
-    @State private var name: String = "Enter Name..."
+    @State private var name: String = ""
     @State private var calories: String = "0"
     @State private var protein: String = "0"
     @State private var carbs: String = "0"
@@ -30,16 +30,16 @@ struct AddItemFormView: View {
     }
     
     @State private var nutrientValues: [NutrientType: String] = [
-        .calories: "0", .protein: "0", .carbs: "0", .fat: "0", .vitaminA: "0", .vitaminC: "0", .vitaminD: "0", .vitaminE: "0", .vitaminB6: "0", .vitaminB12: "0", .folate: "0", .calcium: "0", .iron: "0", .magnesium: "0", .phosphorus: "0", .potassium: "0", .sodium: "0", .zinc: "0"
+        .calories: "0", .protein: "0", .carbs: "0", .fats: "0", .vitaminA: "0", .vitaminC: "0", .vitaminD: "0", .vitaminE: "0", .vitaminB6: "0", .vitaminB12: "0", .folate: "0", .calcium: "0", .iron: "0", .magnesium: "0", .phosphorus: "0", .potassium: "0", .sodium: "0", .zinc: "0"
     ]
     
     // Subset for macronutrients
-    let macroNutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fat]
+    let macroNutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fats]
     let additionalVitaminTypes: [NutrientType] = [.vitaminA, .vitaminC, .vitaminD, .vitaminE, .vitaminB6, .vitaminB12, .folate]
     let mineralTypes: [NutrientType] = [.calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc]
     
     enum NutrientType: String, CaseIterable {
-        case calories, protein, carbs, fat,
+        case calories, protein, carbs, fats,
              vitaminA, vitaminC, vitaminD, vitaminE, vitaminB6, vitaminB12, folate,
              calcium, iron, magnesium, phosphorus, potassium, sodium, zinc
     }
@@ -54,6 +54,7 @@ struct AddItemFormView: View {
     @State private var isEditing: Bool = false
     let columns: [GridItem] = Array(repeating: .init(.adaptive(minimum: 200, maximum: 500)), count: 2)
     let onDismiss: () -> Void
+    
     var body: some View {
         VStack(spacing: 10) {
             ScrollView(.vertical){
@@ -69,12 +70,6 @@ struct AddItemFormView: View {
                         .fontWeight(.light)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                        .onTapGesture {
-                            if !isEditing {
-                                // Only clear the text if the TextField is not already being edited.
-                                self.name = ""
-                            }
-                        }
                     Image(systemName: "star")
                         .foregroundColor(.yellow)
                 }
@@ -95,6 +90,9 @@ struct AddItemFormView: View {
                             
                         }
                     }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onTapGesture(perform: {
+                            isNameTextFieldFocused = false
+                        })
                 }
                 VStack(alignment: .leading, spacing: 10) {
                     Spacer()
@@ -126,7 +124,6 @@ struct AddItemFormView: View {
                                                 get: { selectedNutrient == nutrient },
                                                 set: { _ in selectedNutrient = nutrient }
                                             ))
-                                            .background(AppTheme.coral)
                                         }
                                     }
                                 }.frame(height: 150)
@@ -141,7 +138,7 @@ struct AddItemFormView: View {
                                 .resizable()
                                 .frame(width: 35, height: 35)
                                 .foregroundStyle(AppTheme.basic)
-                            Text("Add Note")
+                            Text("")
                                 .foregroundStyle(AppTheme.basic)
                         }
                         if isNameTextFieldFocused == false && notesExpanded == true {
@@ -164,13 +161,13 @@ struct AddItemFormView: View {
                                     .resizable()
                                     .frame(width: 35, height: 35)
                                     .foregroundStyle(AppTheme.textColor)
-                                Text("Add Image")
+                                Text("")
                                     .foregroundStyle(AppTheme.textColor)
                             }
                         }
                     }
                     
-                }
+                }.padding(.horizontal)
                 
                 
                 //TODO: view for selected image
@@ -181,19 +178,8 @@ struct AddItemFormView: View {
                 
             }
             HStack {
-                if isUserNoteFocused || isNameTextFieldFocused {
-                    Button(action: {
-                        hideKeyboard()
-                    }, label: {
-                        Image(systemName: "keyboard.chevron.compact.down")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(AppTheme.textColor)
-                    })
-                    .padding([.vertical,.horizontal])
-                } else {
+                if keyBoardOpen() {
                     TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
-                        self.isEditing = isEditing
                         if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
                             self.nutrientValues[selectedNutrient!] = ""
                         }
@@ -206,8 +192,7 @@ struct AddItemFormView: View {
                     .padding(.horizontal)
                     .foregroundColor(AppTheme.textColor)
                     Spacer()
-                    if isInputActive {
-                        Button(action: {
+                    Button(action: {
                             hideKeyboard()
                         }, label: {
                             Image(systemName: "keyboard.chevron.compact.down")
@@ -216,7 +201,7 @@ struct AddItemFormView: View {
                                 .foregroundStyle(AppTheme.textColor)
                         })
                         .padding([.vertical])
-                    }
+                    
                 }
             }
             
@@ -243,15 +228,10 @@ struct AddItemFormView: View {
                 }
             }
         )
-        .onTapGesture {
-            focusedField = nil
-            hideKeyboard()
-        }
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: self.$mealPhoto)
         }
         .onAppear {
-            // automatically show the keyboard for the 'name' TextField
             selectedNutrient = .calories
         }
         .onDisappear{
@@ -289,14 +269,11 @@ struct AddItemFormView: View {
                         Text(nutrient.rawValue)
                     }
                     .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
-                    .font(.headline)
-                    .fontWeight(.light)
                 }
                 .padding([.vertical,.horizontal])
-                .frame(minWidth: 100, maxHeight: .infinity)
+                .frame(minWidth: 150, maxHeight: .infinity)
                 .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
                 .clipShape(.rect(cornerRadius: 10))
-                .padding(.horizontal, 4)
             }
             .focused($isInputActive)
         }
@@ -325,8 +302,6 @@ struct AddItemFormView: View {
                         Text(nutrient.rawValue)
                     }
                     .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
-                    .font(.headline)
-                    .fontWeight(.light)
                 }
                 .padding([.vertical,.horizontal],50)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -356,7 +331,7 @@ struct AddItemFormView: View {
         guard let caloriesValue = Double(nutrientValues[.calories] ?? "0"),
               let proteinValue = Double(nutrientValues[.protein] ?? "0"),
               let carbsValue = Double(nutrientValues[.carbs] ?? "0"),
-              let fatValue = Double(nutrientValues[.fat] ?? "0") else {
+              let fatValue = Double(nutrientValues[.fats] ?? "0") else {
             print("invalid input")
             return
         }
@@ -368,7 +343,7 @@ struct AddItemFormView: View {
             calories: Double(nutrientValues[.calories] ?? "0") ?? 0,
             protein: Double(nutrientValues[.protein] ?? "0") ?? 0,
             carbs: Double(nutrientValues[.carbs] ?? "0") ?? 0,
-            fat: Double(nutrientValues[.fat] ?? "0") ?? 0,
+            fat: Double(nutrientValues[.fats] ?? "0") ?? 0,
             sugars: 0,
             addedSugars: 0,
             cholesterol: 0,

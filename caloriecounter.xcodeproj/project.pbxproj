@@ -302,8 +302,6 @@
 			isa = PBXGroup;
 			children = (
 				3AF36CAA2B106C2300775DF6 /* caloriecounter */,
-				3AF36CBD2B106C2500775DF6 /* caloriecounterTests */,
-				3AF36CC72B106C2500775DF6 /* caloriecounterUITests */,
 				3AF36CA92B106C2300775DF6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -331,6 +329,8 @@
 				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,
 				3AF36CB12B106C2400775DF6 /* Assets.xcassets */,
 				3AF36CB32B106C2400775DF6 /* Preview Content */,
+				3AF36CBD2B106C2500775DF6 /* caloriecounterTests */,
+				3AF36CC72B106C2500775DF6 /* caloriecounterUITests */,
 			);
 			path = caloriecounter;
 			sourceTree = "<group>";
