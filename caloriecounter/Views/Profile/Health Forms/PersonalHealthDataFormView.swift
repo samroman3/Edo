@@ -154,7 +154,7 @@ struct PersonalHealthDataFormView: View {
     private func convertValuesForUnitSystem(_ unitSystem: UnitSystem) {
         switch unitSystem {
         case .metric:
-            // Assuming `weight` and `height` are stored as Strings in imperial units, convert them to metric
+            // If `weight` and `height` are stored as Strings in imperial units, convert them to metric
             let weightInKg = convertPoundsToKilograms(Double(weight) ?? 0)
             let heightInCm = convertFeetAndInchesToCentimeters(feet: feet, inches: inches)
             weight = "\(weightInKg)"

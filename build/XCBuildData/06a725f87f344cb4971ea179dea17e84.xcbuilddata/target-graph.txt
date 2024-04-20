@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'caloriecounter' in project 'caloriecounter' (no dependencies)

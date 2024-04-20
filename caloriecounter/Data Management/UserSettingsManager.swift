@@ -125,7 +125,6 @@ class UserSettingsManager: ObservableObject {
     
     func saveDietaryGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
         let settings = fetchOrCreateUserSettings()
-        // Assuming you have added corresponding attributes to your UserSettings CoreData entity
         settings.dailyCalorieGoal = caloricNeeds
         settings.proteinGoal = protein
         settings.carbsGoal = carbs

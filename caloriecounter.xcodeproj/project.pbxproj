@@ -12,6 +12,7 @@
 		3A0829F22B3DE9FD001EB95E /* GoalSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */; };
 		3A0829F52B3F603A001EB95E /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F42B3F603A001EB95E /* ProfileImageView.swift */; };
 		3A0829F72B3F620B001EB95E /* UserStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F62B3F620B001EB95E /* UserStatsView.swift */; };
+		3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
 		3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */; };
@@ -87,6 +88,7 @@
 		3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSelectionView.swift; sourceTree = "<group>"; };
 		3A0829F42B3F603A001EB95E /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		3A0829F62B3F620B001EB95E /* UserStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsView.swift; sourceTree = "<group>"; };
+		3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticFeedbackProvider.swift; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
 		3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 		3AD9CC822B1D0AA100B9A23E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */,
 				3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */,
 				3AD9CC7F2B19449D00B9A23E /* AppTheme.swift */,
 				3AC3C3C02B242B6B00C5F751 /* DoubleExtensions.swift */,
@@ -532,6 +535,7 @@
 				3ABA27622B12B49400DE4FB1 /* NutritionEntry+CoreDataProperties.swift in Sources */,
 				3ABA27602B12B49400DE4FB1 /* DailyLog+CoreDataProperties.swift in Sources */,
 				3AC3C3B62B1F936500C5F751 /* CustomTabBarView.swift in Sources */,
+				3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */,
 				3AF67D682B4EA9200013F078 /* CaloricNeedsView.swift in Sources */,
 				3AC3C3C92B2B52C900C5F751 /* MainView.swift in Sources */,
 				3ABA275E2B12B49400DE4FB1 /* Meal+CoreDataProperties.swift in Sources */,

@@ -71,6 +71,7 @@ struct WaterIntakeView: View {
                     }
                 } else {
                     Button(action: {
+                        let _ = HapticFeedbackProvider.impact()
                         withAnimation {
                             viewModel.addWater()
                         }

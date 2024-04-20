@@ -11,9 +11,9 @@ import SwiftData
 @main
 struct caloriecounterApp: App {
     let persistenceController = PersistenceController.shared
-    let dataStore = NutritionDataStore(context: PersistenceController.shared.container.viewContext)
-    let dailyLogManager = DailyLogManager(context: PersistenceController.shared.container.viewContext)
-    let userSettingsManager = UserSettingsManager(context: PersistenceController.shared.container.viewContext)
+    @StateObject var dataStore = NutritionDataStore(context: PersistenceController.shared.container.viewContext)
+    @StateObject var dailyLogManager = DailyLogManager(context: PersistenceController.shared.container.viewContext)
+    @StateObject var userSettingsManager = UserSettingsManager(context: PersistenceController.shared.container.viewContext)
 
     var body: some Scene {
         WindowGroup {

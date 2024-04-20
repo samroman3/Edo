@@ -64,6 +64,8 @@ struct MealsView: View {
             }
         }
     }
+    
+    
     private func deleteEntry(_ entry: NutritionEntry) {
         withAnimation{
             nutritionDataStore.deleteEntry(entry)
@@ -83,7 +85,10 @@ struct MealsView: View {
                         .font(.largeTitle)
                         .fontWeight(.light)
                     Spacer()
-                    Button(action: onAddTapped) {
+                    Button(action:{
+                        let _ = HapticFeedbackProvider.impact()
+                        onAddTapped()
+                           }) {
                         Image(systemName: "plus.circle")
                             .resizable()
                             .tint(Color.blue)

@@ -162,14 +162,14 @@ struct ConsentView_Previews: PreviewProvider {
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView(onOnboardingComplete: {})
-            .environmentObject(AppState.shared) // Pass the AppState as an environment object if needed
+            .environmentObject(AppState.shared)
     }
 }
 
 struct WelcomeScreen_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeScreen(onGetStarted: {})
-            .previewLayout(.sizeThatFits) // Use .device for full-screen previews
+            .previewLayout(.sizeThatFits)
     }
 }
 

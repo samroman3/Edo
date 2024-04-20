@@ -36,7 +36,6 @@ class DailyLogManager: ObservableObject {
     private lazy var initialMacros: [String: Double] = {
         var initialMacros: [String: Double] = [:]
 
-        // Assuming totalGramsCarbs, totalGramsFats, and totalGramsProtein are properties in your class or struct
         initialMacros["Carbs"] = totalGramsCarbs
         initialMacros["Fats"] = totalGramsFats
         initialMacros["Protein"] = totalGramsProtein

@@ -100,7 +100,6 @@ struct ProfileView: View {
                             NavigationLink(destination: WeightDynamicsView()) {
                                 Text("Weight dynamics")
                             }
-                            // Other menu options...
                         }
                         .frame(minWidth: 0, maxWidth: .infinity)
                         .padding()
