@@ -7,7 +7,7 @@
 
 import SwiftUI
  
-struct AddBreakfastView: View {
+struct AddItemMainView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -71,16 +71,12 @@ struct FoodItem: View {
     }
 }
 
-struct AddBreakfastView_Previews: PreviewProvider {
+struct AddItemMainView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            AddBreakfastView()
+            AddItemMainView()
                 .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
                 .previewDisplayName("iPhone 14 Pro")
-            
-            AddBreakfastView()
-                .previewDevice(PreviewDevice(rawValue: "iPad Pro (12.9-inch) (6th generation)"))
-                .previewDisplayName("iPad Pro (12.9-inch)")
         }
     }
 }
