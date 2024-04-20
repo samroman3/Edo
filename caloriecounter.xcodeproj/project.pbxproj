@@ -13,6 +13,8 @@
 		3A0829F52B3F603A001EB95E /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F42B3F603A001EB95E /* ProfileImageView.swift */; };
 		3A0829F72B3F620B001EB95E /* UserStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F62B3F620B001EB95E /* UserStatsView.swift */; };
 		3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */; };
+		3A22EAC22BD4334100E0CEBD /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */; };
+		3A22EAC42BD4347D00E0CEBD /* AddItemMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
 		3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */; };
@@ -53,7 +55,6 @@
 		3AF36CDE2B106EED00775DF6 /* DateSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CDD2B106EED00775DF6 /* DateSelectorView.swift */; };
 		3AF36CE82B106F4700775DF6 /* AddItemFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */; };
 		3AF36CEA2B106F5300775DF6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CE92B106F5300775DF6 /* CalendarView.swift */; };
-		3AF36CEC2B106F6600775DF6 /* NutritionEntryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CEB2B106F6600775DF6 /* NutritionEntryDetailView.swift */; };
 		3AF36CFA2B106FEC00775DF6 /* NutritionDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CF92B106FEC00775DF6 /* NutritionDataStore.swift */; };
 		3AF36CFC2B106FFA00775DF6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CFB2B106FFA00775DF6 /* SettingsView.swift */; };
 		3AF36CFE2B10750700775DF6 /* MealCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF36CFD2B10750700775DF6 /* MealCardView.swift */; };
@@ -89,6 +90,8 @@
 		3A0829F42B3F603A001EB95E /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		3A0829F62B3F620B001EB95E /* UserStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsView.swift; sourceTree = "<group>"; };
 		3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticFeedbackProvider.swift; sourceTree = "<group>"; };
+		3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
+		3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemMainView.swift; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
 		3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -134,7 +137,6 @@
 		3AF36CDD2B106EED00775DF6 /* DateSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorView.swift; sourceTree = "<group>"; };
 		3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemFormView.swift; sourceTree = "<group>"; };
 		3AF36CE92B106F5300775DF6 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		3AF36CEB2B106F6600775DF6 /* NutritionEntryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionEntryDetailView.swift; sourceTree = "<group>"; };
 		3AF36CF92B106FEC00775DF6 /* NutritionDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionDataStore.swift; sourceTree = "<group>"; };
 		3AF36CFB2B106FFA00775DF6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3AF36CFD2B10750700775DF6 /* MealCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCardView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,16 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		3A22EAC02BD432F900E0CEBD /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */,
+				3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */,
+				3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
 		3ABA27502B11A8C600DE4FB1 /* CoreData Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -255,12 +267,11 @@
 				3AC3C3B32B1F8F5500C5F751 /* DiaryView.swift */,
 				3AB88BB42B13F85700739CDC /* MealsView.swift */,
 				3AF36CFD2B10750700775DF6 /* MealCardView.swift */,
-				3AF36CEB2B106F6600775DF6 /* NutritionEntryDetailView.swift */,
 				3ABA27532B128E4C00DE4FB1 /* NutritionEntryView.swift */,
-				3AF36CE72B106F4700775DF6 /* AddItemFormView.swift */,
 				3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */,
 				3ABA27642B12CD4000DE4FB1 /* MealSelectionViewModel.swift */,
 				3ABA27662B13091300DE4FB1 /* MealType.swift */,
+				3A22EAC02BD432F900E0CEBD /* Logging */,
 			);
 			path = Diary;
 			sourceTree = "<group>";
@@ -504,6 +515,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A22EAC22BD4334100E0CEBD /* BarcodeScanner.swift in Sources */,
 				3AC3C3C52B278AA000C5F751 /* HealthKitConsentView.swift in Sources */,
 				3ABA27542B128E4C00DE4FB1 /* NutritionEntryView.swift in Sources */,
 				3AF36CAE2B106C2300775DF6 /* ContentView.swift in Sources */,
@@ -527,10 +539,10 @@
 				3AF36CDE2B106EED00775DF6 /* DateSelectorView.swift in Sources */,
 				3AF36D252B11A4BF00775DF6 /* UserSettings+CoreDataProperties.swift in Sources */,
 				3AC3C3C32B274AD200C5F751 /* OnboardingView.swift in Sources */,
+				3A22EAC42BD4347D00E0CEBD /* AddItemMainView.swift in Sources */,
 				3ABA275F2B12B49400DE4FB1 /* DailyLog+CoreDataClass.swift in Sources */,
 				3AF36D242B11A4BF00775DF6 /* UserSettings+CoreDataClass.swift in Sources */,
 				3AF36CEA2B106F5300775DF6 /* CalendarView.swift in Sources */,
-				3AF36CEC2B106F6600775DF6 /* NutritionEntryDetailView.swift in Sources */,
 				3AB88BB52B13F85700739CDC /* MealsView.swift in Sources */,
 				3ABA27622B12B49400DE4FB1 /* NutritionEntry+CoreDataProperties.swift in Sources */,
 				3ABA27602B12B49400DE4FB1 /* DailyLog+CoreDataProperties.swift in Sources */,
@@ -726,6 +738,7 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to scan barcodes.";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Eazeat requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Eazeat requires access to write workout data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -763,6 +776,7 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to scan barcodes.";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Eazeat requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Eazeat requires access to write workout data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
