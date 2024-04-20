@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddItemFormView: View {
-    @Binding var isPresented: Bool
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     var selectedDate: Date
     @Binding var mealType: String
     @State private var name: String = ""
@@ -53,16 +53,11 @@ struct AddItemFormView: View {
     @FocusState private var isUserNoteFocused: Bool
     @State private var isEditing: Bool = false
     let columns: [GridItem] = Array(repeating: .init(.adaptive(minimum: 200, maximum: 500)), count: 2)
-    let onDismiss: () -> Void
     
     var body: some View {
         VStack(spacing: 10) {
             ScrollView(.vertical){
                 HStack {
-                    Button(action: { isPresented = false }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(AppTheme.textColor)
-                    }
                     TextField("Enter Name...", text: $name)
                         .focused($isNameTextFieldFocused)
                         .foregroundColor(AppTheme.textColor)
@@ -207,7 +202,9 @@ struct AddItemFormView: View {
             
             // 'Add' button
             if !keyBoardOpen() {
-                Button(action: { addFoodItem(nutrientValues) }) {
+                Button(action: { addFoodItem(nutrientValues)
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
                     Text("Add")
                         .font(.title)
                         .fontWeight(.light)
@@ -233,9 +230,6 @@ struct AddItemFormView: View {
         }
         .onAppear {
             selectedNutrient = .calories
-        }
-        .onDisappear{
-            self.onDismiss()
         }
     }
     
@@ -357,8 +351,6 @@ struct AddItemFormView: View {
             mealPhotoLink: "" //TODO: generate a link
         )
         print("adding food entry: name: \(name), type:\(mealType) , cals:\(caloriesValue), protein:\(proteinValue), carbs: \(carbsValue), fats: \(fatValue)")
-        
-        self.isPresented = false
         return
     }
     
@@ -367,11 +359,9 @@ struct AddItemFormView: View {
 struct AddItemFormView_Previews: PreviewProvider {
     static var previews: some View {
         AddItemFormView(
-            isPresented: .constant(true),
             selectedDate: Date(),
             mealType: .constant(""),
-            dataStore: nil,
-            onDismiss: {}
+            dataStore: nil
         )
     }
 }

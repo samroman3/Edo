@@ -15,6 +15,7 @@
 		3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */; };
 		3A22EAC22BD4334100E0CEBD /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */; };
 		3A22EAC42BD4347D00E0CEBD /* AddItemMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */; };
+		3A22EAC72BD4793300E0CEBD /* OpenFoodFactsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 3A22EAC62BD4793300E0CEBD /* OpenFoodFactsSDK */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
 		3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */; };
@@ -153,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A22EAC72BD4793300E0CEBD /* OpenFoodFactsSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +403,9 @@
 			dependencies = (
 			);
 			name = caloriecounter;
+			packageProductDependencies = (
+				3A22EAC62BD4793300E0CEBD /* OpenFoodFactsSDK */,
+			);
 			productName = caloriecounter;
 			productReference = 3AF36CA82B106C2300775DF6 /* caloriecounter.app */;
 			productType = "com.apple.product-type.application";
@@ -473,6 +478,9 @@
 				Base,
 			);
 			mainGroup = 3AF36C9F2B106C2300775DF6;
+			packageReferences = (
+				3A22EAC52BD4793300E0CEBD /* XCRemoteSwiftPackageReference "openfoodfacts-swift" */,
+			);
 			productRefGroup = 3AF36CA92B106C2300775DF6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -914,6 +922,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3A22EAC52BD4793300E0CEBD /* XCRemoteSwiftPackageReference "openfoodfacts-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openfoodfacts/openfoodfacts-swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3A22EAC62BD4793300E0CEBD /* OpenFoodFactsSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A22EAC52BD4793300E0CEBD /* XCRemoteSwiftPackageReference "openfoodfacts-swift" */;
+			productName = OpenFoodFactsSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		3AF36D082B119F9B00775DF6 /* NutritionTracker.xcdatamodeld */ = {
