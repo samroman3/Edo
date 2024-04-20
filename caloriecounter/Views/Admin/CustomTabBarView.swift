@@ -11,11 +11,9 @@ struct CustomTabBarView: View {
     
     @EnvironmentObject private var dailyLogManager: DailyLogManager
     @State private var selectedTab: Tab = .diary
-
+    
     var body: some View {
         VStack {
-            
-            // Content based on selected tab
             switch selectedTab {
             case .diary:
                 DiaryView()
@@ -24,7 +22,7 @@ struct CustomTabBarView: View {
             case .profile:
                 ProfileView()
             }
-
+            
             // Custom Tab Bar
             HStack(spacing: 50) {
                 TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: .blue)
@@ -35,7 +33,7 @@ struct CustomTabBarView: View {
             .padding(.horizontal)
         }
     }
-
+    
     enum Tab {
         case diary, statistics, profile
     }
@@ -47,7 +45,7 @@ struct TabBarButton: View {
     let tab: CustomTabBarView.Tab
     @Binding var selectedTab: CustomTabBarView.Tab
     let color: Color
-
+    
     var body: some View {
         Image(systemName: selectedTab == tab ? selectedIcon : icon)
             .foregroundColor(color)
@@ -60,9 +58,6 @@ struct TabBarButton: View {
             }
     }
 }
-
-//Dummy Views
-
 
 #Preview {
     CustomTabBarView()

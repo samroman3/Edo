@@ -15,7 +15,7 @@ struct TopBarView: View {
     var onCalendarTapped: () -> Void
     
     var entryType: TopBarType
-
+    
     @State var isExpanded = false
     
     var showMacronutrientWeeklyButton: Bool = false
@@ -23,6 +23,7 @@ struct TopBarView: View {
     var body: some View {
         VStack(alignment: .center) {
             HStack() {
+                Spacer()
                 Button(action:{
                     withAnimation(.easeIn) {
                         self.isExpanded.toggle()
@@ -35,6 +36,7 @@ struct TopBarView: View {
                 }
                 Spacer()
                 VStack(alignment:.center){
+                    
                     Button(action: onDateTapped) {
                         
                         let calendar = Calendar.current
@@ -49,7 +51,7 @@ struct TopBarView: View {
                                         .font(.title2)
                                         .fontWeight(.light)
                                         .foregroundStyle(AppTheme.textColor)
-
+                                    
                                 }
                                 
                             }
@@ -86,16 +88,16 @@ struct TopBarView: View {
                         .foregroundStyle(AppTheme.textColor)
                 }
             }
-                .padding(.vertical)
-                if isExpanded {
+            .padding(.vertical)
+            if isExpanded {
                 DateSelectorView(selectionManager: dailyLogManager, selectedDate: $dailyLogManager.selectedDate)
-                        .padding(.horizontal)
-                }
-            
+                    .padding(.horizontal)
             }
-
+            
         }
+        
     }
+}
 
 
 

@@ -9,7 +9,7 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSettingsManager: UserSettingsManager
-
+    
     var body: some View {
         Group {
             if !appState.hasCompletedOnboarding {
@@ -22,7 +22,7 @@ struct MainView: View {
             }
         }
         .onAppear {
-            // Perform iCloud availability check here and handle accordingly
+            
         }
     }
 }

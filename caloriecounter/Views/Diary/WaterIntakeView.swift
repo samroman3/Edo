@@ -26,9 +26,9 @@ class WaterIntakeViewModel: ObservableObject {
         print(dailyLogManager.waterIntake)
     }
     
-  func addWater() {
+    func addWater() {
         if currentIntake + glassSize <= goalIntake {
-           currentIntake += glassSize
+            currentIntake += glassSize
             self.nutritionDataStore.updateWaterIntake(intake: currentIntake, date: self.dailyLogManager.selectedDate)
         }
     }
@@ -44,12 +44,12 @@ class WaterIntakeViewModel: ObservableObject {
         self.nutritionDataStore.resetWaterIntake(date: self.dailyLogManager.selectedDate)
     }
     
-
+    
 }
 
 struct WaterIntakeView: View {
     @ObservedObject var viewModel: WaterIntakeViewModel
-
+    
     var body: some View {
         VStack {
             HStack {
