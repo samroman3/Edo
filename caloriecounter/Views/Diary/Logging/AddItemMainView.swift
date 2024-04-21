@@ -34,7 +34,7 @@ struct AddItemMainView: View {
                 HStack(spacing: 16) {
                     VStack(alignment: .center) {
                         NavigationLink(destination: BarcodeScannerView(), label: {
-                            Image(systemName: "camera.viewfinder")
+                            Image(systemName: "barcode.viewfinder")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .foregroundStyle(AppTheme.basic)
@@ -54,8 +54,8 @@ struct AddItemMainView: View {
             }
             .padding(.horizontal)
             }
-        .navigationTitle("Add Entry")
-        .navigationBarTitleDisplayMode(.automatic)
+        .navigationTitle("Add \(mealType)")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

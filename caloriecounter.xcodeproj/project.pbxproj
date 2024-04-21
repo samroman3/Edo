@@ -16,6 +16,8 @@
 		3A22EAC22BD4334100E0CEBD /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */; };
 		3A22EAC42BD4347D00E0CEBD /* AddItemMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */; };
 		3A22EAC72BD4793300E0CEBD /* OpenFoodFactsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 3A22EAC62BD4793300E0CEBD /* OpenFoodFactsSDK */; };
+		3A22EACE2BD5677200E0CEBD /* Recipe+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EACC2BD5677200E0CEBD /* Recipe+CoreDataClass.swift */; };
+		3A22EACF2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
 		3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */; };
@@ -93,6 +95,8 @@
 		3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticFeedbackProvider.swift; sourceTree = "<group>"; };
 		3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
 		3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemMainView.swift; sourceTree = "<group>"; };
+		3A22EACC2BD5677200E0CEBD /* Recipe+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataClass.swift"; sourceTree = "<group>"; };
+		3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
 		3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -232,6 +236,8 @@
 				3AF36D082B119F9B00775DF6 /* NutritionTracker.xcdatamodeld */,
 				3ABA27572B12B49400DE4FB1 /* Meal+CoreDataClass.swift */,
 				3ABA27582B12B49400DE4FB1 /* Meal+CoreDataProperties.swift */,
+				3A22EACC2BD5677200E0CEBD /* Recipe+CoreDataClass.swift */,
+				3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */,
 				3ABA27592B12B49400DE4FB1 /* DailyLog+CoreDataClass.swift */,
 				3ABA275A2B12B49400DE4FB1 /* DailyLog+CoreDataProperties.swift */,
 				3ABA275B2B12B49400DE4FB1 /* NutritionEntry+CoreDataClass.swift */,
@@ -538,11 +544,13 @@
 				3ABA27612B12B49400DE4FB1 /* NutritionEntry+CoreDataClass.swift in Sources */,
 				3AF36CDA2B106D6100775DF6 /* TopBarView.swift in Sources */,
 				3AF36CFA2B106FEC00775DF6 /* NutritionDataStore.swift in Sources */,
+				3A22EACE2BD5677200E0CEBD /* Recipe+CoreDataClass.swift in Sources */,
 				3ABA27692B1318E600DE4FB1 /* SnappingFlowLayout.swift in Sources */,
 				3ABA27522B11A8FF00DE4FB1 /* PersistenceController.swift in Sources */,
 				3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */,
 				3A9CAD5E2B5DB69300E4F306 /* ViewExtensions.swift in Sources */,
 				3AF67D6C2B509AFC0013F078 /* AppState.swift in Sources */,
+				3A22EACF2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift in Sources */,
 				3AF36D0A2B119F9B00775DF6 /* NutritionTracker.xcdatamodeld in Sources */,
 				3AF36CDE2B106EED00775DF6 /* DateSelectorView.swift in Sources */,
 				3AF36D252B11A4BF00775DF6 /* UserSettings+CoreDataProperties.swift in Sources */,

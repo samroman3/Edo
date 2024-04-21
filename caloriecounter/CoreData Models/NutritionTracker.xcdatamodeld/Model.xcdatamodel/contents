@@ -59,5 +59,4 @@
         <attribute name="userName" optional="YES" attributeType="String"/>
         <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Vitamins" representedClassName="Vitamins" syncable="YES" codeGenerationType="class"/>
 </model>

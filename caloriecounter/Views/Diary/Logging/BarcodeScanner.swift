@@ -49,7 +49,7 @@ struct BarcodeOverlay: View {
                 .fill(Color.clear)
                 .frame(width: 300, height: 200)
                 .overlay(
-                    Text("Scan Barcode Here")
+                    Text("Scan Barcode")
                         .foregroundColor(.white)
                         .font(.largeTitle)
             )
