@@ -10,6 +10,7 @@ import SwiftUI
 struct CustomTabBarView: View {
     
     @EnvironmentObject private var dailyLogManager: DailyLogManager
+    @EnvironmentObject private var nutritionDataStore: NutritionDataStore
     @State private var selectedTab: Tab = .diary
     
     var body: some View {

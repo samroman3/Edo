@@ -132,6 +132,36 @@ class NutritionDataStore: ObservableObject {
             return []
         }
     }
+
+    func fetchEntries(favorites: Bool, nameSearch: String? = nil) -> [NutritionEntry] {
+    let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+    var predicates: [NSPredicate] = []
+    
+    // Adding a predicate to filter for favorite entries
+    if favorites {
+        let favoritePredicate = NSPredicate(format: "favorite == %@", NSNumber(value: true))
+        predicates.append(favoritePredicate)
+    }
+    
+    // Adding a predicate to filter by name if nameSearch is not nil and not empty
+    if let nameSearch = nameSearch, !nameSearch.isEmpty {
+        let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
+        predicates.append(namePredicate)
+    }
+    
+    // Combine all predicates
+    if !predicates.isEmpty {
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
+    
+    do {
+        let entries = try context.fetch(request)
+        return entries
+    } catch {
+        print("Error fetching entries: \(error)")
+        return []
+    }
+}
     
     // Update an existing entry
     func updateEntry(_ entry: NutritionEntry) {

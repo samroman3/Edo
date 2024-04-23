@@ -16,7 +16,6 @@ extension Meal {
         return NSFetchRequest<Meal>(entityName: "Meal")
     }
 
-    @NSManaged public var goalCalories: Double
     @NSManaged public var id: UUID?
     @NSManaged public var type: String?
     @NSManaged public var date: Date?

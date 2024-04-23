@@ -9,6 +9,9 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSettingsManager: UserSettingsManager
+    @EnvironmentObject var nutritionDataStore: NutritionDataStore
+    @EnvironmentObject var dailyLogManager: DailyLogManager
+
     
     var body: some View {
         Group {
@@ -19,10 +22,9 @@ struct MainView: View {
                 })
             } else {
                 CustomTabBarView()
+                    .environmentObject(dailyLogManager)
+                    .environmentObject(nutritionDataStore)
             }
-        }
-        .onAppear {
-            
         }
     }
 }

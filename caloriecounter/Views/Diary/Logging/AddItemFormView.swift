@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddItemFormView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Binding var isPresented: Bool
     var selectedDate: Date
     @Binding var mealType: String
     @State private var name: String = ""
@@ -17,6 +17,7 @@ struct AddItemFormView: View {
     @State private var carbs: String = "0"
     @State private var fat: String = "0"
     var dataStore: NutritionDataStore?
+    let onDismiss: () -> Void
     
     @State private var userNote: String = "Enter a note..."
     @State private var mealPhoto: UIImage?
@@ -25,6 +26,8 @@ struct AddItemFormView: View {
     @State private var notesExpanded = false
     @FocusState private var focusedField: FocusableField?
     
+    @State private var showingPreviousEntries = false
+
     enum FocusableField {
         case name, nutrientInput
     }
@@ -56,6 +59,13 @@ struct AddItemFormView: View {
     
     var body: some View {
         VStack(spacing: 10) {
+            HStack(alignment: .center){
+                Button(action: { isPresented = false }) {
+                                Image(systemName: "chevron.down")
+                                    .foregroundColor(AppTheme.textColor)
+                            }.padding([.vertical,.horizontal])
+
+            }
             ScrollView(.vertical){
                 HStack {
                     TextField("Enter Name...", text: $name)
@@ -65,10 +75,17 @@ struct AddItemFormView: View {
                         .fontWeight(.light)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
+                        .onChange(of: isNameTextFieldFocused, perform: { isFocused in
+                        showingPreviousEntries = isFocused
+    })
                     Image(systemName: "star")
                         .foregroundColor(.yellow)
                 }
                 .padding([.horizontal, .vertical])
+                if showingPreviousEntries {
+                    PreviousEntriesView(name: $name, dataStore: dataStore)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
                 if !isUserNoteFocused {
                     // Nutrient input section
                     LazyVGrid(columns: columns, spacing: 5) {
@@ -203,7 +220,7 @@ struct AddItemFormView: View {
             // 'Add' button
             if !keyBoardOpen() {
                 Button(action: { addFoodItem(nutrientValues)
-                    self.presentationMode.wrappedValue.dismiss()
+                    isPresented = false
                 }) {
                     Text("Add")
                         .font(.title)
@@ -239,6 +256,7 @@ struct AddItemFormView: View {
             set: { self.nutrientValues[self.selectedNutrient ?? .calories] = $0 }
         )
     }
+
     
     struct AdditionalNutrientInputRow: View {
         let nutrient: NutrientType
@@ -298,7 +316,7 @@ struct AddItemFormView: View {
                     .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
                 }
                 .padding([.vertical,.horizontal],50)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: 200)
                 .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
                 .clipShape(.rect(cornerRadius: 20))
                 .padding()
@@ -307,7 +325,7 @@ struct AddItemFormView: View {
             .focused($isInputActive)
         }
     }
-    
+
     private func keyBoardOpen() -> Bool {
         return focusedField != nil || isInputActive || isNameTextFieldFocused || isUserNoteFocused
     }
@@ -356,12 +374,57 @@ struct AddItemFormView: View {
     
 }
 
-struct AddItemFormView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddItemFormView(
-            selectedDate: Date(),
-            mealType: .constant(""),
-            dataStore: nil
-        )
+
+struct PreviousEntriesView: View {
+@State private var selectedTab: Int = 0
+@Binding var name: String
+@State var dataStore: NutritionDataStore?
+@State private var entries: [NutritionEntry] = []
+@State private var favoriteEntries: [NutritionEntry] = []
+
+var body: some View {
+    VStack {
+        Picker("Filter", selection: $selectedTab) {
+            Text("All").tag(0)
+            Text("Favorites").tag(1)
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .onChange(of: selectedTab) { _ in
+            fetchEntries()
+        }
+
+        LazyVStack {
+            ForEach(selectedTab == 0 ? entries : favoriteEntries, id: \.self) { entry in
+                Text(entry.name)
+                    .foregroundStyle(AppTheme.textColor)
+            }
+        }
+    }
+    .onChange(of: name) { _ in
+        fetchEntries()
+        
+    }
+    .onAppear {
+        fetchEntries()
     }
 }
+    private func fetchEntries() {
+     if selectedTab == 0 {
+         entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
+         print(entries)
+     } else {
+         favoriteEntries = dataStore?.fetchEntries(favorites: true) ?? []
+     }
+ }
+}
+
+
+//struct AddItemFormView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AddItemFormView(
+//            selectedDate: Date(),
+//            mealType: .constant(""),
+//            dataStore: nil
+//        )
+//    }
+//}

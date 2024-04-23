@@ -30,7 +30,13 @@ struct DiaryView: View {
             }
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $mealSelectionViewModel.showingAddItemForm) {
-                AddItemMainView(isPresented:$mealSelectionViewModel.showingAddItemForm, selectedDate: dailyLogManager.selectedDate, mealType: $mealSelectionViewModel.currentMealType, dataStore: NutritionDataStore(context: viewContext), onDismiss: {dailyLogManager.fetchDailyLogForSelectedDate()})
+                
+                AddItemFormView(
+                    isPresented: $mealSelectionViewModel.showingAddItemForm,
+                    selectedDate: dailyLogManager.selectedDate,
+                    mealType: $mealSelectionViewModel.currentMealType,
+                    dataStore: nutritionDataStore,
+                    onDismiss: {dailyLogManager.fetchDailyLogForSelectedDate()})
                 
             }
         }

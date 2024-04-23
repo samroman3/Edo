@@ -17,8 +17,9 @@ extension Recipe {
     }
 
     @NSManaged public var mealType: String?
-    @NSManaged public var checked: Bool
+    @NSManaged public var servingSize: String?
     @NSManaged public var entries: NSOrderedSet?
+    @NSManaged public var favorite: Bool
     @NSManaged public var meal: Meal?
 
 }
