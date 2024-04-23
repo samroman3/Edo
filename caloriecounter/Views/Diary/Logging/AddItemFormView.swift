@@ -66,128 +66,132 @@ struct AddItemFormView: View {
                             }.padding([.vertical,.horizontal])
 
             }
-            ScrollView(.vertical){
-                HStack {
-                    TextField("Enter Name...", text: $name)
-                        .focused($isNameTextFieldFocused)
-                        .foregroundColor(AppTheme.textColor)
-                        .font(.title3)
-                        .fontWeight(.light)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .onChange(of: isNameTextFieldFocused, perform: { isFocused in
+            HStack {
+                TextField("Enter Name...", text: $name)
+                    .focused($isNameTextFieldFocused)
+                    .foregroundColor(AppTheme.textColor)
+                    .font(.title3)
+                    .fontWeight(.light)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .onChange(of: isNameTextFieldFocused, 
+                              perform: { isFocused in
                         showingPreviousEntries = isFocused
-    })
-                    Image(systemName: "star")
-                        .foregroundColor(.yellow)
-                }
-                .padding([.horizontal, .vertical])
+                    })
+                Image(systemName: "star")
+                    .foregroundColor(.yellow)
+            }
+            .padding([.horizontal, .vertical])
                 if showingPreviousEntries {
-                    PreviousEntriesView(name: $name, dataStore: dataStore)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                if !isUserNoteFocused {
-                    // Nutrient input section
-                    LazyVGrid(columns: columns, spacing: 5) {
-                        ForEach(macroNutrientTypes, id: \.self) { nutrient in
-                            MacroNutrientInputTile(
-                                nutrient: nutrient,
-                                value: $nutrientValues[nutrient],
-                                isSelected: Binding(
-                                    get: { selectedNutrient == nutrient },
-                                    set: { _ in selectedNutrient = nutrient }
-                                ),
-                                isInputActive: _isInputActive
-                            )
-                            
-                        }
-                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .onTapGesture(perform: {
-                            isNameTextFieldFocused = false
-                        })
-                }
-                VStack(alignment: .leading, spacing: 10) {
+                        PreviousEntriesView(name: $name, dataStore: dataStore)
                     Spacer()
+                } else {
+                    ScrollView(.vertical){
                     if !isUserNoteFocused {
-                        Button {
-                            microNutrientsExpanded.toggle()
-                        } label: {
-                            Image(systemName: "chevron.down.circle")
-                                .resizable()
-                                .frame(width: 35, height: 35)
-                                .foregroundStyle(AppTheme.textColor)
-                            Text("More")
-                                .foregroundStyle(AppTheme.textColor)
-                        }
-                        if microNutrientsExpanded == true && isNameTextFieldFocused == false {
-                            // Vitamins and Minerals form section
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHGrid(rows: [GridItem(.flexible())]) {
-                                    if microNutrientsExpanded {
-                                        ForEach(additionalVitaminTypes, id: \.self) { nutrient in
-                                            AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                                                get: { selectedNutrient == nutrient },
-                                                set: { _ in selectedNutrient = nutrient }
-                                            ))
-                                            .background(AppTheme.reverse)
-                                        }
-                                        ForEach(mineralTypes, id: \.self) { nutrient in
-                                            AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                                                get: { selectedNutrient == nutrient },
-                                                set: { _ in selectedNutrient = nutrient }
-                                            ))
-                                        }
-                                    }
-                                }.frame(height: 150)
+                        
+                        // Nutrient input section
+                        LazyVGrid(columns: columns, spacing: 5) {
+                            ForEach(macroNutrientTypes, id: \.self) { nutrient in
+                                MacroNutrientInputTile(
+                                    nutrient: nutrient,
+                                    value: $nutrientValues[nutrient],
+                                    isSelected: Binding(
+                                        get: { selectedNutrient == nutrient },
+                                        set: { _ in selectedNutrient = nutrient }
+                                    ),
+                                    isInputActive: _isInputActive
+                                )
+                                
                             }
-                        }
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .onTapGesture(perform: {
+                                isNameTextFieldFocused = false
+                                focusedField = .nutrientInput
+                            })
                     }
-                    if isInputActive == false {
-                        Button {
-                            notesExpanded.toggle()
-                        } label: {
-                            Image(systemName:"square.and.pencil.circle")
-                                .resizable()
-                                .frame(width: 35, height: 35)
-                                .foregroundStyle(AppTheme.basic)
-                            Text("")
-                                .foregroundStyle(AppTheme.basic)
-                        }
-                        if isNameTextFieldFocused == false && notesExpanded == true {
-                            TextField("Enter a note...", text: $userNote)
-                                .focused($isUserNoteFocused)
-                                .foregroundColor(AppTheme.textColor)
-                                .font(.title2)
-                                .fontWeight(.light)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(0)
-                                .padding(.horizontal)
-                                .frame(maxWidth:.infinity, maxHeight: .infinity)
-                                .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
-                        }
+                    VStack(alignment: .leading, spacing: 10) {
+                        Spacer()
                         if !isUserNoteFocused {
                             Button {
-                                self.showImagePicker.toggle()
+                                microNutrientsExpanded.toggle()
                             } label: {
-                                Image(systemName: "photo.artframe.circle")
+                                Image(systemName: "chevron.down.circle")
                                     .resizable()
                                     .frame(width: 35, height: 35)
                                     .foregroundStyle(AppTheme.textColor)
-                                Text("")
+                                Text("More")
                                     .foregroundStyle(AppTheme.textColor)
                             }
+                            if microNutrientsExpanded == true && isNameTextFieldFocused == false {
+                                // Vitamins and Minerals form section
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    LazyHGrid(rows: [GridItem(.flexible())]) {
+                                        if microNutrientsExpanded {
+                                            ForEach(additionalVitaminTypes, id: \.self) { nutrient in
+                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
+                                                    get: { selectedNutrient == nutrient },
+                                                    set: { _ in selectedNutrient = nutrient }
+                                                ))
+                                                .background(AppTheme.reverse)
+                                            }
+                                            ForEach(mineralTypes, id: \.self) { nutrient in
+                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
+                                                    get: { selectedNutrient == nutrient },
+                                                    set: { _ in selectedNutrient = nutrient }
+                                                ))
+                                            }
+                                        }
+                                    }.frame(height: 150)
+                                }
+                            }
                         }
-                    }
+                        if isInputActive == false {
+                            Button {
+                                notesExpanded.toggle()
+                            } label: {
+                                Image(systemName:"square.and.pencil.circle")
+                                    .resizable()
+                                    .frame(width: 35, height: 35)
+                                    .foregroundStyle(AppTheme.basic)
+                                Text("")
+                                    .foregroundStyle(AppTheme.basic)
+                            }
+                            if isNameTextFieldFocused == false && notesExpanded == true {
+                                TextField("Enter a note...", text: $userNote)
+                                    .focused($isUserNoteFocused)
+                                    .foregroundColor(AppTheme.textColor)
+                                    .font(.title2)
+                                    .fontWeight(.light)
+                                    .multilineTextAlignment(.leading)
+                                    .lineLimit(0)
+                                    .padding(.horizontal)
+                                    .frame(maxWidth:.infinity, maxHeight: .infinity)
+                                    .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
+                            }
+                            if !isUserNoteFocused {
+                                Button {
+                                    self.showImagePicker.toggle()
+                                } label: {
+                                    Image(systemName: "photo.artframe.circle")
+                                        .resizable()
+                                        .frame(width: 35, height: 35)
+                                        .foregroundStyle(AppTheme.textColor)
+                                    Text("")
+                                        .foregroundStyle(AppTheme.textColor)
+                                }
+                            }
+                        }
+                        
+                    }.padding(.horizontal)
                     
-                }.padding(.horizontal)
-                
-                
-                //TODO: view for selected image
-                //                        mealPhoto.map { image in
-                //                            Image(uiImage: image)
-                //                                .resizable()
-                //                        } ?? Image(systemName: "photo.badge.plus.fill")
-                
+                    
+                    //TODO: view for selected image
+                    //                        mealPhoto.map { image in
+                    //                            Image(uiImage: image)
+                    //                                .resizable()
+                    //                        } ?? Image(systemName: "photo.badge.plus.fill")
+                    
+                }
             }
             HStack {
                 if keyBoardOpen() {
@@ -233,12 +237,14 @@ struct AddItemFormView: View {
             }
         }
         .gesture(
-            DragGesture().onChanged { value in
-                // Check if the drag is a downward swipe
-                if value.translation.height > 10 {
-                    // Dismiss the keyboard
-                    focusedField = nil
-                    hideKeyboard()
+                DragGesture().onChanged { value in
+                    if !showingPreviousEntries {
+                    // Check if the drag is a downward swipe
+                    if value.translation.height > 10 {
+                        // Dismiss the keyboard
+                        focusedField = nil
+                        hideKeyboard()
+                    }
                 }
             }
         )
@@ -393,11 +399,10 @@ var body: some View {
             fetchEntries()
         }
 
-        LazyVStack {
-            ForEach(selectedTab == 0 ? entries : favoriteEntries, id: \.self) { entry in
-                Text(entry.name)
-                    .foregroundStyle(AppTheme.textColor)
-            }
+        ScrollView {
+                ForEach(selectedTab == 0 ? entries : favoriteEntries, id: \.self) { entry in
+                    NutritionEntryView(entry: entry)
+                }
         }
     }
     .onChange(of: name) { _ in
@@ -419,12 +424,41 @@ var body: some View {
 }
 
 
-//struct AddItemFormView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AddItemFormView(
-//            selectedDate: Date(),
-//            mealType: .constant(""),
-//            dataStore: nil
-//        )
-//    }
-//}
+struct SimpleNutritionEntry: Identifiable, Hashable {
+    let id: UUID
+    let name: String
+    let calories: Double
+    let protein: Double
+    let carbs: Double
+    let fats: Double
+}
+
+// Mock NutritionDataStore for preview purposes
+class MockNutritionDataStore: NutritionDataStore {
+    func fetchEntries(favorites: Bool, nameSearch: String? = nil) -> [SimpleNutritionEntry] {
+        // Return dummy entries based on the nameSearch parameter
+        let dummyEntries = [
+            SimpleNutritionEntry(id: UUID(), name: "Apple", calories: 95, protein: 0.5, carbs: 25, fats: 0.3),
+            SimpleNutritionEntry(id: UUID(), name: "Banana", calories: 105, protein: 1.3, carbs: 27, fats: 0.3),
+            SimpleNutritionEntry(id: UUID(), name: "Carrot", calories: 25, protein: 0.6, carbs: 6, fats: 0.1),
+            SimpleNutritionEntry(id: UUID(), name: "Date", calories: 20, protein: 0.2, carbs: 5, fats: 0.03)
+        ]
+        
+        if let nameSearch = nameSearch, !nameSearch.isEmpty {
+            return dummyEntries.filter { $0.name.lowercased().contains(nameSearch.lowercased()) }
+        }
+        return dummyEntries
+    }
+}
+
+// Updated AddItemFormView_Previews with a mock data store
+struct AddItemFormView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddItemFormView(
+            isPresented: .constant(true),
+            selectedDate: Date(),
+            mealType: .constant("Breakfast"),
+            dataStore: MockNutritionDataStore(context: PersistenceController(inMemory: false).container.viewContext), onDismiss: {}
+        )
+    }
+}
