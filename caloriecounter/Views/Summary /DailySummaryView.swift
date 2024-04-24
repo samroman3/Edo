@@ -20,45 +20,45 @@ struct DailySummaryView: View {
     }
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
-                    withAnimation {
-                        dailyLogManager.updateSelectedDate(newDate: Date())
-                        dailyLogManager.refreshData {
-                            viewModel.refreshViewData()
-                        }
+            TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
+                withAnimation {
+                    dailyLogManager.updateSelectedDate(newDate: Date())
+                    dailyLogManager.refreshData {
+                        viewModel.refreshViewData()
                     }
-                }, onCalendarTapped: {}, entryType: .summary)
-                .frame(maxWidth: .infinity)
-                
+                }
+            }, onCalendarTapped: {}, entryType: .summary)
+            .frame(maxWidth: .infinity)
+            Divider().background(AppTheme.textColor)
+            VStack(spacing: 10) {
                 HStack {
                     VStack(alignment: .center) {
                         Text("\(Int(viewModel.totalCaloriesConsumed)) calories")
                             .font(.title3)
-                            .foregroundColor(.black)
+                            .foregroundStyle(AppTheme.textColor)
                             .fontWeight(.light)
                         Text(String(format: "%.2f%% of goal", (viewModel.totalCaloriesConsumed / viewModel.calorieGoal) * 100))
                             .font(.subheadline)
-                            .foregroundColor(.black)
+                            .foregroundStyle(AppTheme.textColor)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppTheme.basic)
                     // Card for calorie goal
                     VStack(alignment: .center) {
                         Text("\(Int(viewModel.calorieGoal)) calories")
                             .font(.title3)
                             .fontWeight(.light)
-                            .foregroundStyle(AppTheme.basic)
+                            .foregroundStyle(AppTheme.reverse)
                         Text("goal")
                             .font(.subheadline)
-                            .foregroundColor(AppTheme.basic)
+                            .foregroundColor(AppTheme.reverse)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppTheme.grayExtra)
+                     .background(AppTheme.sageGreen)
+
                 }
-                .edgesIgnoringSafeArea(.top)
+                .edgesIgnoringSafeArea(.all)
                 //Macro percentages
                 Spacer()
                 MacronutrientView(carbGoal: dailyLogManager.carbGoal,
@@ -72,13 +72,13 @@ struct DailySummaryView: View {
                     lunchPercentage: viewModel.lunchPercentage,
                     dinnerPercentage: viewModel.dinnerPercentage,
                     snacksPercentage: viewModel.snacksPercentage
-                )
+                ).padding()
+                Spacer()
                 ForEach(MealType.allCases.filter { $0 != .water }, id: \.self) { mealType in
                     MealSummaryRow(mealType: mealType, calories: Int(dailyLogManager.calories(for: mealType)))
                 }
             }
         }
-        .background(AppTheme.prunes)
         .onAppear {
                    dailyLogManager.refreshData {
                        viewModel.refreshViewData()
@@ -98,7 +98,7 @@ struct DailySummaryView: View {
         private var iconColor: Color {
                switch mealType {
                case .breakfast:
-                   return AppTheme.carrot
+                   return AppTheme.peach
                case .lunch:
                    return AppTheme.lavender
                case .dinner:
@@ -116,11 +116,11 @@ struct DailySummaryView: View {
                     .foregroundColor(iconColor)
                 Text(mealType.rawValue)
                     .font(.headline)
-                    .foregroundColor(AppTheme.milk)
+                    .foregroundColor(AppTheme.textColor)
                 Spacer()
                 Text("\(calories) cal")
                     .font(.subheadline)
-                    .foregroundColor(AppTheme.milk)
+                    .foregroundColor(AppTheme.textColor)
             }
             .padding(.horizontal)
         }

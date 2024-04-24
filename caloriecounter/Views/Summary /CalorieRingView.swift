@@ -43,7 +43,7 @@ struct CalorieRingView: View {
                 RingSegmentView(color: AppTheme.grayDark, startPercentage: totalCaloriesConsumed, endPercentage: 1.0)
             }
         }
-        .frame(width: 200, height: 200) 
+        .frame(width: 150, height: 150) 
     }
 }
 

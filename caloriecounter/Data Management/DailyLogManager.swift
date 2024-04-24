@@ -26,9 +26,9 @@ class DailyLogManager: ObservableObject {
     @Published var snackCalories: Double = 0.0
     @Published var waterIntake: Double = 0.0
  
-    var totalGramsCarbs: Double = 0.0
-    var totalGramsProtein: Double = 0.0
-    var totalGramsFats: Double = 0.0
+    @Published var totalGramsCarbs: Double = 0.0
+    @Published var totalGramsProtein: Double = 0.0
+    @Published var totalGramsFats: Double = 0.0
     
     var totalCaloriesConsumed: Double {
         return breakfastCalories + lunchCalories + dinnerCalories + snackCalories
