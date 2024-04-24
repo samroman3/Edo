@@ -36,7 +36,9 @@ struct DiaryView: View {
                     selectedDate: dailyLogManager.selectedDate,
                     mealType: $mealSelectionViewModel.currentMealType,
                     dataStore: nutritionDataStore,
-                    onDismiss: {dailyLogManager.fetchDailyLogForSelectedDate()})
+                    onDismiss: {
+                        dailyLogManager.fetchDailyLogForSelectedDate()
+                    })
                 
             }
         }

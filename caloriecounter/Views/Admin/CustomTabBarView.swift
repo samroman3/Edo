@@ -26,9 +26,9 @@ struct CustomTabBarView: View {
             
             // Custom Tab Bar
             HStack(spacing: 50) {
-                TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: .blue)
-                TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.lavender)
-                TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.carrot)
+                TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: AppTheme.textColor)
+                TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.carrot)
+                TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.sageGreen)
                 
             }
             .padding(.horizontal)

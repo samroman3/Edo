@@ -12,10 +12,6 @@ struct AddItemFormView: View {
     var selectedDate: Date
     @Binding var mealType: String
     @State private var name: String = ""
-    @State private var calories: String = "0"
-    @State private var protein: String = "0"
-    @State private var carbs: String = "0"
-    @State private var fat: String = "0"
     var dataStore: NutritionDataStore?
     let onDismiss: () -> Void
     
@@ -88,7 +84,6 @@ struct AddItemFormView: View {
                 } else {
                     ScrollView(.vertical){
                     if !isUserNoteFocused {
-                        
                         // Nutrient input section
                         LazyVGrid(columns: columns, spacing: 5) {
                             ForEach(macroNutrientTypes, id: \.self) { nutrient in
@@ -101,13 +96,9 @@ struct AddItemFormView: View {
                                     ),
                                     isInputActive: _isInputActive
                                 )
-                                
                             }
-                        }.frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .onTapGesture(perform: {
-                                isNameTextFieldFocused = false
-                                focusedField = .nutrientInput
-                            })
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     VStack(alignment: .leading, spacing: 10) {
                         Spacer()
@@ -131,14 +122,15 @@ struct AddItemFormView: View {
                                                 AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
                                                     get: { selectedNutrient == nutrient },
                                                     set: { _ in selectedNutrient = nutrient }
-                                                ))
+                                                ),isInputActive: _isInputActive)
                                                 .background(AppTheme.reverse)
                                             }
                                             ForEach(mineralTypes, id: \.self) { nutrient in
                                                 AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
                                                     get: { selectedNutrient == nutrient },
                                                     set: { _ in selectedNutrient = nutrient }
-                                                ))
+                                                ), isInputActive: _isInputActive)
+
                                             }
                                         }
                                     }.frame(height: 150)
@@ -194,7 +186,7 @@ struct AddItemFormView: View {
                 }
             }
             HStack {
-                if keyBoardOpen() {
+                if !isNameTextFieldFocused && !isUserNoteFocused {
                     TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
                         if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
                             self.nutrientValues[selectedNutrient!] = ""
@@ -208,16 +200,17 @@ struct AddItemFormView: View {
                     .padding(.horizontal)
                     .foregroundColor(AppTheme.textColor)
                     Spacer()
+                }
+                if keyBoardOpen() {
                     Button(action: {
-                            hideKeyboard()
-                        }, label: {
-                            Image(systemName: "keyboard.chevron.compact.down")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(AppTheme.textColor)
-                        })
-                        .padding([.vertical])
-                    
+                        hideKeyboard()
+                    }, label: {
+                        Image(systemName: "keyboard.chevron.compact.down")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(AppTheme.textColor)
+                    })
+                    .padding([.vertical])
                 }
             }
             
@@ -225,6 +218,7 @@ struct AddItemFormView: View {
             if !keyBoardOpen() {
                 Button(action: { addFoodItem(nutrientValues)
                     isPresented = false
+                    onDismiss()
                 }) {
                     Text("Add")
                         .font(.title)
@@ -236,18 +230,18 @@ struct AddItemFormView: View {
                 }
             }
         }
-        .gesture(
-                DragGesture().onChanged { value in
-                    if !showingPreviousEntries {
-                    // Check if the drag is a downward swipe
-                    if value.translation.height > 10 {
-                        // Dismiss the keyboard
-                        focusedField = nil
-                        hideKeyboard()
-                    }
-                }
-            }
-        )
+//        .gesture(
+//                DragGesture().onChanged { value in
+//                    if !showingPreviousEntries {
+//                    // Check if the drag is a downward swipe
+//                    if value.translation.height > 10 {
+//                        // Dismiss the keyboard
+//                        focusedField = nil
+//                        hideKeyboard()
+//                    }
+//                }
+//            }
+//        )
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: self.$mealPhoto)
         }
@@ -269,7 +263,7 @@ struct AddItemFormView: View {
         @Binding var value: String?
         @Binding var isSelected: Bool
         @FocusState var isInputActive: Bool
-        
+
         var body: some View {
             Button(action: {
                 isSelected = true
@@ -293,7 +287,6 @@ struct AddItemFormView: View {
                 .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
                 .clipShape(.rect(cornerRadius: 10))
             }
-            .focused($isInputActive)
         }
     }
     
@@ -328,7 +321,6 @@ struct AddItemFormView: View {
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
             }
-            .focused($isInputActive)
         }
     }
 
