@@ -76,9 +76,9 @@ struct WaterIntakeView: View {
                             viewModel.addWater()
                         }
                     }) {
-                        Image(systemName: "plus.circle")
+                        Image(systemName: "plus")
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 25, height: 25)
                             .foregroundColor(AppTheme.textColor)
                     }
                     .padding(.vertical)
@@ -93,7 +93,7 @@ struct WaterIntakeView: View {
                     Image(systemName: viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? "drop.circle.fill" : "drop.circle")
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? .blue : AppTheme.grayLight)
+                        .foregroundColor(viewModel.currentIntake >= (Double(glassIndex)) * viewModel.glassSize ? AppTheme.skyBlue : AppTheme.grayLight)
                         .onTapGesture(perform: {
                             
                         })

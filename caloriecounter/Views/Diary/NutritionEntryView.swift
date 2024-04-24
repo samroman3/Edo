@@ -14,10 +14,30 @@ struct NutritionEntryView: View {
             Text(entry.name)
                 .font(.headline)
             HStack {
-                Text("Calories: \(entry.calories, specifier: "%.1f")")
-                Text("Protein: \(entry.protein, specifier: "%.1f")g")
-                Text("Carbs: \(entry.carbs, specifier: "%.1f")g")
-                Text("Fat: \(entry.fat, specifier: "%.1f")g")
+                HStack{
+                    Text("*")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.sageGreen)
+                    Text("\(entry.calories, specifier: "%.1f") cal")
+                }
+                HStack{
+                    Text("*")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.softPurple)
+                    Text("\(entry.protein, specifier: "%.1f")g prot")
+                }
+                HStack{
+                    Text("*")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.goldenrod)
+                    Text("\(entry.carbs, specifier: "%.1f")g carbs")
+                }
+                HStack{
+                    Text("*")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.carrot)
+                    Text("\(entry.fat, specifier: "%.1f")g fats")
+                }
             }
             .font(.caption)
             .foregroundColor(.primary)

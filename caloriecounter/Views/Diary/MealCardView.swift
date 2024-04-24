@@ -25,11 +25,10 @@ struct MealCardView: View {
                     .foregroundStyle(AppTheme.textColor)
                 Spacer()
                 Button(action: onAddTapped) {
-                    Image(systemName: "plus.circle")
+                    Image(systemName: "plus")
                         .resizable()
-                        .tint(Color.blue)
                         .foregroundStyle(AppTheme.textColor)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 25, height: 25)
                 }
                 .padding(.vertical)
             }
@@ -96,16 +95,63 @@ struct MealCardView: View {
 
 struct ChevronView: View {
     var isExpanded: Binding<Bool>
-    var totalCalories: Int
+    var totalCalories: Double
+    var totalProtein: Double
+    var totalCarbs: Double
+    var totalFats: Double
     
     var body: some View {
         VStack {
             Spacer()
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                 .font(.system(size: 25))
+            HStack(alignment: .firstTextBaseline, spacing: 5){
+                HStack{
+                    Image(systemName: "c.circle")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.reverse)
+                    Text("\(totalCalories, specifier: "%.f")g")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                .background(AppTheme.sageGreen)
+                .cornerRadius(15)
+                HStack{
+                Image(systemName: "p.circle")
+                    .font(.title2)
+                    .foregroundStyle(AppTheme.reverse)
+                Text("\(totalProtein, specifier: "%.f")g")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                .background(AppTheme.softPurple)
+                .cornerRadius(15)
+                HStack{
+                Image(systemName: "c.circle")
+                    .font(.title2)
+                    .foregroundStyle(AppTheme.reverse)
+                Text("\(totalCarbs, specifier: "%.f")g")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                .background(AppTheme.goldenrod)
+                .cornerRadius(15)
+                HStack(){
+                Image(systemName: "f.circle")
+                    .font(.title2)
+                    .foregroundStyle(AppTheme.reverse)
+                Text("\(totalFats, specifier: "%.f")g")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                .background(AppTheme.carrot)
+                .cornerRadius(15)
+            }.padding()
             Spacer()
-            Text("\(totalCalories) calories")
-                .font(.caption)
         }
         .onTapGesture {
             withAnimation {

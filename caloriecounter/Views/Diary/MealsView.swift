@@ -13,9 +13,24 @@ struct MealsView: View {
     @ObservedObject var mealSelectionViewModel: MealSelectionViewModel
     @ObservedObject var nutritionDataStore: NutritionDataStore
     
-    func calculateTotalCalories(entries: [NutritionEntry]) -> Int {
+    func calculateTotalCalories(entries: [NutritionEntry]) -> Double {
         // Logic to calculate total calories
-        entries.reduce(0) { $0 + Int($1.calories) }
+        entries.reduce(0) { $0 + Double($1.calories) }
+    }
+    
+    func calculateTotalCarbs(entries: [NutritionEntry]) -> Double {
+        // Logic to calculate total carbs
+        entries.reduce(0) { $0 + Double($1.carbs) }
+    }
+
+    func calculateTotalFats(entries: [NutritionEntry]) -> Double {
+        // Logic to calculate total fats
+        entries.reduce(0) { $0 + Double($1.fat) }
+    }
+
+    func calculateTotalProtein(entries: [NutritionEntry]) -> Double {
+        // Logic to calculate total protein
+        entries.reduce(0) { $0 + Double($1.protein) }
     }
     
     
@@ -41,7 +56,11 @@ struct MealsView: View {
                             onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
                                 deleteEntry(entry)})
                         if !entries.isEmpty {
-                            ChevronView(isExpanded: isExpandedBinding, totalCalories: calculateTotalCalories(entries: entries))
+                            ChevronView(isExpanded: isExpandedBinding, 
+                            totalCalories: calculateTotalCalories(entries: entries), 
+                                        totalProtein: calculateTotalProtein(entries: entries), 
+                                        totalCarbs: calculateTotalCarbs(entries: entries),
+                            totalFats: calculateTotalFats(entries: entries))
                                 .padding(.horizontal)
                         }
                         Divider().background(AppTheme.textColor)
@@ -60,7 +79,6 @@ struct MealsView: View {
                     }
                     
                 }
-               
             }
         }
     }
@@ -89,10 +107,9 @@ struct MealsView: View {
                         let _ = HapticFeedbackProvider.impact()
                         onAddTapped()
                            }) {
-                        Image(systemName: "plus.circle")
+                        Image(systemName: "plus")
                             .resizable()
-                            .tint(Color.blue)
-                            .frame(width: 30, height: 30)
+                            .frame(width: 25, height: 25)
                             .foregroundStyle(AppTheme.textColor)
                     }
                     .padding(.vertical)

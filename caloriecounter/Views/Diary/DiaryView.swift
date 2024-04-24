@@ -29,7 +29,7 @@ struct DiaryView: View {
                     .frame(maxWidth: .infinity)
             }
             .navigationBarHidden(true)
-            .fullScreenCover(isPresented: $mealSelectionViewModel.showingAddItemForm) {
+            .sheet(isPresented: $mealSelectionViewModel.showingAddItemForm) {
                 
                 AddItemFormView(
                     isPresented: $mealSelectionViewModel.showingAddItemForm,
@@ -38,7 +38,7 @@ struct DiaryView: View {
                     dataStore: nutritionDataStore,
                     onDismiss: {
                         dailyLogManager.fetchDailyLogForSelectedDate()
-                    })
+                    }).presentationBackground(.ultraThinMaterial)
                 
             }
         }

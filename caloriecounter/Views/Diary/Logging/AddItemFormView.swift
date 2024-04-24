@@ -15,7 +15,7 @@ struct AddItemFormView: View {
     var dataStore: NutritionDataStore?
     let onDismiss: () -> Void
     
-    @State private var userNote: String = "Enter a note..."
+    @State private var userNote: String = ""
     @State private var mealPhoto: UIImage?
     @State private var showImagePicker = false
     @State private var microNutrientsExpanded = false
@@ -123,7 +123,6 @@ struct AddItemFormView: View {
                                                     get: { selectedNutrient == nutrient },
                                                     set: { _ in selectedNutrient = nutrient }
                                                 ),isInputActive: _isInputActive)
-                                                .background(AppTheme.reverse)
                                             }
                                             ForEach(mineralTypes, id: \.self) { nutrient in
                                                 AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
@@ -156,6 +155,7 @@ struct AddItemFormView: View {
                                     .fontWeight(.light)
                                     .multilineTextAlignment(.leading)
                                     .lineLimit(0)
+                                    .clipShape(.rect(cornerRadius: 10))
                                     .padding(.horizontal)
                                     .frame(maxWidth:.infinity, maxHeight: .infinity)
                                     .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
@@ -210,7 +210,7 @@ struct AddItemFormView: View {
                             .frame(width: 20, height: 20)
                             .foregroundStyle(AppTheme.textColor)
                     })
-                    .padding([.vertical])
+                    .padding([.vertical,.horizontal])
                 }
             }
             
@@ -220,13 +220,12 @@ struct AddItemFormView: View {
                     isPresented = false
                     onDismiss()
                 }) {
-                    Text("Add")
+                    Text("Add +")
                         .font(.title)
                         .fontWeight(.light)
                         .frame(height: 70)
                         .frame(maxWidth: .infinity)
-                        .background(AppTheme.lavender)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppTheme.textColor)
                 }
             }
         }
@@ -284,7 +283,7 @@ struct AddItemFormView: View {
                 }
                 .padding([.vertical,.horizontal])
                 .frame(minWidth: 150, maxHeight: .infinity)
-                .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
+                .background(isSelected ? AppTheme.textColor : AppTheme.reverse)
                 .clipShape(.rect(cornerRadius: 10))
             }
         }
@@ -316,7 +315,7 @@ struct AddItemFormView: View {
                 }
                 .padding([.vertical,.horizontal],50)
                 .frame(maxWidth: .infinity, maxHeight: 200)
-                .background(isSelected ? AppTheme.basic : AppTheme.grayMiddle)
+                .background(isSelected ? AppTheme.textColor : AppTheme.reverse)
                 .clipShape(.rect(cornerRadius: 20))
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
