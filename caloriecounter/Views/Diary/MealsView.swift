@@ -89,7 +89,6 @@ struct MealsView: View {
             nutritionDataStore.deleteEntry(entry)
             dailyLogManager.fetchDailyLogForSelectedDate()
         }
-       
     }
     
     struct PlaceholderMealView: View {

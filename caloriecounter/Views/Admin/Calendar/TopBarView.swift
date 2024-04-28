@@ -8,6 +8,7 @@ import SwiftUI
 struct TopBarView: View {
     @ObservedObject var dailyLogManager: DailyLogManager
     @ObservedObject var nutritionDataStore: NutritionDataStore
+    @EnvironmentObject var userSettings: UserSettingsManager
     
     @Binding var selectedDate: Date
     
@@ -82,7 +83,7 @@ struct TopBarView: View {
                     }
                 }
                 if !isExpanded && entryType == .diary {
-                    Text("\(dailyLogManager.totalCaloriesConsumed.formattedAsString()) out of \(dailyLogManager.calorieGoal.formattedAsString()) cal")
+                    Text("\(dailyLogManager.totalCaloriesConsumed.formattedAsString()) out of \(userSettings.dailyCaloricNeeds) cal")
                         .font(.headline)
                         .fontWeight(.light)
                         .foregroundStyle(AppTheme.textColor)

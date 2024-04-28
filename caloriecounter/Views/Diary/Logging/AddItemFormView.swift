@@ -311,14 +311,28 @@ struct AddItemFormView: View {
                         .fontWeight(.bold)
                         Text(nutrient.rawValue)
                     }
-                    .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
+                    .foregroundColor(isSelected ? AppTheme.reverse : getNutrientTheme(nutrient))
                 }
                 .padding([.vertical,.horizontal],50)
                 .frame(maxWidth: .infinity, maxHeight: 200)
-                .background(isSelected ? AppTheme.textColor : AppTheme.reverse)
+                .background(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
                 .clipShape(.rect(cornerRadius: 20))
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
+            }
+        }
+        private func getNutrientTheme(_ type: NutrientType) -> Color {
+            switch type {
+            case .calories:
+                return AppTheme.sageGreen
+            case .protein:
+                return AppTheme.lavender
+            case .carbs:
+                return AppTheme.goldenrod
+            case .fats:
+                return AppTheme.carrot
+            default:
+                return AppTheme.basic
             }
         }
     }

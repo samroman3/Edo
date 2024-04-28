@@ -50,7 +50,7 @@ class UserSettingsManager: ObservableObject {
     
     func saveOnboardingCompletedFlag(isCompleted: Bool) {
         NSUbiquitousKeyValueStore.default.set(isCompleted, forKey: "onboardingCompleted")
-        NSUbiquitousKeyValueStore.default.synchronize() // Force sync, though not always necessary
+        NSUbiquitousKeyValueStore.default.synchronize()
     }
 
     func saveConsentFlag(isGiven: Bool) {

@@ -12,6 +12,7 @@ struct DiaryView: View {
     @EnvironmentObject private var dailyLogManager: DailyLogManager
     @EnvironmentObject private var mealSelectionViewModel: MealSelectionViewModel
     @EnvironmentObject private var nutritionDataStore: NutritionDataStore
+    @EnvironmentObject private var userSettingsManager: UserSettingsManager
     @State private var showingAddItemForm = false
     
     
@@ -38,7 +39,7 @@ struct DiaryView: View {
                     dataStore: nutritionDataStore,
                     onDismiss: {
                         dailyLogManager.fetchDailyLogForSelectedDate()
-                    }).presentationBackground(.ultraThinMaterial)
+                    }).presentationBackground(Material.ultraThickMaterial)
                 
             }
         }

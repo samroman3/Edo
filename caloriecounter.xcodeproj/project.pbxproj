@@ -754,9 +754,8 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to scan barcodes.";
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Eazeat requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Eazeat requires access to write workout data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Edo requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Edo requires access to write nutritional data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -792,9 +791,8 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to scan barcodes.";
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Eazeat requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Eazeat requires access to write workout data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "\"Edo requires access to your height, weight, and birthdate to personalize your health recommendations and track your progress.\"";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Edo requires access to write nutritional data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
