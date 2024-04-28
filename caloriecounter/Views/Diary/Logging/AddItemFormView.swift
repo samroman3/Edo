@@ -20,10 +20,14 @@ struct AddItemFormView: View {
     @State private var showImagePicker = false
     @State private var microNutrientsExpanded = false
     @State private var notesExpanded = false
+    @State private var servingExpanded = false
+    @State private var servingSize: Int = 1
+    @State private var selectedUnit: String = "Serving" // Default unit
+    let unitsOfMeasurement = ["Serving", "Grams", "Ounces", "Cups", "Pieces", "Slices"]
     @FocusState private var focusedField: FocusableField?
     
     @State private var showingPreviousEntries = false
-
+    
     enum FocusableField {
         case name, nutrientInput
     }
@@ -57,10 +61,10 @@ struct AddItemFormView: View {
         VStack(spacing: 10) {
             HStack(alignment: .center){
                 Button(action: { isPresented = false }) {
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(AppTheme.textColor)
-                            }.padding([.vertical,.horizontal])
-
+                    Image(systemName: "chevron.down")
+                        .foregroundColor(AppTheme.textColor)
+                }.padding([.vertical,.horizontal])
+                
             }
             HStack {
                 TextField("Enter Name...", text: $name)
@@ -70,7 +74,7 @@ struct AddItemFormView: View {
                     .fontWeight(.light)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                    .onChange(of: isNameTextFieldFocused, 
+                    .onChange(of: isNameTextFieldFocused,
                               perform: { isFocused in
                         showingPreviousEntries = isFocused
                     })
@@ -78,169 +82,192 @@ struct AddItemFormView: View {
                     .foregroundColor(.yellow)
             }
             .padding([.horizontal, .vertical])
-                if showingPreviousEntries {
-                        PreviousEntriesView(name: $name, dataStore: dataStore)
-                    Spacer()
-                } else {
+            if showingPreviousEntries {
+                PreviousEntriesView(name: $name, dataStore: dataStore)
+                Spacer()
+            } else {
+                ZStack(alignment: .bottom){
                     ScrollView(.vertical){
-                    if !isUserNoteFocused {
-                        // Nutrient input section
-                        LazyVGrid(columns: columns, spacing: 5) {
-                            ForEach(macroNutrientTypes, id: \.self) { nutrient in
-                                MacroNutrientInputTile(
-                                    nutrient: nutrient,
-                                    value: $nutrientValues[nutrient],
-                                    isSelected: Binding(
-                                        get: { selectedNutrient == nutrient },
-                                        set: { _ in selectedNutrient = nutrient }
-                                    ),
-                                    isInputActive: _isInputActive
-                                )
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                    VStack(alignment: .leading, spacing: 10) {
-                        Spacer()
                         if !isUserNoteFocused {
-                            Button {
-                                microNutrientsExpanded.toggle()
-                            } label: {
-                                Image(systemName: "chevron.down.circle")
-                                    .resizable()
-                                    .frame(width: 35, height: 35)
-                                    .foregroundStyle(AppTheme.textColor)
-                                Text("More")
-                                    .foregroundStyle(AppTheme.textColor)
-                            }
-                            if microNutrientsExpanded == true && isNameTextFieldFocused == false {
-                                // Vitamins and Minerals form section
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    LazyHGrid(rows: [GridItem(.flexible())]) {
-                                        if microNutrientsExpanded {
-                                            ForEach(additionalVitaminTypes, id: \.self) { nutrient in
-                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                                                    get: { selectedNutrient == nutrient },
-                                                    set: { _ in selectedNutrient = nutrient }
-                                                ),isInputActive: _isInputActive)
-                                            }
-                                            ForEach(mineralTypes, id: \.self) { nutrient in
-                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                                                    get: { selectedNutrient == nutrient },
-                                                    set: { _ in selectedNutrient = nutrient }
-                                                ), isInputActive: _isInputActive)
-
-                                            }
-                                        }
-                                    }.frame(height: 150)
+                            // Nutrient input section
+                            LazyVGrid(columns: columns, spacing: 5) {
+                                ForEach(macroNutrientTypes, id: \.self) { nutrient in
+                                    MacroNutrientInputTile(
+                                        nutrient: nutrient,
+                                        value: $nutrientValues[nutrient],
+                                        isSelected: Binding(
+                                            get: { selectedNutrient == nutrient },
+                                            set: { _ in selectedNutrient = nutrient }
+                                        ),
+                                        isInputActive: _isInputActive
+                                    )
                                 }
                             }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                        if isInputActive == false {
+                        VStack(alignment:.center, spacing: 10) {
                             Button {
-                                notesExpanded.toggle()
+                                self.servingExpanded.toggle()
                             } label: {
-                                Image(systemName:"square.and.pencil.circle")
+                                Image(systemName: "fork.knife.circle")
                                     .resizable()
                                     .frame(width: 35, height: 35)
                                     .foregroundStyle(AppTheme.basic)
-                                Text("")
-                                    .foregroundStyle(AppTheme.basic)
                             }
-                            if isNameTextFieldFocused == false && notesExpanded == true {
-                                TextField("Enter a note...", text: $userNote)
-                                    .focused($isUserNoteFocused)
-                                    .foregroundColor(AppTheme.textColor)
-                                    .font(.title2)
-                                    .fontWeight(.light)
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(0)
-                                    .clipShape(.rect(cornerRadius: 10))
-                                    .padding(.horizontal)
-                                    .frame(maxWidth:.infinity, maxHeight: .infinity)
-                                    .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
+                            
+                            if servingExpanded {
+                                HStack {
+                                    Text("\(servingSize)")
+                                        .fontWeight(.light)
+                                        .frame(width: 50, alignment: .center)
+                                    Picker("Unit", selection: $selectedUnit) {
+                                        ForEach(unitsOfMeasurement, id: \.self) { unit in
+                                            Text(unit).tag(unit)
+                                        }
+                                    }
+                                    .pickerStyle(MenuPickerStyle())
+                                    .tint(AppTheme.textColor)
+                                }
+                                .frame(maxWidth: .infinity)
+                                
+                                Stepper(value: $servingSize, in: 1...10) {
+                                    Text("")
+                                }.labelsHidden()
                             }
-                            if !isUserNoteFocused {
+                            
+                            //                        Spacer()
+                            //                        if !isUserNoteFocused {
+                            //                            Button {
+                            //                                microNutrientsExpanded.toggle()
+                            //                            } label: {
+                            //                                Image(systemName: "chevron.down.circle")
+                            //                                    .resizable()
+                            //                                    .frame(width: 35, height: 35)
+                            //                                    .foregroundStyle(AppTheme.textColor)
+                            //                                Text("More")
+                            //                                    .foregroundStyle(AppTheme.textColor)
+                            //                            }
+                            //                            if microNutrientsExpanded == true && isNameTextFieldFocused == false {
+                            //                                // Vitamins and Minerals form section
+                            //                                ScrollView(.horizontal, showsIndicators: false) {
+                            //                                    LazyHGrid(rows: [GridItem(.flexible())]) {
+                            //                                        if microNutrientsExpanded {
+                            //                                            ForEach(additionalVitaminTypes, id: \.self) { nutrient in
+                            //                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
+                            //                                                    get: { selectedNutrient == nutrient },
+                            //                                                    set: { _ in selectedNutrient = nutrient }
+                            //                                                ),isInputActive: _isInputActive)
+                            //                                            }
+                            //                                            ForEach(mineralTypes, id: \.self) { nutrient in
+                            //                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
+                            //                                                    get: { selectedNutrient == nutrient },
+                            //                                                    set: { _ in selectedNutrient = nutrient }
+                            //                                                ), isInputActive: _isInputActive)
+                            //
+                            //                                            }
+                            //                                        }
+                            //                                    }.frame(height: 150)
+                            //                                }
+                            //                            }
+                            //                        }
+                            if isInputActive == false {
                                 Button {
-                                    self.showImagePicker.toggle()
+                                    notesExpanded.toggle()
                                 } label: {
-                                    Image(systemName: "photo.artframe.circle")
+                                    Image(systemName:"square.and.pencil.circle")
                                         .resizable()
                                         .frame(width: 35, height: 35)
-                                        .foregroundStyle(AppTheme.textColor)
-                                    Text("")
-                                        .foregroundStyle(AppTheme.textColor)
+                                        .foregroundStyle(AppTheme.basic)
                                 }
+                                if isNameTextFieldFocused == false && notesExpanded == true {
+                                    TextField("Enter a note...", text: $userNote)
+                                        .focused($isUserNoteFocused)
+                                        .foregroundColor(AppTheme.textColor)
+                                        .font(.title2)
+                                        .fontWeight(.light)
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(0)
+                                        .padding(.horizontal)
+                                        .frame(maxWidth:.infinity, maxHeight: .infinity)
+                                        .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
+                                        .clipShape(.rect(cornerRadius: 25))
+                                }
+                                if !isUserNoteFocused {
+                                    // View for selected image
+                                    if let image = mealPhoto {
+                                        Button {
+                                            self.showImagePicker.toggle()
+                                        } label: {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: .infinity,maxHeight: 400)
+                                                .padding()
+                                        }.clipShape(.rect(cornerRadius:30))
+                                    } else {
+                                        Button {
+                                            self.showImagePicker.toggle()
+                                        } label: {
+                                            Image(systemName: "photo.artframe.circle")
+                                                .resizable()
+                                                .frame(width: 35, height: 35)
+                                                .foregroundStyle(AppTheme.textColor)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                        }.padding(.horizontal)
+                        Spacer(minLength: 200)
+                    }
+                    VStack{
+                        HStack {
+                            if !isNameTextFieldFocused && !isUserNoteFocused {
+                                TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
+                                    if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
+                                        self.nutrientValues[selectedNutrient!] = ""
+                                    }
+                                })
+                                .keyboardType(.decimalPad)
+                                .focused($isInputActive)
+                                .font(.largeTitle)
+                                .frame(height: 70)
+                                .fontWeight(.light)
+                                .padding(.horizontal)
+                                .foregroundColor(AppTheme.textColor)
+                                Spacer()
+                            }
+                            if keyBoardOpen() {
+                                Button(action: {
+                                    hideKeyboard()
+                                }, label: {
+                                    Image(systemName: "keyboard.chevron.compact.down")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(AppTheme.textColor)
+                                })
+                                .padding([.vertical,.horizontal])
                             }
                         }
                         
-                    }.padding(.horizontal)
-                    
-                    
-                    //TODO: view for selected image
-                    //                        mealPhoto.map { image in
-                    //                            Image(uiImage: image)
-                    //                                .resizable()
-                    //                        } ?? Image(systemName: "photo.badge.plus.fill")
-                    
-                }
-            }
-            HStack {
-                if !isNameTextFieldFocused && !isUserNoteFocused {
-                    TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
-                        if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
-                            self.nutrientValues[selectedNutrient!] = ""
+                        // 'Add' button
+                        if !keyBoardOpen() {
+                            Button(action: { addFoodItem(nutrientValues)
+                                isPresented = false
+                                onDismiss()
+                            }) {
+                                Text("Add +")
+                                    .font(.title)
+                                    .fontWeight(.light)
+                                    .frame(height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(AppTheme.textColor)
+                            }
                         }
-                    })
-                    .keyboardType(.decimalPad)
-                    .focused($isInputActive)
-                    .font(.largeTitle)
-                    .frame(height: 70)
-                    .fontWeight(.light)
-                    .padding(.horizontal)
-                    .foregroundColor(AppTheme.textColor)
-                    Spacer()
-                }
-                if keyBoardOpen() {
-                    Button(action: {
-                        hideKeyboard()
-                    }, label: {
-                        Image(systemName: "keyboard.chevron.compact.down")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(AppTheme.textColor)
-                    })
-                    .padding([.vertical,.horizontal])
-                }
-            }
-            
-            // 'Add' button
-            if !keyBoardOpen() {
-                Button(action: { addFoodItem(nutrientValues)
-                    isPresented = false
-                    onDismiss()
-                }) {
-                    Text("Add +")
-                        .font(.title)
-                        .fontWeight(.light)
-                        .frame(height: 70)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(AppTheme.textColor)
+                    }.background(.ultraThinMaterial)
                 }
             }
         }
-//        .gesture(
-//                DragGesture().onChanged { value in
-//                    if !showingPreviousEntries {
-//                    // Check if the drag is a downward swipe
-//                    if value.translation.height > 10 {
-//                        // Dismiss the keyboard
-//                        focusedField = nil
-//                        hideKeyboard()
-//                    }
-//                }
-//            }
-//        )
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: self.$mealPhoto)
         }
@@ -255,14 +282,14 @@ struct AddItemFormView: View {
             set: { self.nutrientValues[self.selectedNutrient ?? .calories] = $0 }
         )
     }
-
+    
     
     struct AdditionalNutrientInputRow: View {
         let nutrient: NutrientType
         @Binding var value: String?
         @Binding var isSelected: Bool
         @FocusState var isInputActive: Bool
-
+        
         var body: some View {
             Button(action: {
                 isSelected = true
@@ -314,7 +341,7 @@ struct AddItemFormView: View {
                     .foregroundColor(isSelected ? AppTheme.reverse : getNutrientTheme(nutrient))
                 }
                 .padding([.vertical,.horizontal],50)
-                .frame(maxWidth: .infinity, maxHeight: 200)
+                .frame(maxWidth: .infinity, maxHeight: 120)
                 .background(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
                 .clipShape(.rect(cornerRadius: 20))
                 .padding()
@@ -336,7 +363,7 @@ struct AddItemFormView: View {
             }
         }
     }
-
+    
     private func keyBoardOpen() -> Bool {
         return focusedField != nil || isInputActive || isNameTextFieldFocused || isUserNoteFocused
     }
@@ -387,45 +414,46 @@ struct AddItemFormView: View {
 
 
 struct PreviousEntriesView: View {
-@State private var selectedTab: Int = 0
-@Binding var name: String
-@State var dataStore: NutritionDataStore?
-@State private var entries: [NutritionEntry] = []
-@State private var favoriteEntries: [NutritionEntry] = []
-
-var body: some View {
-    VStack {
-        Picker("Filter", selection: $selectedTab) {
-            Text("All").tag(0)
-            Text("Favorites").tag(1)
-        }
-        .pickerStyle(SegmentedPickerStyle())
-        .onChange(of: selectedTab) { _ in
-            fetchEntries()
-        }
-
-        ScrollView {
+    @State private var selectedTab: Int = 0
+    @Binding var name: String
+    @State var dataStore: NutritionDataStore?
+    @State private var entries: [NutritionEntry] = []
+    @State private var favoriteEntries: [NutritionEntry] = []
+    
+    var body: some View {
+        VStack {
+            Picker("Filter", selection: $selectedTab) {
+                Text("All").tag(0)
+                Text("Favorites").tag(1)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: selectedTab) { _ in
+                fetchEntries()
+            }
+            
+            ScrollView {
                 ForEach(selectedTab == 0 ? entries : favoriteEntries, id: \.self) { entry in
                     NutritionEntryView(entry: entry)
+                    
                 }
+            }
+        }
+        .onChange(of: name) { _ in
+            fetchEntries()
+            
+        }
+        .onAppear {
+            fetchEntries()
         }
     }
-    .onChange(of: name) { _ in
-        fetchEntries()
-        
-    }
-    .onAppear {
-        fetchEntries()
-    }
-}
     private func fetchEntries() {
-     if selectedTab == 0 {
-         entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
-         print(entries)
-     } else {
-         favoriteEntries = dataStore?.fetchEntries(favorites: true) ?? []
-     }
- }
+        if selectedTab == 0 {
+            entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
+            print(entries)
+        } else {
+            favoriteEntries = dataStore?.fetchEntries(favorites: true) ?? []
+        }
+    }
 }
 
 

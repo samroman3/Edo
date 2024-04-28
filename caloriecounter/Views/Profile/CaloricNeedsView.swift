@@ -59,7 +59,6 @@ struct CaloricNeedsView: View {
 
                         saveButton
                     }
-                    .background(Color(.systemBackground))
                 } else {
                     Text("Calculating your daily caloric needs...")
                         .font(.headline)
@@ -95,10 +94,10 @@ struct CaloricNeedsView: View {
         }) {
             Text("Save")
                 .foregroundColor(.white)
+                .font(.largeTitle)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.orange)
-                .cornerRadius(8)
+                .background(AppTheme.goldenrod)
         }
     }
 
@@ -107,12 +106,25 @@ struct CaloricNeedsView: View {
             MacroNutrientView(nutrient: "Proteins", value: protein)
             MacroNutrientView(nutrient: "Carbs", value: carbs)
             MacroNutrientView(nutrient: "Fats", value: fat)
-        }
+        }.padding()
     }
     
     struct MacroNutrientView: View {
         var nutrient: String
         var value: Double
+        
+        var background: Color {
+            switch nutrient {
+            case "Proteins":
+                return AppTheme.sageGreen
+            case "Carbs":
+                return AppTheme.lavender
+            case "Fats":
+                return AppTheme.coral
+            default:
+                return AppTheme.basic
+            }
+        }
         
         var body: some View {
             VStack {
@@ -120,7 +132,7 @@ struct CaloricNeedsView: View {
                 Text("\(Int(value))g")
             }
             .padding()
-            .background(Color.secondary.opacity(0.1))
+            .background(background.opacity(0.7))
             .cornerRadius(8)
         }
     }
@@ -210,9 +222,10 @@ struct CaloricNeedsView: View {
     }
 }
 
-
-
-
+#Preview {
+    CaloricNeedsView(onboardEntry: true, onComplete: {})
+        .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
+}
 
 
 

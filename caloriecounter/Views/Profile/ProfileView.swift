@@ -10,7 +10,7 @@ import SwiftUI
 
 struct UserDetailsView: View {
     @EnvironmentObject var userSettingsManager: UserSettingsManager
-
+    
     var body: some View {
         // Customize this view with the user's details
         Text("User details here")
@@ -19,7 +19,7 @@ struct UserDetailsView: View {
 
 struct WeightDynamicsView: View {
     @EnvironmentObject var userSettingsManager: UserSettingsManager
-
+    
     var body: some View {
         // Customize this view with the user's weight dynamics
         Text("Weight dynamics here")
@@ -59,7 +59,7 @@ struct ProfileView: View {
                 VStack {
                     // Weight and Height section
                     Section() {
-                        HStack {
+                        VStack {
                             if isEditMode {
                                 TextField("User Name", text: $userSettingsManager.userName)
                                 profileImageView
@@ -70,13 +70,14 @@ struct ProfileView: View {
                                         .padding()
                                 }
                             }
+                            
                             VStack {
                                 HStack {
                                     Text("Weight:")
                                         .fontWeight(.light)
                                         .font(.title2)
-                                    Text("\(userSettingsManager.weight, specifier: "%.0f") kg")
                                     Spacer()
+                                    Text("\(userSettingsManager.weight, specifier: "%.0f") kg")
                                 }
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 
@@ -84,51 +85,52 @@ struct ProfileView: View {
                                     Text("Height:")
                                         .fontWeight(.light)
                                         .font(.title2)
-                                    Text("\(userSettingsManager.height, specifier: "%.0f") cm")
                                     Spacer()
+                                    Text("\(userSettingsManager.height, specifier: "%.0f") cm")
                                 }
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 HStack {
                                     Text("BMI:")
                                         .fontWeight(.light)
                                         .font(.title2)
-                                    Text("\(userSettingsManager.calculateBMI() ?? 0.0,specifier: "%.0f")")
                                     Spacer()
+                                    Text("\(userSettingsManager.calculateBMI() ?? 0.0,specifier: "%.0f")")
                                 }
                                 
                             }
                         }
                     }
-                            .padding()
-                }                   
+                    .padding()
+                }
                 Divider().background(AppTheme.textColor)
-
-                        // Menu options
-                        if !isEditMode {
-                            Group {
-                                NavigationLink(destination: EmptyView()) {
-                                    ProfileItem(type: .goals)
-                                }
-                                Divider().background(AppTheme.textColor)
-                                NavigationLink(destination: EmptyView()) {
-                                    ProfileItem(type: .notifications)
-                                }
-                                Divider().background(AppTheme.textColor)
-                                NavigationLink(destination: WeightDynamicsView()) {
-                                    ProfileItem(type: .weightDynamics)
-                                }
-                                Divider().background(AppTheme.textColor)
-                                NavigationLink(destination: EmptyView()) {
-                                    ProfileItem(type: .permissions)
-                                }
-                                Divider().background(AppTheme.textColor)
-                            }
+                
+                // Menu options
+                if !isEditMode {
+                    Group {
+                        NavigationLink(destination: EmptyView()) {
+                            ProfileMenuItem(type: .goals)
                         }
-                        Spacer()
+                        Divider().background(AppTheme.textColor)
+                        NavigationLink(destination: WeightDynamicsView()) {
+                            ProfileMenuItem(type: .weightDynamics)
+                        }
+                        Divider().background(AppTheme.textColor)
+                        NavigationLink(destination: EmptyView()) {
+                            ProfileMenuItem(type: .permissions)
+                        }
+                        
+                        Divider().background(AppTheme.textColor)
+                        NavigationLink(destination: EmptyView()) {
+                            ProfileMenuItem(type: .notifications)
+                        }
+                        Divider().background(AppTheme.textColor)
                     }
+                }
+                Spacer()
             }
         }
-
+    }
+    
     private var profileImageView: some View {
         Group {
             if let profileImage = profileImage {
@@ -150,7 +152,7 @@ struct ProfileView: View {
 
 
 
-struct ProfileItem: View {
+struct ProfileMenuItem: View {
     let type: ProfileItemType
     
     var icon: Image {
@@ -173,9 +175,9 @@ struct ProfileItem: View {
         case .weightDynamics:
             AppTheme.lime
         case .permissions:
-            AppTheme.goldenrod
+            AppTheme.coral
         case .goals:
-            AppTheme.carrot
+            AppTheme.goldenrod
         }
     }
     
@@ -198,11 +200,11 @@ struct ProfileItem: View {
                     .font(.largeTitle)
                     .fontWeight(.light)
                 Spacer()
-                    icon
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundStyle(tint)
-                .padding(.vertical)
+                icon
+                    .resizable()
+                    .frame(width: 25, height: 25)
+                    .foregroundStyle(tint)
+                    .padding(.vertical)
             }
             .padding(.horizontal)
             .contentShape(Rectangle())

@@ -75,4 +75,7 @@ struct UserStatsView: View {
 }
 
 
-
+#Preview {
+    UserStatsView(weight: 355, height: 30)
+        .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
+}
