@@ -17,6 +17,7 @@ struct AddItemFormView: View {
     
     @State private var userNote: String = ""
     @State private var mealPhoto: UIImage?
+    @State private var showImageView: Bool = false
     @State private var showImagePicker = false
     @State private var microNutrientsExpanded = false
     @State private var notesExpanded = false
@@ -60,7 +61,10 @@ struct AddItemFormView: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack(alignment: .center){
-                Button(action: { isPresented = false }) {
+                Button(action: {
+                    withAnimation(.bouncy){
+                        isPresented = false
+                    }}) {
                     Image(systemName: "chevron.down")
                         .foregroundColor(AppTheme.textColor)
                 }.padding([.vertical,.horizontal])
@@ -73,7 +77,7 @@ struct AddItemFormView: View {
                         .foregroundColor(AppTheme.textColor)
                         .font(.title3)
                         .fontWeight(.light)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.leading)
                         .padding(.horizontal)
                         .onChange(of: isNameTextFieldFocused,
                                   perform: { isFocused in
@@ -87,12 +91,21 @@ struct AddItemFormView: View {
             if showingPreviousEntries {
                 PreviousEntriesView(name: $name, dataStore: dataStore)
                 Spacer()
+                    Button(action: {
+                        hideKeyboard()
+                    }, label: {
+                        Image(systemName: "keyboard.chevron.compact.down")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(AppTheme.textColor)
+                    })
+                    .padding([.vertical,.horizontal])
             } else {
                 ZStack(alignment: .bottom){
                     ScrollView(.vertical){
                         if !isUserNoteFocused {
                             // Nutrient input section
-                            LazyVGrid(columns: columns, spacing: 5) {
+                            LazyVGrid(columns: columns, spacing: 3) {
                                 ForEach(macroNutrientTypes, id: \.self) { nutrient in
                                     MacroNutrientInputTile(
                                         nutrient: nutrient,
@@ -107,37 +120,7 @@ struct AddItemFormView: View {
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                        VStack(alignment:.center, spacing: 10) {
-                            if !isUserNoteFocused {
-                                Button {
-                                    self.servingExpanded.toggle()
-                                } label: {
-                                    Image(systemName: "fork.knife.circle")
-                                        .resizable()
-                                        .frame(width: 35, height: 35)
-                                        .foregroundStyle(AppTheme.basic)
-                                }
-                                
-                                if servingExpanded {
-                                    HStack {
-                                        Text("\(servingSize)")
-                                            .fontWeight(.light)
-                                            .frame(width: 50, alignment: .center)
-                                        Picker("Unit", selection: $selectedUnit) {
-                                            ForEach(unitsOfMeasurement, id: \.self) { unit in
-                                                Text(unit).tag(unit)
-                                            }
-                                        }
-                                        .pickerStyle(MenuPickerStyle())
-                                        .tint(AppTheme.textColor)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    
-                                    Stepper(value: $servingSize, in: 1...20) {
-                                        Text("")
-                                    }.labelsHidden()
-                                }
-                            }
+                        VStack(alignment:.center, spacing: 20) {
                             //                        Spacer()
                             //                        if !isUserNoteFocused {
                             //                            Button {
@@ -174,6 +157,7 @@ struct AddItemFormView: View {
                             //                            }
                             //                        }
                             if isInputActive == false {
+                                
                                 Button {
                                     notesExpanded.toggle()
                                 } label: {
@@ -195,35 +179,94 @@ struct AddItemFormView: View {
                                         .clipShape(.rect(cornerRadius: 25))
                                 }
                                 if !isUserNoteFocused {
-                                    // View for selected image
-                                    if let image = mealPhoto {
-                                        Button {
-                                            self.showImagePicker.toggle()
-                                        } label: {
-                                            Image(uiImage: image)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(maxWidth: .infinity, maxHeight: 400)
-                                                .clipShape(RoundedRectangle(cornerRadius: 30))
+                                    Button {
+                                        withAnimation(.bouncy){
+                                            self.servingExpanded.toggle()
                                         }
-                                    } else {
-                                        Button {
-                                            self.showImagePicker.toggle()
-                                        } label: {
+                                    } label: {
+                                        Image(systemName: "fork.knife.circle")
+                                            .resizable()
+                                            .frame(width: 35, height: 35)
+                                            .foregroundStyle(AppTheme.basic)
+                                    }
+                                    
+                                    if servingExpanded {
+                                        HStack {
+                                            Text("\(servingSize)")
+                                                .fontWeight(.light)
+                                                .frame(width: 50, alignment: .trailing)
+                                            Picker("Unit", selection: $selectedUnit) {
+                                                ForEach(unitsOfMeasurement, id: \.self) { unit in
+                                                    Text(unit).tag(unit)
+                                                }
+                                            }
+                                            .pickerStyle(MenuPickerStyle())
+                                            .tint(AppTheme.textColor)
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        
+                                        Stepper(value: $servingSize, in: 1...20) {
+                                            Text("")
+                                        }.labelsHidden()
+                                    }
+                                }
+                                    if !isUserNoteFocused {
+                                        // Button to toggle the visibility of the image view
+                                        Button(action: {
+                                            self.showImageView.toggle()
+                                        }) {
                                             Image(systemName: "photo.artframe.circle")
                                                 .resizable()
                                                 .frame(width: 35, height: 35)
                                                 .foregroundStyle(AppTheme.textColor)
                                         }
+                                        if showImageView {
+                                        // View for selected image
+                                        if let image = mealPhoto {
+                                            VStack{
+                                                ZStack(alignment: .topTrailing) {
+                                                    Image(uiImage: image)
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                                    
+                                                    Button(action: {
+                                                        self.showImageView = false
+                                                        self.mealPhoto = nil
+                                                    }) {
+                                                        Image(systemName: "xmark.circle")
+                                                            .foregroundColor(AppTheme.grayDark)
+                                                            .padding()
+                                                            .frame(maxWidth:30, maxHeight: 30)
+                                                            .background(Color.white.opacity(0.9))
+                                                            .clipShape(Circle())
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            Button(action: {
+                                                self.showImagePicker.toggle() // Show the image picker to add an image
+                                            }) {
+                                                HStack {
+                                                    Spacer()
+                                                    Text("+ Add Image")
+                                                        .foregroundColor(AppTheme.textColor)
+                                                    Spacer()
+                                                }
+                                                .padding()
+                                                .background(RoundedRectangle(cornerRadius: 10).stroke(AppTheme.textColor, lineWidth: 2))
+                                            }
+                                        }
+                                    }
                                     }
                                 }
-                            }
                             
                         }.padding(.horizontal)
                         Spacer(minLength: 200)
                     }
 
                     VStack{
+                        
                         HStack {
                             if !isNameTextFieldFocused && !isUserNoteFocused {
                                 TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
@@ -267,20 +310,7 @@ struct AddItemFormView: View {
                                     .foregroundColor(AppTheme.textColor)
                             }
                         }
-                    }.background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .frame(maxHeight: .infinity)
-                            .mask {
-                                LinearGradient(colors: [AppTheme.reverse.opacity(0),
-                                                        AppTheme.reverse.opacity(0.383),
-                                                        AppTheme.reverse.opacity(0.707),
-                                                        AppTheme.reverse.opacity(0.924),
-                                                        AppTheme.reverse],
-                                               startPoint: .top,
-                                               endPoint: .bottom)
-                            }.frame(maxHeight: .infinity)
-                            .edgesIgnoringSafeArea(.bottom))
+                    }.background(.ultraThinMaterial)
                 }
             }
         }
