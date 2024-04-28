@@ -67,19 +67,21 @@ struct AddItemFormView: View {
                 
             }
             HStack {
-                TextField("Enter Name...", text: $name)
-                    .focused($isNameTextFieldFocused)
-                    .foregroundColor(AppTheme.textColor)
-                    .font(.title3)
-                    .fontWeight(.light)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                    .onChange(of: isNameTextFieldFocused,
-                              perform: { isFocused in
-                        showingPreviousEntries = isFocused
-                    })
-                Image(systemName: "star")
-                    .foregroundColor(.yellow)
+                if !isUserNoteFocused {
+                    TextField("Enter Name...", text: $name)
+                        .focused($isNameTextFieldFocused)
+                        .foregroundColor(AppTheme.textColor)
+                        .font(.title3)
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .onChange(of: isNameTextFieldFocused,
+                                  perform: { isFocused in
+                            showingPreviousEntries = isFocused
+                        })
+                    Image(systemName: "star")
+                        .foregroundColor(.yellow)
+                }
             }
             .padding([.horizontal, .vertical])
             if showingPreviousEntries {
@@ -106,35 +108,36 @@ struct AddItemFormView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
                         VStack(alignment:.center, spacing: 10) {
-                            Button {
-                                self.servingExpanded.toggle()
-                            } label: {
-                                Image(systemName: "fork.knife.circle")
-                                    .resizable()
-                                    .frame(width: 35, height: 35)
-                                    .foregroundStyle(AppTheme.basic)
-                            }
-                            
-                            if servingExpanded {
-                                HStack {
-                                    Text("\(servingSize)")
-                                        .fontWeight(.light)
-                                        .frame(width: 50, alignment: .center)
-                                    Picker("Unit", selection: $selectedUnit) {
-                                        ForEach(unitsOfMeasurement, id: \.self) { unit in
-                                            Text(unit).tag(unit)
-                                        }
-                                    }
-                                    .pickerStyle(MenuPickerStyle())
-                                    .tint(AppTheme.textColor)
+                            if !isUserNoteFocused {
+                                Button {
+                                    self.servingExpanded.toggle()
+                                } label: {
+                                    Image(systemName: "fork.knife.circle")
+                                        .resizable()
+                                        .frame(width: 35, height: 35)
+                                        .foregroundStyle(AppTheme.basic)
                                 }
-                                .frame(maxWidth: .infinity)
                                 
-                                Stepper(value: $servingSize, in: 1...10) {
-                                    Text("")
-                                }.labelsHidden()
+                                if servingExpanded {
+                                    HStack {
+                                        Text("\(servingSize)")
+                                            .fontWeight(.light)
+                                            .frame(width: 50, alignment: .center)
+                                        Picker("Unit", selection: $selectedUnit) {
+                                            ForEach(unitsOfMeasurement, id: \.self) { unit in
+                                                Text(unit).tag(unit)
+                                            }
+                                        }
+                                        .pickerStyle(MenuPickerStyle())
+                                        .tint(AppTheme.textColor)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    Stepper(value: $servingSize, in: 1...20) {
+                                        Text("")
+                                    }.labelsHidden()
+                                }
                             }
-                            
                             //                        Spacer()
                             //                        if !isUserNoteFocused {
                             //                            Button {
@@ -186,10 +189,9 @@ struct AddItemFormView: View {
                                         .font(.title2)
                                         .fontWeight(.light)
                                         .multilineTextAlignment(.leading)
-                                        .lineLimit(0)
                                         .padding(.horizontal)
-                                        .frame(maxWidth:.infinity, maxHeight: .infinity)
-                                        .background(AppTheme.reverse.edgesIgnoringSafeArea([.leading,.trailing]))
+                                        .frame(maxWidth: .infinity, maxHeight: isUserNoteFocused ? .infinity : 100)
+                                        .background(AppTheme.reverse.edgesIgnoringSafeArea(.all))
                                         .clipShape(.rect(cornerRadius: 25))
                                 }
                                 if !isUserNoteFocused {
@@ -200,10 +202,10 @@ struct AddItemFormView: View {
                                         } label: {
                                             Image(uiImage: image)
                                                 .resizable()
-                                                .scaledToFit()
-                                                .frame(maxWidth: .infinity,maxHeight: 400)
-                                                .padding()
-                                        }.clipShape(.rect(cornerRadius:30))
+                                                .scaledToFill()
+                                                .frame(maxWidth: .infinity, maxHeight: 400)
+                                                .clipShape(RoundedRectangle(cornerRadius: 30))
+                                        }
                                     } else {
                                         Button {
                                             self.showImagePicker.toggle()
@@ -220,6 +222,7 @@ struct AddItemFormView: View {
                         }.padding(.horizontal)
                         Spacer(minLength: 200)
                     }
+
                     VStack{
                         HStack {
                             if !isNameTextFieldFocused && !isUserNoteFocused {
@@ -264,7 +267,20 @@ struct AddItemFormView: View {
                                     .foregroundColor(AppTheme.textColor)
                             }
                         }
-                    }.background(.ultraThinMaterial)
+                    }.background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .frame(maxHeight: .infinity)
+                            .mask {
+                                LinearGradient(colors: [AppTheme.reverse.opacity(0),
+                                                        AppTheme.reverse.opacity(0.383),
+                                                        AppTheme.reverse.opacity(0.707),
+                                                        AppTheme.reverse.opacity(0.924),
+                                                        AppTheme.reverse],
+                                               startPoint: .top,
+                                               endPoint: .bottom)
+                            }.frame(maxHeight: .infinity)
+                            .edgesIgnoringSafeArea(.bottom))
                 }
             }
         }

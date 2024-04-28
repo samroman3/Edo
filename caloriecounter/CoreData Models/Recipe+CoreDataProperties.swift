@@ -17,10 +17,16 @@ extension Recipe {
     }
 
     @NSManaged public var mealType: String?
-    @NSManaged public var servingSize: String?
+    @NSManaged public var portionSize: String
+    @NSManaged public var portionUnit: String
     @NSManaged public var entries: NSOrderedSet?
     @NSManaged public var favorite: Bool
     @NSManaged public var meal: Meal?
+    @NSManaged public var containsGluten: Bool
+    @NSManaged public var containsDairy: Bool
+    @NSManaged public var containsNuts: Bool
+    @NSManaged public var cookingMethod: String
+    @NSManaged public var preparationTime: String
 
 }
 

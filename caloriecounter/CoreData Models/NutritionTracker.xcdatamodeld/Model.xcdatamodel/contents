@@ -29,6 +29,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="protein" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="servingSize" optional="YES" attributeType="String"/>
+        <attribute name="servingUnit" optional="YES" attributeType="String"/>
         <attribute name="sodium" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="sugars" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="timeStamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -38,9 +39,14 @@
         <relationship name="recipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="entries" inverseEntity="Recipe"/>
     </entity>
     <entity name="Recipe" representedClassName="Recipe" syncable="YES">
+        <attribute name="containsDairy" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="containsGluten" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="containsNuts" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="favorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="mealType" optional="YES" attributeType="String"/>
-        <attribute name="servingSize" optional="YES" attributeType="String"/>
+        <attribute name="portionSize" optional="YES" attributeType="String"/>
+        <attribute name="portionUnit" optional="YES" attributeType="String"/>
+        <attribute name="preperationTime" optional="YES" attributeType="String"/>
         <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NutritionEntry" inverseName="recipe" inverseEntity="NutritionEntry"/>
         <relationship name="meal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="recipes" inverseEntity="Meal"/>
     </entity>

@@ -31,6 +31,7 @@ extension NutritionEntry: Identifiable {
     @NSManaged public var vitamins: [String: Double]
     @NSManaged public var minerals: [String: Double]
     @NSManaged public var servingSize: String
+    @NSManaged public var servingUnit: String
     @NSManaged public var timestamp: Date
     @NSManaged public var favorite: Bool
     @NSManaged public var foodGroup: String
@@ -40,8 +41,6 @@ extension NutritionEntry: Identifiable {
     @NSManaged public var thumbnail: Data
 
     
-    @NSManaged public var portionSize: String
-    @NSManaged public var portionUnit: String
     @NSManaged public var fiber: Double
     @NSManaged public var saturatedFat: Double
     @NSManaged public var transFat: Double
@@ -51,11 +50,6 @@ extension NutritionEntry: Identifiable {
     @NSManaged public var vitaminC: Double
     @NSManaged public var calcium: Double
     @NSManaged public var iron: Double
-    @NSManaged public var containsGluten: Bool
-    @NSManaged public var containsDairy: Bool
-    @NSManaged public var containsNuts: Bool
-    @NSManaged public var cookingMethod: String
-    @NSManaged public var preparationTime: TimeInterval
     @NSManaged public var OFFsource: String
     @NSManaged public var rating: Double
 
