@@ -74,7 +74,7 @@ class NutritionDataStore: ObservableObject {
     }
     
     
-    func addEntryToMealAndDailyLog(date: Date, mealType: String, name: String, calories: Double, protein: Double, carbs: Double, fat: Double, sugars: Double, addedSugars: Double, cholesterol: Double, sodium: Double, vitamins: [String : Double], minerals: [String : Double], servingSize: String, foodGroup: String, userNotes: String, mealPhoto: Data, mealPhotoLink: String) {
+    func addEntryToMealAndDailyLog(date: Date, mealType: String, name: String, calories: Double, protein: Double, carbs: Double, fat: Double, servingUnit: String, servingSize: String, userNotes: String, mealPhoto: Data, mealPhotoLink: String?, isFavorite: Bool) {
         let dailyLog = fetchOrCreateDailyLog(for: date)
         let meal = fetchOrCreateMeal(in: dailyLog, type: mealType)
         
@@ -85,18 +85,12 @@ class NutritionDataStore: ObservableObject {
         newEntry.protein = protein
         newEntry.carbs = carbs
         newEntry.fat = fat
-        newEntry.sugars = sugars
-        newEntry.addedSugars = addedSugars
-        newEntry.cholesterol = cholesterol
-        newEntry.sodium = sodium
-        newEntry.vitamins = vitamins
-        newEntry.minerals = minerals
         newEntry.servingSize = servingSize
-        newEntry.foodGroup = foodGroup
+        newEntry.servingUnit = servingUnit
         newEntry.userNotes = userNotes
         newEntry.mealPhoto = mealPhoto
-        newEntry.mealPhotoLink = mealPhotoLink
-        
+        newEntry.mealPhotoLink = mealPhotoLink ?? ""
+        newEntry.isFavorite = isFavorite
         
 //        newEntry.timestamp = date
         

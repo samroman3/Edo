@@ -28,6 +28,7 @@ struct AddItemFormView: View {
     @FocusState private var focusedField: FocusableField?
     
     @State private var showingPreviousEntries = false
+    @State private var isFavorite: Bool = false // State to track if the item is marked as favorite
     
     enum FocusableField {
         case name, nutrientInput
@@ -37,7 +38,6 @@ struct AddItemFormView: View {
         .calories: "0", .protein: "0", .carbs: "0", .fats: "0", .vitaminA: "0", .vitaminC: "0", .vitaminD: "0", .vitaminE: "0", .vitaminB6: "0", .vitaminB12: "0", .folate: "0", .calcium: "0", .iron: "0", .magnesium: "0", .phosphorus: "0", .potassium: "0", .sodium: "0", .zinc: "0"
     ]
     
-    // Subset for macronutrients
     let macroNutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fats]
     let additionalVitaminTypes: [NutrientType] = [.vitaminA, .vitaminC, .vitaminD, .vitaminE, .vitaminB6, .vitaminB12, .folate]
     let mineralTypes: [NutrientType] = [.calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc]
@@ -49,8 +49,6 @@ struct AddItemFormView: View {
     }
     
     @State private var selectedNutrient: NutrientType?
-    
-    
     
     @FocusState private var isInputActive: Bool
     @FocusState private var isNameTextFieldFocused: Bool
@@ -83,23 +81,36 @@ struct AddItemFormView: View {
                                   perform: { isFocused in
                             showingPreviousEntries = isFocused
                         })
-                    Image(systemName: "star")
-                        .foregroundColor(.yellow)
+                    Button(action: {
+                        withAnimation {
+                            isFavorite.toggle()
+                        }
+                    }) {
+                        Image(systemName: isFavorite ? "star.circle.fill" : "star")
+                            .foregroundColor(isFavorite ? .yellow : .gray)
+                    }
                 }
             }
             .padding([.horizontal, .vertical])
             if showingPreviousEntries {
-                PreviousEntriesView(name: $name, dataStore: dataStore)
+                PreviousEntriesView(name: $name,
+                                    dataStore: dataStore,
+                                    nutrientValues: $nutrientValues,
+                                    userNote: $userNote,
+                                    mealPhoto: $mealPhoto,
+                                    isFavorite: $isFavorite,
+                                    dismiss: { isNameTextFieldFocused.toggle() }
+                )
                 Spacer()
-                    Button(action: {
-                        hideKeyboard()
-                    }, label: {
-                        Image(systemName: "keyboard.chevron.compact.down")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(AppTheme.textColor)
-                    })
-                    .padding([.vertical,.horizontal])
+                Button(action: {
+                    hideKeyboard()
+                }, label: {
+                    Image(systemName: "keyboard.chevron.compact.down")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(AppTheme.textColor)
+                })
+                .padding([.vertical,.horizontal])
             } else {
                 ZStack(alignment: .bottom){
                     ScrollView(.vertical){
@@ -121,41 +132,6 @@ struct AddItemFormView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
                         VStack(alignment:.center, spacing: 20) {
-                            //                        Spacer()
-                            //                        if !isUserNoteFocused {
-                            //                            Button {
-                            //                                microNutrientsExpanded.toggle()
-                            //                            } label: {
-                            //                                Image(systemName: "chevron.down.circle")
-                            //                                    .resizable()
-                            //                                    .frame(width: 35, height: 35)
-                            //                                    .foregroundStyle(AppTheme.textColor)
-                            //                                Text("More")
-                            //                                    .foregroundStyle(AppTheme.textColor)
-                            //                            }
-                            //                            if microNutrientsExpanded == true && isNameTextFieldFocused == false {
-                            //                                // Vitamins and Minerals form section
-                            //                                ScrollView(.horizontal, showsIndicators: false) {
-                            //                                    LazyHGrid(rows: [GridItem(.flexible())]) {
-                            //                                        if microNutrientsExpanded {
-                            //                                            ForEach(additionalVitaminTypes, id: \.self) { nutrient in
-                            //                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                            //                                                    get: { selectedNutrient == nutrient },
-                            //                                                    set: { _ in selectedNutrient = nutrient }
-                            //                                                ),isInputActive: _isInputActive)
-                            //                                            }
-                            //                                            ForEach(mineralTypes, id: \.self) { nutrient in
-                            //                                                AdditionalNutrientInputRow(nutrient: nutrient, value: $nutrientValues[nutrient], isSelected:  Binding(
-                            //                                                    get: { selectedNutrient == nutrient },
-                            //                                                    set: { _ in selectedNutrient = nutrient }
-                            //                                                ), isInputActive: _isInputActive)
-                            //
-                            //                                            }
-                            //                                        }
-                            //                                    }.frame(height: 150)
-                            //                                }
-                            //                            }
-                            //                        }
                             if isInputActive == false {
                                 
                                 Button {
@@ -210,17 +186,17 @@ struct AddItemFormView: View {
                                         }.labelsHidden()
                                     }
                                 }
-                                    if !isUserNoteFocused {
-                                        // Button to toggle the visibility of the image view
-                                        Button(action: {
-                                            self.showImageView.toggle()
-                                        }) {
-                                            Image(systemName: "photo.artframe.circle")
-                                                .resizable()
-                                                .frame(width: 35, height: 35)
-                                                .foregroundStyle(AppTheme.textColor)
-                                        }
-                                        if showImageView {
+                                if !isUserNoteFocused {
+                                    // Button to toggle the visibility of the image view
+                                    Button(action: {
+                                        self.showImageView.toggle()
+                                    }) {
+                                        Image(systemName: "photo.artframe.circle")
+                                            .resizable()
+                                            .frame(width: 35, height: 35)
+                                            .foregroundStyle(AppTheme.textColor)
+                                    }
+                                    if showImageView {
                                         // View for selected image
                                         if let image = mealPhoto {
                                             VStack{
@@ -258,13 +234,13 @@ struct AddItemFormView: View {
                                             }
                                         }
                                     }
-                                    }
                                 }
+                            }
                             
                         }.padding(.horizontal)
                         Spacer(minLength: 200)
                     }
-
+                    
                     VStack{
                         
                         HStack {
@@ -440,17 +416,12 @@ struct AddItemFormView: View {
             protein: Double(nutrientValues[.protein] ?? "0") ?? 0,
             carbs: Double(nutrientValues[.carbs] ?? "0") ?? 0,
             fat: Double(nutrientValues[.fats] ?? "0") ?? 0,
-            sugars: 0,
-            addedSugars: 0,
-            cholesterol: 0,
-            sodium: 0,
-            vitamins: [:],
-            minerals: [:],
-            servingSize: "1 serving",
-            foodGroup: "Grains",
+            servingUnit: selectedUnit,
+            servingSize: String(servingSize),
             userNotes: userNote,
             mealPhoto: mealPhoto?.jpegData(compressionQuality: 1.0) ?? Data(),
-            mealPhotoLink: "" //TODO: generate a link
+            mealPhotoLink: "",  //TODO: generate a link
+            isFavorite: isFavorite
         )
         print("adding food entry: name: \(name), type:\(mealType) , cals:\(caloriesValue), protein:\(proteinValue), carbs: \(carbsValue), fats: \(fatValue)")
         return
@@ -465,6 +436,11 @@ struct PreviousEntriesView: View {
     @State var dataStore: NutritionDataStore?
     @State private var entries: [NutritionEntry] = []
     @State private var favoriteEntries: [NutritionEntry] = []
+    @Binding var nutrientValues: [AddItemFormView.NutrientType: String]
+    @Binding var userNote: String
+    @Binding var mealPhoto: UIImage?
+    @Binding var isFavorite: Bool
+    var dismiss: () -> Void
     
     var body: some View {
         VStack {
@@ -476,32 +452,47 @@ struct PreviousEntriesView: View {
             .onChange(of: selectedTab) { _ in
                 fetchEntries()
             }
-            
             ScrollView {
                 ForEach(selectedTab == 0 ? entries : favoriteEntries, id: \.self) { entry in
-                    NutritionEntryView(entry: entry)
-                    
+                    Button(action: {
+                        populateFields(with: entry)
+                    }) {
+                        NutritionEntryView(entry: entry)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
         .onChange(of: name) { _ in
             fetchEntries()
-            
         }
         .onAppear {
             fetchEntries()
         }
     }
+    
     private func fetchEntries() {
         if selectedTab == 0 {
             entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
-            print(entries)
         } else {
             favoriteEntries = dataStore?.fetchEntries(favorites: true) ?? []
         }
     }
+    
+    private func populateFields(with entry: NutritionEntry) {
+        self.name = entry.name
+        self.isFavorite = entry.isFavorite
+        nutrientValues[.calories] = String(entry.calories)
+        nutrientValues[.protein] = String(entry.protein)
+        nutrientValues[.carbs] = String(entry.carbs)
+        nutrientValues[.fats] = String(entry.fat)
+        userNote = entry.userNotes
+        if let image = UIImage(data: entry.mealPhoto){
+            mealPhoto = image
+        }
+        dismiss()
+    }
 }
-
 
 struct SimpleNutritionEntry: Identifiable, Hashable {
     let id: UUID

@@ -158,13 +158,13 @@
             filePath = "caloriecounter/Data Management/NutritionDataStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "156"
+            endingLineNumber = "156"
             landmarkName = "fetchEntries(favorites:nameSearch:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "F6D60F8E-F7F6-4E7C-909B-5FB3061174F9 - 2b2b7e38fb7c6382"
+                  uuid = "F6D60F8E-F7F6-4E7C-909B-5FB3061174F9 - 2b2b7e38fb7c630e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -174,12 +174,12 @@
                   urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "161"
-                  endingLineNumber = "161"
-                  offsetFromSymbolStart = "1376">
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "1260">
                </Location>
                <Location
-                  uuid = "F6D60F8E-F7F6-4E7C-909B-5FB3061174F9 - 2b2b7e38fb7c63a3"
+                  uuid = "F6D60F8E-F7F6-4E7C-909B-5FB3061174F9 - 2b2b7e38fb7c62ed"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -189,8 +189,8 @@
                   urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "162"
-                  endingLineNumber = "162"
+                  startingLineNumber = "156"
+                  endingLineNumber = "156"
                   offsetFromSymbolStart = "1700">
                </Location>
             </Locations>
