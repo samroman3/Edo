@@ -67,6 +67,8 @@ struct AppTheme {
     static let grayDark = Color(red: 94 / 255, green: 94 / 255, blue: 94 / 255)
     static let grayExtra = Color(red: 28 / 255, green: 28 / 255, blue: 28 / 255)
     
+    static let coolGrey = Color(red: 38 / 255, green: 40 / 255, blue: 44 / 255)
+    
     static let textColor = Color(UIColor { traitCollection in
            switch traitCollection.userInterfaceStyle {
            case .dark:

@@ -193,6 +193,21 @@
                   endingLineNumber = "156"
                   offsetFromSymbolStart = "1700">
                </Location>
+               <Location
+                  uuid = "F6D60F8E-F7F6-4E7C-909B-5FB3061174F9 - 2b2b7e38fb7c62ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "caloriecounter.NutritionDataStore.fetchEntries(favorites: Swift.Bool, nameSearch: Swift.Optional&lt;Swift.String&gt;) -&gt; Swift.Array&lt;caloriecounter.NutritionEntry&gt;"
+                  moduleName = "caloriecounter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/samroman/Documents/caloriecounter/caloriecounter/Data%20Management/NutritionDataStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "156"
+                  endingLineNumber = "156"
+                  offsetFromSymbolStart = "2128">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>

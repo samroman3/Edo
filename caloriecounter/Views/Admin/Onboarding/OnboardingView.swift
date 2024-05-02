@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct OnboardingView: View {
     
@@ -43,47 +44,72 @@ struct OnboardingView: View {
     }
 }
 
+struct AVPlayerControllerRepresented : UIViewControllerRepresentable {
+    var player : AVPlayer
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = false
+        controller.view.backgroundColor = .clear
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        
+    }
+}
 
 struct WelcomeScreen: View {
     var onGetStarted: () -> Void
-    
+    let player = AVPlayer(url:  Bundle.main.url(forResource: "fullloop", withExtension: "mov")!)
     var body: some View {
+        ZStack {
+            AVPlayerControllerRepresented(player: player)
+                .onAppear {
+                    player.play()
+                    player.rate = 2
+                }
+                .scaledToFit()
+                .padding(.leading,10)
+            let _ =  NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { _ in
+                withAnimation(){
+                    player.seek(to: .zero)
+                    player.play()
+                    player.rate = 2
+                }
+            }
         VStack(spacing: 15) {
-                    Image("eaze")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-            HStack{
+            Spacer()
+                HStack{
                     Text("Track meals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
                         .font(AppTheme.bodyFont)
-                        .foregroundColor(AppTheme.textColor)
+                        .foregroundColor(.white)
                     Text("Meet goals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
                         .font(AppTheme.bodyFont)
-                        .foregroundColor(AppTheme.textColor)
-                
-        }
-            Text("Edo")
-                .font(AppTheme.titleFont)
-                .foregroundColor(AppTheme.textColor)
-            Button(action: onGetStarted) {
-                HStack {
-                    Text("Get Started")
-                        .font(AppTheme.titleFont)
-                    Image(systemName: "arrow.right.circle.fill")
+                        .foregroundStyle(.white)
                 }
-                .foregroundColor(.white)
-                .padding()
-                .background(AppTheme.carrot)
-                .cornerRadius(10)
-            }
+                Text("Edo")
+                    .font(AppTheme.titleFont)
+                    .foregroundColor(.white)
+                Button(action: onGetStarted) {
+                    HStack {
+                        Image(systemName: "arrow.right.circle.fill")
+                    }
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(AppTheme.carrot)
+                    .cornerRadius(10)
+                }
+        }.padding(.vertical)
         }
-        .padding()
+        .background(AppTheme.coolGrey)
     }
 }
-import SwiftUI
 
 struct ConsentView: View {
     @Binding var consentGiven: Bool

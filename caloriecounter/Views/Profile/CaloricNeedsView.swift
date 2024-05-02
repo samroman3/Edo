@@ -20,44 +20,60 @@ struct CaloricNeedsView: View {
     let carbsPerCalorie = 4.0
     let fatPerCalorie = 9.0
     
+    @State private var proteinEdit: String = ""
+    @State private var carbsEdit: String = ""
+    @State private var fatEdit: String = ""
+    
     var onboardEntry: Bool 
     
     var onComplete: () -> Void
     
-    
-
+    @State private var isCustomGoal: Bool = false
+    @State private var showPersonalHealthDataFormView = false
     var body: some View {
         NavigationView {
                 if let caloricNeeds = dailyCaloricNeeds {
                     VStack(alignment: .center) {
-                        Text("Your Daily Caloric Needs: \(Int(caloricNeeds)) calories")
-                            .font(.headline)
+                        if !onboardEntry {
+                        Button(action: {
+                                        showPersonalHealthDataFormView = true
+                        }) {
+                                HStack {
+                                    Image(systemName: "person.circle")
+                                        .foregroundColor(.blue)
+                                    Text("View User Health Details")
+                                        .foregroundColor(.blue)
+                                }
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.blue, lineWidth: 2)
+                                )
+                            }
+                                .padding()
+                                .sheet(isPresented: $showPersonalHealthDataFormView) {
+                                    PersonalHealthDataFormView(onBoardEntry: false, onOnboardingComplete: {})
+                                        .environmentObject(userSettingsManager)
+                                }
+                        }
+                        Text("Daily Goals")
+                            .font(.title)
                             .padding(.bottom, 5)
 
-                        Text("This estimate is based on your age, weight, height, sex, and activity level. Adjust your goals to see how they change your macro needs.")
-                            .font(.caption)
-                            .padding(.bottom, 20)
-
+                        Text("Macros are adjusted based on your selected goal to optimize your diet for weight loss, maintenance, muscle gain, or performance. Edit the values below to input custom goals.")
+                            .font(.subheadline)
+                            .padding([.bottom,.horizontal], 20)
+                        Divider().background(AppTheme.textColor)
                         GoalSelectionView(selectedGoal: $selectedGoal)
-                            .frame(width: 300) // Set a fixed width or use geometry reader for responsiveness
                             .onChange(of: selectedGoal) { _ in
                                 calculateCaloricNeeds()
                                 updateMacros(for: caloricNeeds)
                             }
-                        VStack {
-                            Text("Daily Caloric Goal: \(Int(caloricNeeds))")
-                                .font(.title2)
-                                .padding()
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(8)
-                        }
+                        Spacer()
                         macroNutrientsView
-                            .frame(width: 300) // Match width for alignment
-                           Text("Macros are adjusted based on your selected goal to optimize your diet for weight loss, maintenance, muscle gain, or performance.")
-                               .font(.caption)
-                               .padding()
-
+                        Spacer()
                         saveButton
+                            .disabled(!(isCustomGoal || selectedGoal != nil))
                     }
                 } else {
                     Text("Calculating your daily caloric needs...")
@@ -93,47 +109,62 @@ struct CaloricNeedsView: View {
             saveCaloricNeeds()
         }) {
             Text("Save")
-                .foregroundColor(.white)
+                .foregroundStyle(AppTheme.textColor)
                 .font(.largeTitle)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(AppTheme.goldenrod)
-        }
+                .background(AppTheme.milk)
+            
+        }.disabled(!(isCustomGoal || selectedGoal != nil))
     }
-
     private var macroNutrientsView: some View {
-        HStack {
-            MacroNutrientView(nutrient: "Proteins", value: protein)
-            MacroNutrientView(nutrient: "Carbs", value: carbs)
-            MacroNutrientView(nutrient: "Fats", value: fat)
-        }.padding()
+        HStack() {
+            VStack{
+                MacroNutrientView(nutrient: "Calories", value: dailyCaloricNeeds ?? 0, disabled: (!isCustomGoal || selectedGoal == nil))
+                MacroNutrientView(nutrient: "Proteins", value: protein, disabled: (!isCustomGoal || selectedGoal == nil))
+            }
+            VStack{
+                MacroNutrientView(nutrient: "Carbs", value: carbs, disabled:  (!isCustomGoal || selectedGoal == nil))
+                MacroNutrientView(nutrient: "Fats", value: fat, disabled:  (!isCustomGoal || selectedGoal == nil))
+            }
+        }
     }
     
     struct MacroNutrientView: View {
         var nutrient: String
         var value: Double
+        var disabled: Bool
         
         var background: Color {
             switch nutrient {
-            case "Proteins":
+            case "Calories":
                 return AppTheme.sageGreen
-            case "Carbs":
+            case "Proteins":
                 return AppTheme.lavender
+            case "Carbs":
+                return AppTheme.goldenrod
             case "Fats":
                 return AppTheme.coral
             default:
                 return AppTheme.basic
             }
         }
+        let screenWidth = UIScreen.main.bounds.width
         
         var body: some View {
             VStack {
                 Text(nutrient)
+                    .foregroundStyle(AppTheme.textColor)
+                    .fontWeight(.heavy)
                 Text("\(Int(value))g")
+                    .fontWeight(.heavy)
+                    .foregroundStyle(AppTheme.textColor)
+
             }
+            .frame(width:screenWidth / 3, height: screenWidth / 5)
             .padding()
-            .background(background.opacity(0.7))
-            .cornerRadius(8)
+            .background(disabled ? background : .gray)
+            .cornerRadius(5)
         }
     }
     
@@ -171,7 +202,6 @@ struct CaloricNeedsView: View {
         default:
             break
         }
-        
         dailyCaloricNeeds = adjustedCaloricNeeds
         updateMacros(for: adjustedCaloricNeeds)
     }
@@ -202,12 +232,15 @@ struct CaloricNeedsView: View {
             proteinRatio = 0.3
             carbsRatio = 0.4
             fatRatio = 0.3
+        case .custom:
+            break
         }
-        
-        // Calculate macros
-        protein = (caloricNeeds * proteinRatio) / proteinPerCalorie
-        carbs = (caloricNeeds * carbsRatio) / carbsPerCalorie
-        fat = (caloricNeeds * fatRatio) / fatPerCalorie
+        if goal != .custom {
+            // Calculate macros
+            protein = (caloricNeeds * proteinRatio) / proteinPerCalorie
+            carbs = (caloricNeeds * carbsRatio) / carbsPerCalorie
+            fat = (caloricNeeds * fatRatio) / fatPerCalorie
+        }
     }
 
     
@@ -226,6 +259,3 @@ struct CaloricNeedsView: View {
     CaloricNeedsView(onboardEntry: true, onComplete: {})
         .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
 }
-
-
-

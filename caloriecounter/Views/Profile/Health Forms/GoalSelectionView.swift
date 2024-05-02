@@ -15,7 +15,7 @@ struct GoalSelectionView: View {
         case improveFitness = "Improve Fitness"
         case buildMuscle = "Build Muscle"
         case enhancePerformance = "Enhance Performance"
-        
+        case custom = "Custom Goal"
         var description: String {
             switch self {
                 case .loseWeight:
@@ -30,6 +30,8 @@ struct GoalSelectionView: View {
                     return "Targeted towards users interested in muscle gain."
                 case .enhancePerformance:
                     return "For athletes or training for specific sports."
+            case .custom:
+                return "Input custom goals below."
             }
         }
     }
@@ -47,6 +49,7 @@ struct GoalSelectionView: View {
                             .onTapGesture {
                                 withAnimation {
                                     self.selectedGoal = goal
+                                    HapticFeedbackProvider.impact()
                                 }
                             }
                     }
@@ -57,7 +60,7 @@ struct GoalSelectionView: View {
             if let selectedGoal = selectedGoal {
                 Text(selectedGoal.description)
                     .padding()
-                    .transition(.scale)
+                    .transition(.slide)
             }
     }
 }
@@ -67,19 +70,21 @@ struct GoalIconView: View {
     @Binding var isSelected: Bool
 
     var body: some View {
-        VStack {
+        VStack(spacing: 5) {
+            Spacer()
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                 .font(.largeTitle)
-                .foregroundColor(isSelected ? AppTheme.basic : .gray)
+                .foregroundColor(isSelected ? AppTheme.reverse : .gray)
             Text(goal.rawValue)
                 .font(.caption)
                 .multilineTextAlignment(.center)
-                .lineLimit(2, reservesSpace: true)
+                .lineLimit(4, reservesSpace: true)
+                .foregroundStyle(isSelected ? AppTheme.reverse : .gray)
         }
-        .frame(width: 60, height: 60)
+        .frame(width: 70, height: 70)
         .padding()
-        .background(isSelected ? AppTheme.grayLight : .clear)
-        .cornerRadius(30)
+        .background(isSelected ? AppTheme.textColor : .clear)
+        .cornerRadius(5)
         .onTapGesture {
             self.isSelected.toggle()
         }
