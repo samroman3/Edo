@@ -12,12 +12,15 @@ class MealSelectionViewModel: ObservableObject {
     @Published var currentMealType: String = ""
     @Published var showingAddItemForm: Bool = false
     @Published var selectedEntry: NutritionEntry?
+    @Published var selectedMacro: MacroType
+    
     private var dataStore: NutritionDataStore
     private var viewContext: NSManagedObjectContext
 
     init(dataStore: NutritionDataStore, context: NSManagedObjectContext) {
         self.dataStore = dataStore
         self.viewContext = context
+        self.selectedMacro = .calories
     }
 
     func selectMealType(_ mealType: String) {

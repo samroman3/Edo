@@ -8,23 +8,47 @@
 import SwiftUI
 
 struct MacronutrientView: View {
-    var carbGoal: Double
-    var fatGoal: Double
-    var proteinGoal: Double
-    var macros: (carbs: Double, protein: Double, fat: Double)
+    @State var carbGoal: Double
+    @State var fatGoal: Double
+    @State var proteinGoal: Double
+    @State var calorieGoal: Double
+    @State var macros: (calories: Double, carbs: Double, protein: Double, fat: Double)
+    @ObservedObject var summaryViewModel: DailySummaryViewModel
     
     var body: some View {
-        HStack(spacing: 20) {
-            MacronutrientRingView(label: "Carbs", consumed: macros.carbs, goal: carbGoal, color: AppTheme.softPurple)
-            MacronutrientRingView(label: "Protein", consumed: macros.protein, goal: proteinGoal, color: AppTheme.goldenrod)
-            MacronutrientRingView(label: "Fat", consumed: macros.fat, goal: fatGoal, color: AppTheme.carrot)
+        VStack {
+            HStack() {
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .calories , label: "Calories", consumed: macros.calories , goal: calorieGoal, color: AppTheme.sageGreen).onTapGesture {
+                    withAnimation(.bouncy){
+                        summaryViewModel.selectedMacro = .calories
+                    }
+                }
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .protein, label: "Protein", consumed: macros.protein, goal: proteinGoal, color: AppTheme.lavender).onTapGesture {
+                    withAnimation(.bouncy) {
+                        summaryViewModel.selectedMacro = .protein
+                    }
+                }
+            }.padding()
+
+            HStack{
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .carbs, label: "Carbs", consumed: macros.carbs, goal: carbGoal, color: AppTheme.goldenrod).onTapGesture {
+                    withAnimation(.bouncy) {
+                        summaryViewModel.selectedMacro = .carbs
+                    }
+                }
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .fats, label: "Fats", consumed: macros.fat, goal: fatGoal, color: AppTheme.carrot).onTapGesture {
+                    withAnimation(.bouncy) {
+                        summaryViewModel.selectedMacro = .fats
+                    }
+                }
+            }.padding()
+
         }
-        .padding()
-        .cornerRadius(15)
     }
 }
 
 struct MacronutrientRingView: View {
+    var isSelected: Bool
     var label: String
     var consumed: Double
     var goal: Double
@@ -32,16 +56,19 @@ struct MacronutrientRingView: View {
     
     var body: some View {
         VStack {
-            RingView(consumed: consumed, goal: goal, color: color)
+            RingView(consumed: consumed, goal: goal, color: isSelected ? AppTheme.milk : color, isSelected: isSelected)
             // Display the label and the current number/goal below the ring
             VStack {
                 Text(label)
-                    .font(.title3)
-                Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g")
-                    .font(.caption)
-            }.padding(.horizontal)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(AppTheme.textColor)
+                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g").foregroundStyle(AppTheme.textColor))
+            }
                 
-        }
+        }.padding()
+        .background(isSelected ? color.opacity(0.5) : .clear)
+        .clipShape(.rect(cornerRadius: 25))
     }
 }
 
@@ -49,6 +76,7 @@ struct RingView: View {
     var consumed: Double
     var goal: Double
     var color: Color
+    var isSelected: Bool
     
     var percentageFilled: String {
             let percentage = (consumed / goal) * 100
@@ -70,6 +98,7 @@ struct RingView: View {
             // Display the percentage in the middle of the ring
             Text(percentageFilled)
                 .font(.caption)
+                .fontWeight(.bold)
         }
         .frame(width: 80, height: 80)
     }

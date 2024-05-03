@@ -1,5 +1,5 @@
 //
-//  ProgressRingView.swift
+//  MacroRingView.swift
 //  caloriecounter
 //
 //  Created by Sam Roman on 11/24/23.
@@ -7,35 +7,47 @@
 
 import SwiftUI
 
-struct CalorieRingView: View {
-    var breakfastPercentage: Double
-    var lunchPercentage: Double
-    var dinnerPercentage: Double
-    var snacksPercentage: Double
+struct MacroRingView: View {
+    var percentages: (Double,Double,Double,Double)
     var totalCaloriesConsumed: Double {
-        breakfastPercentage + lunchPercentage + dinnerPercentage + snacksPercentage
+        percentages.0 + percentages.1 + percentages.2 + percentages.3
     }
+    
+    func mealColor(mealType: MealType) -> Color {
+           switch mealType {
+           case .breakfast:
+               return AppTheme.peach
+           case .lunch:
+               return AppTheme.dustyRose
+           case .dinner:
+               return AppTheme.dustyBlue
+           case .snack:
+               return AppTheme.teal
+           case .water:
+               return .black
+           }
+       }
     
     var body: some View {
         ZStack {
             // Breakfast
-            if breakfastPercentage > 0 {
-                RingSegmentView(color: AppTheme.carrot, startPercentage: 0, endPercentage: breakfastPercentage)
+            if percentages.0 > 0 {
+                RingSegmentView(color: mealColor(mealType: .breakfast), startPercentage: 0, endPercentage: percentages.0)
             }
             
             // Lunch
-            if lunchPercentage > 0 {
-                RingSegmentView(color: AppTheme.lavender, startPercentage: breakfastPercentage, endPercentage: breakfastPercentage + lunchPercentage)
+            if percentages.1 > 0 {
+                RingSegmentView(color: mealColor(mealType: .lunch), startPercentage: percentages.0, endPercentage: percentages.0 + percentages.1)
             }
             
             // Dinner
-            if dinnerPercentage > 0 {
-                RingSegmentView(color: AppTheme.skyBlue, startPercentage: breakfastPercentage + lunchPercentage, endPercentage: breakfastPercentage + lunchPercentage + dinnerPercentage)
+            if percentages.2 > 0 {
+                RingSegmentView(color: mealColor(mealType: .dinner), startPercentage: percentages.0 + percentages.1, endPercentage: percentages.0 + percentages.1 + percentages.2)
             }
             
             // Snacks
-            if snacksPercentage > 0 {
-                RingSegmentView(color: AppTheme.teal, startPercentage: breakfastPercentage + lunchPercentage + dinnerPercentage, endPercentage: totalCaloriesConsumed)
+            if percentages.3 > 0 {
+                RingSegmentView(color: mealColor(mealType: .snack), startPercentage: percentages.0 + percentages.1 + percentages.2, endPercentage: totalCaloriesConsumed)
             }
             
             // Calories left to consume
@@ -43,7 +55,7 @@ struct CalorieRingView: View {
                 RingSegmentView(color: AppTheme.grayDark, startPercentage: totalCaloriesConsumed, endPercentage: 1.0)
             }
         }
-        .frame(width: 150, height: 150) 
+        .padding()
     }
 }
 

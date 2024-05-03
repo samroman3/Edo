@@ -38,8 +38,8 @@ struct CustomTabBarView: View {
             // Custom Tab Bar
             HStack(spacing: 50) {
                 TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, prevTab: $prevTab, color: AppTheme.sageGreen)
-                TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .statistics, selectedTab: $selectedTab, prevTab: $prevTab, color: AppTheme.lavender)
-                TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .profile, selectedTab: $selectedTab, prevTab: $prevTab, color: AppTheme.carrot)
+                TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .statistics, selectedTab: $selectedTab, prevTab: $prevTab, color: AppTheme.lavender)
+                TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .profile, selectedTab: $selectedTab, prevTab: $prevTab, color: AppTheme.carrot)
                 
             }
             .padding(.horizontal)

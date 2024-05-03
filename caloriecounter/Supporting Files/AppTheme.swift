@@ -60,6 +60,7 @@ struct AppTheme {
     static let skyBlue = Color(red: 135 / 255, green: 206 / 255, blue: 235 / 255)
     static let softPurple = Color(red: 190 / 255, green: 160 / 255, blue: 220 / 255)
     static let peach = Color(red: 255 / 255, green: 229 / 255, blue: 180 / 255)
+    static let dustyGreen = Color(red: 183 / 255, green: 195 / 255, blue: 176 / 255)
     static let dustyBlue = Color.blue.opacity(0.7)
     
     static let grayLight = Color(red: 208 / 255, green: 208 / 255, blue: 208 / 255)

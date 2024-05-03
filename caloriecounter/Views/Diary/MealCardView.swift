@@ -106,50 +106,10 @@ struct ChevronView: View {
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                 .font(.system(size: 25))
             HStack(alignment: .firstTextBaseline, spacing: 5){
-                HStack{
-                    Image(systemName: "c.circle")
-                        .font(.title2)
-                        .foregroundStyle(AppTheme.reverse)
-                    Text("\(totalCalories, specifier: "%.f")g")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.reverse)
-                    Spacer()
-                }
-                .background(AppTheme.sageGreen)
-                .cornerRadius(15)
-                HStack{
-                Image(systemName: "p.circle")
-                    .font(.title2)
-                    .foregroundStyle(AppTheme.reverse)
-                Text("\(totalProtein, specifier: "%.f")g")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.reverse)
-                    Spacer()
-                }
-                .background(AppTheme.softPurple)
-                .cornerRadius(15)
-                HStack{
-                Image(systemName: "c.circle")
-                    .font(.title2)
-                    .foregroundStyle(AppTheme.reverse)
-                Text("\(totalCarbs, specifier: "%.f")g")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.reverse)
-                    Spacer()
-                }
-                .background(AppTheme.goldenrod)
-                .cornerRadius(15)
-                HStack(){
-                Image(systemName: "f.circle")
-                    .font(.title2)
-                    .foregroundStyle(AppTheme.reverse)
-                Text("\(totalFats, specifier: "%.f")g")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.reverse)
-                    Spacer()
-                }
-                .background(AppTheme.carrot)
-                .cornerRadius(15)
+                MacroLabel.shared.labelView(macro: "calories", value:  Text("\(totalCalories, specifier: "%.f")g"))
+                MacroLabel.shared.labelView(macro: "protein", value:  Text("\(totalProtein, specifier: "%.f")g"))
+                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(totalCarbs, specifier: "%.f")g"))
+                MacroLabel.shared.labelView(macro: "fats", value:  Text("\(totalFats, specifier: "%.f")g"))
             }.padding()
             Spacer()
         }
@@ -160,6 +120,76 @@ struct ChevronView: View {
         }
     }
 }
+
+class MacroLabel {
+    static let shared = MacroLabel()
+    
+    func labelView(macro: String, value: Text) -> some View {
+        switch macro {
+        case "calories":
+            return AnyView(
+                HStack {
+                    Image(systemName: "c.circle")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.reverse)
+                    value
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                    .background(AppTheme.sageGreen)
+                    .cornerRadius(15)
+            )
+        case "protein":
+            return AnyView(
+                HStack {
+                    Image(systemName: "p.circle")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.reverse)
+                    value
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                    .background(AppTheme.softPurple)
+                    .cornerRadius(15)
+            )
+        case "carbs":
+            return AnyView(
+                HStack {
+                    Image(systemName: "c.circle")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.reverse)
+                    value
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                    .background(AppTheme.goldenrod)
+                    .cornerRadius(15)
+            )
+        case "fats":
+            return AnyView(
+                HStack {
+                    Image(systemName: "f.circle")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.reverse)
+                    value
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.reverse)
+                    Spacer()
+                }
+                    .background(AppTheme.carrot)
+                    .cornerRadius(15)
+            )
+        default:
+            return AnyView(EmptyView())
+        }
+    }
+}
+
+
+
 
 
 
