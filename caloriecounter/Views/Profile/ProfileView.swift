@@ -44,89 +44,91 @@ struct ProfileView: View {
     }
     
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        isEditMode.toggle()
-                    }) {
-                        Image(systemName: "pencil")
-                            .foregroundStyle(AppTheme.textColor)
-                    }
-                }
-                .padding()
+        NavigationView{
+            ZStack {
                 VStack {
-                    // Weight and Height section
-                    Section() {
-                        VStack {
-                            if isEditMode {
-                                TextField("User Name", text: $userSettingsManager.userName)
-                                profileImageView
-                                Button("Select a profile picture") { showingImagePicker = true }
-                            } else {
-                                HStack {
-                                    profileImageView
-                                        .padding()
-                                }
-                            }
-                            
-                            VStack {
-                                HStack {
-                                    Text("Weight:")
-                                        .fontWeight(.light)
-                                        .font(.title2)
-                                    Spacer()
-                                    Text("\(userSettingsManager.weight, specifier: "%.0f") kg")
-                                }
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                                
-                                HStack {
-                                    Text("Height:")
-                                        .fontWeight(.light)
-                                        .font(.title2)
-                                    Spacer()
-                                    Text("\(userSettingsManager.height, specifier: "%.0f") cm")
-                                }
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                                HStack {
-                                    Text("BMI:")
-                                        .fontWeight(.light)
-                                        .font(.title2)
-                                    Spacer()
-                                    Text("\(userSettingsManager.calculateBMI() ?? 0.0,specifier: "%.0f")")
-                                }
-                                
-                            }
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            isEditMode.toggle()
+                        }) {
+                            Image(systemName: "pencil")
+                                .foregroundStyle(AppTheme.textColor)
                         }
                     }
                     .padding()
-                }
-                Divider().background(AppTheme.textColor)
-                
-                // Menu options
-                if !isEditMode {
-                    Group {
-                        NavigationLink(destination: EmptyView()) {
-                            ProfileMenuItem(type: .goals)
+                    VStack {
+                        // Weight and Height section
+                        Section() {
+                            VStack {
+                                if isEditMode {
+                                    TextField("User Name", text: $userSettingsManager.userName)
+                                    profileImageView
+                                    Button("Select a profile picture") { showingImagePicker = true }
+                                } else {
+                                    HStack {
+                                        profileImageView
+                                            .padding()
+                                    }
+                                }
+                                
+                                VStack {
+                                    HStack {
+                                        Text("Weight:")
+                                            .fontWeight(.light)
+                                            .font(.title2)
+                                        Spacer()
+                                        Text("\(userSettingsManager.weight, specifier: "%.0f") kg")
+                                    }
+                                    .frame(minWidth: 0, maxWidth: .infinity)
+                                    
+                                    HStack {
+                                        Text("Height:")
+                                            .fontWeight(.light)
+                                            .font(.title2)
+                                        Spacer()
+                                        Text("\(userSettingsManager.height, specifier: "%.0f") cm")
+                                    }
+                                    .frame(minWidth: 0, maxWidth: .infinity)
+                                    HStack {
+                                        Text("BMI:")
+                                            .fontWeight(.light)
+                                            .font(.title2)
+                                        Spacer()
+                                        Text("\(userSettingsManager.calculateBMI() ?? 0.0,specifier: "%.0f")")
+                                    }
+                                    
+                                }
+                            }
                         }
-                        Divider().background(AppTheme.textColor)
-                        NavigationLink(destination: WeightDynamicsView()) {
-                            ProfileMenuItem(type: .weightDynamics)
-                        }
-                        Divider().background(AppTheme.textColor)
-                        NavigationLink(destination: EmptyView()) {
-                            ProfileMenuItem(type: .permissions)
-                        }
-                        
-                        Divider().background(AppTheme.textColor)
-                        NavigationLink(destination: EmptyView()) {
-                            ProfileMenuItem(type: .notifications)
-                        }
-                        Divider().background(AppTheme.textColor)
+                        .padding()
                     }
+                    Divider().background(AppTheme.textColor)
+                    
+                    // Menu options
+                    if !isEditMode {
+                        Group {
+                            NavigationLink(destination: EmptyView()) {
+                                ProfileMenuItem(type: .goals)
+                            }
+                            Divider().background(AppTheme.textColor)
+                            NavigationLink(destination: WeightDynamicsView()) {
+                                ProfileMenuItem(type: .weightDynamics)
+                            }
+                            Divider().background(AppTheme.textColor)
+                            NavigationLink(destination: EmptyView()) {
+                                ProfileMenuItem(type: .permissions)
+                            }
+                            
+                            Divider().background(AppTheme.textColor)
+                            NavigationLink(destination: EmptyView()) {
+                                ProfileMenuItem(type: .notifications)
+                            }
+                            Divider().background(AppTheme.textColor)
+                        }
+                    }
+                    Spacer()
                 }
-                Spacer()
             }
         }
     }

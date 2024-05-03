@@ -40,6 +40,7 @@ struct MealsView: View {
     var body: some View {
         VStack {
             ScrollView{
+                Divider().background(AppTheme.textColor)
                 ForEach(MealType.allCases, id: \.self) { mealType in
                     let isExpandedBinding = Binding(
                         get: { self.expandedStates[mealType, default: true] },

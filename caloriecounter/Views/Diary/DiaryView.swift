@@ -19,13 +19,6 @@ struct DiaryView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
-                TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
-                    withAnimation {
-                        dailyLogManager.updateSelectedDate(newDate: Date())
-                    }
-                }, onCalendarTapped: {}, entryType: .diary)
-                .frame(maxWidth: .infinity)
-                Divider().background(AppTheme.textColor)
                 MealsView(dailyLogManager: dailyLogManager, mealSelectionViewModel: mealSelectionViewModel, nutritionDataStore: nutritionDataStore)
                     .frame(maxWidth: .infinity)
             }
@@ -38,7 +31,7 @@ struct DiaryView: View {
                     mealType: $mealSelectionViewModel.currentMealType,
                     dataStore: nutritionDataStore,
                     onDismiss: {
-                        dailyLogManager.fetchDailyLogForSelectedDate()
+                        dailyLogManager.refreshData()
                     }).presentationBackground(Material.ultraThickMaterial)
                 
             }

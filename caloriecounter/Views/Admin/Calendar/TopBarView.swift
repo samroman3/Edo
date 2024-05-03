@@ -15,8 +15,6 @@ struct TopBarView: View {
     var onDateTapped: () -> Void
     var onCalendarTapped: () -> Void
     
-    var entryType: TopBarType
-    
     @State var isExpanded = false
     
     var showMacronutrientWeeklyButton: Bool = false
@@ -81,12 +79,6 @@ struct TopBarView: View {
                         }
                         
                     }
-                }
-                if !isExpanded && entryType == .diary {
-                    Text("\(dailyLogManager.totalCaloriesConsumed.formattedAsString()) out of \(userSettings.dailyCaloricNeeds) cal")
-                        .font(.headline)
-                        .fontWeight(.light)
-                        .foregroundStyle(AppTheme.textColor)
                 }
             }
             .padding(.vertical)

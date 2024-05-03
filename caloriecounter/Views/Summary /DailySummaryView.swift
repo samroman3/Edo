@@ -20,15 +20,6 @@ struct DailySummaryView: View {
     }
     var body: some View {
         ScrollView {
-            TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
-                withAnimation {
-                    dailyLogManager.updateSelectedDate(newDate: Date())
-                    dailyLogManager.refreshData {
-                        viewModel.refreshViewData()
-                    }
-                }
-            }, onCalendarTapped: {}, entryType: .summary)
-            .frame(maxWidth: .infinity)
             Divider().background(AppTheme.textColor)
             VStack(spacing: 10) {
                 HStack {

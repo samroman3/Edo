@@ -275,8 +275,8 @@ struct AddItemFormView: View {
                         // 'Add' button
                         if !keyBoardOpen() {
                             Button(action: { addFoodItem(nutrientValues)
-                                isPresented = false
                                 onDismiss()
+                                isPresented = false
                             }) {
                                 Text("Add +")
                                     .font(.title)
