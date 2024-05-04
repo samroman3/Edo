@@ -18,7 +18,7 @@ struct DailySummaryView: View {
         self.viewModel = viewModel
     }
     var body: some View {
-        ScrollView {
+        VStack {
             Divider().background(AppTheme.textColor)
             VStack(spacing: 10) {
                 //Macro percentages
@@ -28,17 +28,19 @@ struct DailySummaryView: View {
                                   proteinGoal: dailyLogManager.proteinGoal, calorieGoal: dailyLogManager.calorieGoal,
                                   macros: (dailyLogManager.totalCaloriesConsumed,dailyLogManager.totalGramsCarbs, dailyLogManager.totalGramsProtein, dailyLogManager.totalGramsFats), summaryViewModel: viewModel)
                 Divider().background(AppTheme.textColor)
-                Spacer()
-                HStack {
-                    MacroRingView(
-                        percentages: withAnimation {dailyLogManager.getPercentages(for: viewModel.selectedMacro)}
-                    )
-                    VStack{
-                        ForEach(MealType.allCases.filter { $0 != .water }, id: \.self) { mealType in
-                            MealSummaryRow(mealType: mealType, macroType: viewModel.selectedMacro, value: Int(dailyLogManager.totals(for: viewModel.selectedMacro, mealType: mealType)))
+                    HStack{
+                        MacroPieView(
+                            percentages: withAnimation {dailyLogManager.getPercentages(for: viewModel.selectedMacro)}
+                        ).padding(.vertical).frame(maxWidth: 200, maxHeight: .infinity)
+                        
+                        VStack(alignment:.leading){
+                            ForEach(MealType.allCases.filter { $0 != .water }, id: \.self) { mealType in
+                                MealSummaryRow(mealType: mealType, macroType: viewModel.selectedMacro, value: Int(dailyLogManager.totals(for: viewModel.selectedMacro, mealType: mealType)))
+                            }
                         }
-                    }.padding(.horizontal)
-                }
+                    }.background(.ultraThinMaterial)
+                    .clipShape(.rect(cornerRadius: 15))
+                    .padding()
             }
         }
         .onAppear {
@@ -53,6 +55,15 @@ struct DailySummaryView: View {
         }
     }
     
+    private func macroColor() -> Color {
+        switch viewModel.selectedMacro {
+        case .calories: AppTheme.sageGreen
+        case .carbs: AppTheme.goldenrod
+        case .fats: AppTheme.carrot
+        case .protein: AppTheme.lavender
+        }
+    }
+    
     struct MealSummaryRow: View {
         let mealType: MealType
         let macroType: MacroType
@@ -61,13 +72,13 @@ struct DailySummaryView: View {
         private var iconColor: Color {
             switch mealType {
             case .breakfast:
-                return AppTheme.peach
+                return AppTheme.lime
             case .lunch:
-                return AppTheme.dustyRose
+                return .mint
             case .dinner:
-                return AppTheme.dustyBlue
+                return .indigo
             case .snack:
-                return AppTheme.teal
+                return .pink
             case .water:
                 return .black
             }
@@ -86,7 +97,7 @@ struct DailySummaryView: View {
         }
         
         var body: some View {
-            VStack{
+            VStack(alignment:.leading){
                 HStack {
                     Image(systemName: "circle.fill")
                         .foregroundColor(iconColor)

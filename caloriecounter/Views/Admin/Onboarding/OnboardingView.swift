@@ -12,7 +12,6 @@ struct OnboardingView: View {
     
     @State private var showConsent = false
     @State private var consentGiven = false
-    
     var onOnboardingComplete: () -> Void
     
     var body: some View {
@@ -62,7 +61,8 @@ struct AVPlayerControllerRepresented : UIViewControllerRepresentable {
 
 struct WelcomeScreen: View {
     var onGetStarted: () -> Void
-    let player = AVPlayer(url:  Bundle.main.url(forResource: "fullloop", withExtension: "mov")!)
+    var player = AVPlayer(url:  Bundle.main.url(forResource: "trimwhiteedo", withExtension: "mov")!)
+    
     var body: some View {
         ZStack {
             AVPlayerControllerRepresented(player: player)
@@ -70,8 +70,7 @@ struct WelcomeScreen: View {
                     player.play()
                     player.rate = 2
                 }
-                .scaledToFit()
-                .padding(.leading,10)
+                .scaledToFill()
             let _ =  NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { _ in
                 withAnimation(){
                     player.seek(to: .zero)
@@ -85,17 +84,16 @@ struct WelcomeScreen: View {
                     Text("Track meals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
+                        .foregroundStyle(.black)
                         .font(AppTheme.bodyFont)
-                        .foregroundColor(.white)
                     Text("Meet goals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
+                        .foregroundStyle(.black)
                         .font(AppTheme.bodyFont)
-                        .foregroundStyle(.white)
                 }
                 Text("Edo")
                     .font(AppTheme.titleFont)
-                    .foregroundColor(.white)
                 Button(action: onGetStarted) {
                     HStack {
                         Image(systemName: "arrow.right.circle.fill")
@@ -106,8 +104,7 @@ struct WelcomeScreen: View {
                     .cornerRadius(10)
                 }
         }.padding(.vertical)
-        }
-        .background(AppTheme.coolGrey)
+        }.background(.white)
     }
 }
 
@@ -154,7 +151,7 @@ struct ConsentView: View {
 
                     Button("Continue", action: onConsentGiven)
                         .font(.headline)
-                        .foregroundColor(AppTheme.milk)
+                        .foregroundColor(AppTheme.textColor)
                         .padding()
                         .background(AppTheme.carrot)
                         .cornerRadius(10)
@@ -194,7 +191,8 @@ struct OnboardingView_Previews: PreviewProvider {
 
 struct WelcomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeScreen(onGetStarted: {})
+        @Environment(\.colorScheme) var colorScheme
+        WelcomeScreen(onGetStarted: {}, player: AVPlayer(url:  Bundle.main.url(forResource: String(colorScheme == .dark ? "trimblackedo" : "trimwhiteedo"), withExtension: "mov")!))
             .previewLayout(.sizeThatFits)
     }
 }

@@ -79,17 +79,19 @@ struct RingView: View {
     var isSelected: Bool
     
     var percentageFilled: String {
-            let percentage = (consumed / goal) * 100
-            return String(format: "%.1f%%", min(percentage, 100))
+        let percentage = (consumed / goal) * 100
+        return String(format: "%.1f%%", percentage)
     }
     
     var body: some View {
         ZStack {
+            // Base circle
             Circle()
                 .stroke(lineWidth: 8)
                 .opacity(0.5)
-                .foregroundColor(AppTheme.grayDark)
+                .foregroundColor(AppTheme.grayExtra)
             
+            // Filled portion of the circle
             Circle()
                 .trim(from: 0, to: min(CGFloat(consumed / goal), 1))
                 .stroke(color, style: StrokeStyle(lineWidth: 10, lineCap: .round))
@@ -101,8 +103,28 @@ struct RingView: View {
                 .fontWeight(.bold)
         }
         .frame(width: 80, height: 80)
+        .overlay(
+            // Overlay for the portion exceeding 100%
+            GeometryReader { geometry in
+                let radius = geometry.size.width / 2
+                let excessPercentage = min(max((consumed - goal) / goal, 0), 1)
+                
+                // Calculate start and end angles for the excess portion
+                let startAngle = Angle(degrees: 360 * (1 - excessPercentage) - 90)
+                let endAngle = Angle(degrees: 360 * -90)
+                if consumed > goal {
+                    Path { path in
+                        path.addArc(center: CGPoint(x: radius, y: radius), radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+                    }
+                    .trim(from: 0, to: 1)
+                    .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [5]))
+                    .foregroundColor(AppTheme.grayExtra)
+                }
+            }
+        )
     }
 }
+
 //
 //#Preview {
 //    MacronutrientView()
