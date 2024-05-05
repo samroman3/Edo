@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import CoreData
 
+
 class NutritionDataStore: ObservableObject {
     let context: NSManagedObjectContext
     
