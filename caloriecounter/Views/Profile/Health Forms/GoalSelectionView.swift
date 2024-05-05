@@ -12,7 +12,6 @@ struct GoalSelectionView: View {
         case loseWeight = "Lose Weight"
         case maintainWeight = "Maintain Weight"
         case gainWeight = "Gain Weight"
-        case improveFitness = "Improve Fitness"
         case buildMuscle = "Build Muscle"
         case enhancePerformance = "Enhance Performance"
         case custom = "Custom Goal"
@@ -24,14 +23,12 @@ struct GoalSelectionView: View {
                     return "Ideal for users who want to keep their current weight."
                 case .gainWeight:
                     return "Suitable for those looking to increase their weight."
-                case .improveFitness:
-                    return "Focus on general health improvements."
                 case .buildMuscle:
                     return "Targeted towards users interested in muscle gain."
                 case .enhancePerformance:
                     return "For athletes or training for specific sports."
             case .custom:
-                return "Input custom goals below."
+                return ""
             }
         }
     }
@@ -39,31 +36,38 @@ struct GoalSelectionView: View {
     @Binding var selectedGoal: Goal?
     
     var body: some View {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(Goal.allCases, id: \.self) { goal in
-                        GoalIconView(goal: goal, isSelected:  Binding(
-                            get: { self.selectedGoal == goal },
-                            set: { if $0 { self.selectedGoal = goal } }
-                        ))
-                            .onTapGesture {
-                                withAnimation {
-                                    self.selectedGoal = goal
-                                    HapticFeedbackProvider.impact()
-                                }
-                            }
-                    }
-                }
-            }
-            .padding()
-            
-            if let selectedGoal = selectedGoal {
-                Text(selectedGoal.description)
-                    .padding()
-                    .transition(.slide)
-            }
-    }
-}
+           ScrollViewReader { scrollProxy in
+               ScrollView(.horizontal, showsIndicators: false) {
+                   Section {
+                       HStack {
+                           ForEach(Goal.allCases, id: \.self) { goal in
+                               GoalIconView(goal: goal, isSelected: Binding(
+                                   get: { self.selectedGoal == goal },
+                                   set: { if $0 { self.selectedGoal = goal } }
+                               ))
+                               .id(goal)  // Assign an ID to each goal for the ScrollViewReader
+                               .onTapGesture {
+                                   withAnimation {
+                                       self.selectedGoal = goal
+                                       HapticFeedbackProvider.impact()
+                                   }
+                               }
+                           }
+                       }
+                   }
+                   .padding()
+               }
+               .background(Material.ultraThick)
+               .onChange(of: selectedGoal) { newValue in
+                               if newValue == .custom {
+                                   withAnimation {
+                                       scrollProxy.scrollTo(Goal.custom, anchor: .trailing)
+                                   }
+                               }
+                           }
+           }
+       }
+   }
 
 struct GoalIconView: View {
     let goal: GoalSelectionView.Goal
@@ -72,7 +76,7 @@ struct GoalIconView: View {
     var body: some View {
         VStack(spacing: 5) {
             Spacer()
-            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                 .font(.largeTitle)
                 .foregroundColor(isSelected ? AppTheme.reverse : .gray)
             Text(goal.rawValue)

@@ -92,10 +92,6 @@ struct TopBarView: View {
     }
 }
 
-
-
-
-
 //#Preview {
 //    TopBarView()
 //}

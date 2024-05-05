@@ -36,6 +36,8 @@ struct ProfileView: View {
     @State private var inputImage: UIImage?
     @State private var editingUserName: String = ""
     
+    @State var showCaloricNeedsView = false
+    
     private var profileImage: Image? {
         if let profileImage = userSettingsManager.profileImage{
             return Image(uiImage: profileImage)
@@ -108,8 +110,8 @@ struct ProfileView: View {
                     // Menu options
                     if !isEditMode {
                         Group {
-                            NavigationLink(destination: EmptyView()) {
-                                ProfileMenuItem(type: .goals)
+                            ProfileMenuItem(type: .goals).onTapGesture {
+                                self.showCaloricNeedsView.toggle()
                             }
                             Divider().background(AppTheme.textColor)
                             NavigationLink(destination: WeightDynamicsView()) {
@@ -130,6 +132,9 @@ struct ProfileView: View {
                     Spacer()
                 }
             }
+        }
+        .sheet(isPresented: $showCaloricNeedsView) {
+            CaloricNeedsView(onboardEntry: false, onComplete: {})
         }
     }
     

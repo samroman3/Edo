@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum NutrientType: String, CaseIterable {
+    case calories, protein, carbs, fats,
+         vitaminA, vitaminC, vitaminD, vitaminE, vitaminB6, vitaminB12, folate,
+         calcium, iron, magnesium, phosphorus, potassium, sodium, zinc
+}
+
 struct AddItemFormView: View {
     @Binding var isPresented: Bool
     var selectedDate: Date
@@ -41,12 +47,7 @@ struct AddItemFormView: View {
     let macroNutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fats]
     let additionalVitaminTypes: [NutrientType] = [.vitaminA, .vitaminC, .vitaminD, .vitaminE, .vitaminB6, .vitaminB12, .folate]
     let mineralTypes: [NutrientType] = [.calcium, .iron, .magnesium, .phosphorus, .potassium, .sodium, .zinc]
-    
-    enum NutrientType: String, CaseIterable {
-        case calories, protein, carbs, fats,
-             vitaminA, vitaminC, vitaminD, vitaminE, vitaminB6, vitaminB12, folate,
-             calcium, iron, magnesium, phosphorus, potassium, sodium, zinc
-    }
+
     
     @State private var selectedNutrient: NutrientType?
     
@@ -94,7 +95,7 @@ struct AddItemFormView: View {
             .padding([.horizontal, .vertical])
             if showingPreviousEntries {
                 PreviousEntriesView(name: $name,
-                                    dataStore: dataStore,
+                                    dataStore: dataStore as? NutritionDataStore,
                                     nutrientValues: $nutrientValues,
                                     userNote: $userNote,
                                     mealPhoto: $mealPhoto,
@@ -119,7 +120,7 @@ struct AddItemFormView: View {
                             LazyVGrid(columns: columns, spacing: 3) {
                                 ForEach(macroNutrientTypes, id: \.self) { nutrient in
                                     MacroNutrientInputTile(
-                                        nutrient: nutrient,
+                                        nutrient: nutrient, addItemEntry: true,
                                         value: $nutrientValues[nutrient],
                                         isSelected: Binding(
                                             get: { selectedNutrient == nutrient },
@@ -338,54 +339,6 @@ struct AddItemFormView: View {
         }
     }
     
-    struct MacroNutrientInputTile: View {
-        let nutrient: NutrientType
-        @Binding var value: String?
-        @Binding var isSelected: Bool
-        @FocusState var isInputActive: Bool
-        
-        var body: some View {
-            Button(action: {
-                isSelected = true
-                isInputActive = true
-            }) {
-                HStack(alignment: .center) {
-                    VStack(alignment: .center) {
-                        HStack {
-                            Text(value ?? "")
-                            Text("g")
-                        }
-                        .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.basic)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        Text(nutrient.rawValue)
-                    }
-                    .foregroundColor(isSelected ? AppTheme.reverse : getNutrientTheme(nutrient))
-                }
-                .padding([.vertical,.horizontal],50)
-                .frame(maxWidth: .infinity, maxHeight: 120)
-                .background(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
-                .clipShape(.rect(cornerRadius: 20))
-                .padding()
-                .shadow(radius: 4, x: 2, y: 4)
-            }
-        }
-        private func getNutrientTheme(_ type: NutrientType) -> Color {
-            switch type {
-            case .calories:
-                return AppTheme.sageGreen
-            case .protein:
-                return AppTheme.lavender
-            case .carbs:
-                return AppTheme.goldenrod
-            case .fats:
-                return AppTheme.carrot
-            default:
-                return AppTheme.basic
-            }
-        }
-    }
-    
     private func keyBoardOpen() -> Bool {
         return focusedField != nil || isInputActive || isNameTextFieldFocused || isUserNoteFocused
     }
@@ -407,22 +360,21 @@ struct AddItemFormView: View {
             print("invalid input")
             return
         }
-        
-        dataStore?.addEntryToMealAndDailyLog(
-            date: selectedDate,
-            mealType: mealType,
-            name: name,
-            calories: Double(nutrientValues[.calories] ?? "0") ?? 0,
-            protein: Double(nutrientValues[.protein] ?? "0") ?? 0,
-            carbs: Double(nutrientValues[.carbs] ?? "0") ?? 0,
-            fat: Double(nutrientValues[.fats] ?? "0") ?? 0,
-            servingUnit: selectedUnit,
-            servingSize: String(servingSize),
-            userNotes: userNote,
-            mealPhoto: mealPhoto?.jpegData(compressionQuality: 1.0) ?? Data(),
-            mealPhotoLink: "",  //TODO: generate a link
-            isFavorite: isFavorite
-        )
+            dataStore?.addEntryToMealAndDailyLog(
+                date: selectedDate,
+                mealType: mealType,
+                name: name,
+                calories: Double(nutrientValues[.calories] ?? "0") ?? 0,
+                protein: Double(nutrientValues[.protein] ?? "0") ?? 0,
+                carbs: Double(nutrientValues[.carbs] ?? "0") ?? 0,
+                fat: Double(nutrientValues[.fats] ?? "0") ?? 0,
+                servingUnit: selectedUnit,
+                servingSize: String(servingSize),
+                userNotes: userNote,
+                mealPhoto: mealPhoto?.jpegData(compressionQuality: 1.0) ?? Data(),
+                mealPhotoLink: "",  //TODO: generate a link
+                isFavorite: isFavorite
+            )
         print("adding food entry: name: \(name), type:\(mealType) , cals:\(caloriesValue), protein:\(proteinValue), carbs: \(carbsValue), fats: \(fatValue)")
         return
     }
@@ -436,7 +388,7 @@ struct PreviousEntriesView: View {
     @State var dataStore: NutritionDataStore?
     @State private var entries: [NutritionEntry] = []
     @State private var favoriteEntries: [NutritionEntry] = []
-    @Binding var nutrientValues: [AddItemFormView.NutrientType: String]
+    @Binding var nutrientValues: [NutrientType: String]
     @Binding var userNote: String
     @Binding var mealPhoto: UIImage?
     @Binding var isFavorite: Bool
@@ -494,30 +446,81 @@ struct PreviousEntriesView: View {
     }
 }
 
-struct SimpleNutritionEntry: Identifiable, Hashable {
-    let id: UUID
-    let name: String
-    let calories: Double
-    let protein: Double
-    let carbs: Double
-    let fats: Double
-}
-
-// Mock NutritionDataStore for preview purposes
-class MockNutritionDataStore: NutritionDataStore {
-    func fetchEntries(favorites: Bool, nameSearch: String? = nil) -> [SimpleNutritionEntry] {
-        // Return dummy entries based on the nameSearch parameter
-        let dummyEntries = [
-            SimpleNutritionEntry(id: UUID(), name: "Apple", calories: 95, protein: 0.5, carbs: 25, fats: 0.3),
-            SimpleNutritionEntry(id: UUID(), name: "Banana", calories: 105, protein: 1.3, carbs: 27, fats: 0.3),
-            SimpleNutritionEntry(id: UUID(), name: "Carrot", calories: 25, protein: 0.6, carbs: 6, fats: 0.1),
-            SimpleNutritionEntry(id: UUID(), name: "Date", calories: 20, protein: 0.2, carbs: 5, fats: 0.03)
-        ]
-        
-        if let nameSearch = nameSearch, !nameSearch.isEmpty {
-            return dummyEntries.filter { $0.name.lowercased().contains(nameSearch.lowercased()) }
+struct MacroNutrientInputTile: View {
+    let nutrient: NutrientType
+    var addItemEntry: Bool
+    @Binding var value: String?
+    @Binding var isSelected: Bool
+    @FocusState var isInputActive: Bool
+    
+    // Define maximum values for each nutrient for the purpose of the animation
+    private let maxValues: [NutrientType: Double] = [
+        .calories: 2000, .protein: 200, .carbs: 300, .fats: 100
+    ]
+    
+    // Calculate the current percentage of the nutrient value
+    private var nutrientPercent: Double {
+        guard let currentValue = Double(value ?? "0"), let maxValue = maxValues[nutrient] else {
+            return 0
         }
-        return dummyEntries
+        return (currentValue / maxValue) * 100
+    }
+    
+    @State private var waveOffset = Angle(degrees: 0)
+    
+    var body: some View {
+        Button(action: {
+            isSelected = true
+            isInputActive = true
+        }) {
+            ZStack {
+                HStack(alignment: .center) {
+                    VStack(alignment: .center) {
+                        HStack {
+                            Text(value ?? "")
+                            Text("g")
+                        }
+                        .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.basic)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        Text(nutrient.rawValue)
+                    }
+                    .foregroundColor(isSelected ? AppTheme.reverse : getNutrientTheme(nutrient))
+                }
+                .padding([.vertical], 50)
+                .frame(maxWidth: .infinity, maxHeight: 120)
+                .background(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
+                .clipShape(.rect(cornerRadius: 20))
+                .padding()
+                .shadow(radius: 4, x: 2, y: 4)
+            }.background(
+                withAnimation(.spring){
+                    Wave(offSet: Angle(degrees: waveOffset.degrees), percent: nutrientPercent)
+                        .fill(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
+                        .clipShape(Rectangle())
+                        .padding(.bottom, 5)
+                })
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                self.waveOffset = Angle(degrees: 360)
+            }
+        }
+    }
+    
+    private func getNutrientTheme(_ type: NutrientType) -> Color {
+        switch type {
+        case .calories:
+            return AppTheme.sageGreen
+        case .protein:
+            return AppTheme.lavender
+        case .carbs:
+            return AppTheme.goldenrod
+        case .fats:
+            return AppTheme.carrot
+        default:
+            return AppTheme.basic
+        }
     }
 }
 
@@ -528,7 +531,7 @@ struct AddItemFormView_Previews: PreviewProvider {
             isPresented: .constant(true),
             selectedDate: Date(),
             mealType: .constant("Breakfast"),
-            dataStore: MockNutritionDataStore(context: PersistenceController(inMemory: false).container.viewContext), onDismiss: {}
+            dataStore: MockNutritionDataStore(context: PersistenceController.init(inMemory: false).container.viewContext), onDismiss: {}
         )
     }
 }
