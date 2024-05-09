@@ -46,6 +46,15 @@ struct AppTheme {
                 return .white
             }
         })
+    static let dynamicGray = Color(UIColor { traitCollection in
+        // Adjust colors for light and dark mode
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 140 / 255, green: 140 / 255, blue: 140 / 255, alpha: 1) //greyLight
+        default:
+            return UIColor(red: 28 / 255, green: 28 / 255, blue: 28 / 255, alpha: 1) //greyExtra
+        }
+    })
     
     static let milk = Color(red: 247 / 255, green: 247 / 255, blue: 247 / 255)
     static let carrot = Color(red: 255 / 255, green: 88 / 255, blue: 51 / 255)
@@ -67,6 +76,8 @@ struct AppTheme {
     static let grayMiddle = Color(red: 140 / 255, green: 140 / 255, blue: 140 / 255)
     static let grayDark = Color(red: 94 / 255, green: 94 / 255, blue: 94 / 255)
     static let grayExtra = Color(red: 28 / 255, green: 28 / 255, blue: 28 / 255)
+    
+    
     
     static let coolGrey = Color(red: 38 / 255, green: 40 / 255, blue: 44 / 255)
     

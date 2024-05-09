@@ -63,7 +63,7 @@ struct MacronutrientRingView: View {
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundStyle(AppTheme.textColor)
-                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g").foregroundStyle(AppTheme.textColor))
+                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g"))
             }
                 
         }.padding()
@@ -89,7 +89,7 @@ struct RingView: View {
             Circle()
                 .stroke(lineWidth: 8)
                 .opacity(0.5)
-                .foregroundColor(AppTheme.grayExtra)
+                .foregroundColor(AppTheme.dynamicGray)
             
             // Filled portion of the circle
             Circle()
