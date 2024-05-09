@@ -5,27 +5,6 @@
 //  Created by Sam Roman on 12/28/23.
 //
 
-
-import SwiftUI
-
-struct UserDetailsView: View {
-    @EnvironmentObject var userSettingsManager: UserSettingsManager
-    
-    var body: some View {
-        // Customize this view with the user's details
-        Text("User details here")
-    }
-}
-
-struct WeightDynamicsView: View {
-    @EnvironmentObject var userSettingsManager: UserSettingsManager
-    
-    var body: some View {
-        // Customize this view with the user's weight dynamics
-        Text("Weight dynamics here")
-    }
-}
-
 import SwiftUI
 
 struct ProfileView: View {
@@ -113,19 +92,19 @@ struct ProfileView: View {
                             ProfileMenuItem(type: .goals).onTapGesture {
                                 self.showCaloricNeedsView.toggle()
                             }
-                            Divider().background(AppTheme.textColor)
-                            NavigationLink(destination: WeightDynamicsView()) {
-                                ProfileMenuItem(type: .weightDynamics)
-                            }
+//                            Divider().background(AppTheme.textColor)
+//                            NavigationLink(destination: WeightDynamicsView()) {
+//                                ProfileMenuItem(type: .weightDynamics)
+//                            }
                             Divider().background(AppTheme.textColor)
                             NavigationLink(destination: EmptyView()) {
                                 ProfileMenuItem(type: .permissions)
                             }
                             
-                            Divider().background(AppTheme.textColor)
-                            NavigationLink(destination: EmptyView()) {
-                                ProfileMenuItem(type: .notifications)
-                            }
+//                            Divider().background(AppTheme.textColor)
+//                            NavigationLink(destination: EmptyView()) {
+//                                ProfileMenuItem(type: .notifications)
+//                            }
                             Divider().background(AppTheme.textColor)
                         }
                     }

@@ -32,6 +32,7 @@ extension UserSettings {
     @NSManaged public var userEmail: String?
     @NSManaged public var userName: String?
     @NSManaged public var weight: Double
+    @NSManaged public var dietaryPlan: String?
 
 
 static var needsOnboarding: Bool {

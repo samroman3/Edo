@@ -18,17 +18,17 @@ struct GoalSelectionView: View {
         var description: String {
             switch self {
                 case .loseWeight:
-                    return "For users aiming to reduce their body weight."
+                    return "Lose Weight"
                 case .maintainWeight:
-                    return "Ideal for users who want to keep their current weight."
+                    return "Maintain Weight"
                 case .gainWeight:
-                    return "Suitable for those looking to increase their weight."
+                    return "Gain Weight"
                 case .buildMuscle:
-                    return "Targeted towards users interested in muscle gain."
+                    return "Build Muscle"
                 case .enhancePerformance:
-                    return "For athletes or training for specific sports."
+                    return "Enhance Performance"
             case .custom:
-                return ""
+                return "Custom Goal"
             }
         }
     }

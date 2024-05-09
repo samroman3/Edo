@@ -4,7 +4,7 @@
 //
 //  Created by Sam Roman on 12/14/23.
 //
-
+//
 import SwiftUI
 
 struct PersonalHealthDataFormView: View {
@@ -19,18 +19,15 @@ struct PersonalHealthDataFormView: View {
     @State private var feet = 0
     @State private var inches = 0
     @State private var formError: String? = nil
-    
+
     @State private var showCaloricNeedsView = false
     @State private var showHealthKitConsent = false
-    
-    
+
     var onBoardEntry: Bool
-    
     var onOnboardingComplete: () -> Void
 
-    
     var body: some View {
-        NavigationView{
+        NavigationView {
             VStack {
                 Button(action: {
                     showHealthKitConsent = true
@@ -46,12 +43,12 @@ struct PersonalHealthDataFormView: View {
                 }
                 .background(Color(.systemBackground))
                 .padding()
-                
+
                 Form {
                     Section(header: Text("Your Details").foregroundColor(AppTheme.basic)) {
                         TextField("Age", text: $age)
                             .keyboardType(.numberPad)
-                        
+
                         Picker("Unit System", selection: $unitSystem) {
                             ForEach(UnitSystem.allCases, id: \.self) { unit in
                                 Text(unit.rawValue).tag(unit)
@@ -60,7 +57,7 @@ struct PersonalHealthDataFormView: View {
                         .onChange(of: unitSystem) { newValue in
                             convertValuesForUnitSystem(newValue)
                         }
-                        
+
                         if unitSystem == .metric {
                             TextField("Weight (kg)", text: $weight)
                                 .keyboardType(.decimalPad)
@@ -84,14 +81,14 @@ struct PersonalHealthDataFormView: View {
                             .onChange(of: feet) { _ in updateHeight() }
                             .onChange(of: inches) { _ in updateHeight() }
                         }
-                        
+
                         Picker("Sex", selection: $sex) {
                             Text("").tag("")
                             Text("Male").tag("Male")
                             Text("Female").tag("Female")
                             Text("Other").tag("Other")
                         }
-                        
+
                         Picker("Activity Level", selection: $activityLevel) {
                             Text("").tag("")
                             Text("Sedentary").tag("Sedentary")
@@ -100,31 +97,30 @@ struct PersonalHealthDataFormView: View {
                             Text("Very Active").tag("Very Active")
                         }
                     }
-                    
+
                     if let formError = formError {
                         Text(formError)
                             .foregroundColor(.red)
                     }
-                    
+
                     Button(action: {
                         if validateForm() {
                             saveUserData()
                             withAnimation {
                                 showCaloricNeedsView = true
-                                
                             }
-                            
-                        }                   }) {
-                            Text("Calculate")
-                                .foregroundColor(AppTheme.milk)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(AppTheme.carrot)
-                                .cornerRadius(10)
                         }
+                    }) {
+                        Text("Calculate")
+                            .foregroundColor(AppTheme.milk)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(AppTheme.carrot)
+                            .cornerRadius(10)
+                    }
                 }
                 .sheet(isPresented: $showHealthKitConsent) {
-                    HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex  in
+                    HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
                         self.age = age
                         self.sex = sex
                         if unitSystem == .imperial {
@@ -141,7 +137,11 @@ struct PersonalHealthDataFormView: View {
                     }
                 }
                 .sheet(isPresented: $showCaloricNeedsView) {
-                    CaloricNeedsView(onboardEntry: onBoardEntry, onComplete: onOnboardingComplete)
+                    CaloricNeedsView(
+                        onboardEntry: onBoardEntry,
+                        onComplete: onOnboardingComplete
+                    )
+                    .environmentObject(userSettingsManager)
                 }
             }
             .background(Color(.systemBackground))
@@ -149,8 +149,8 @@ struct PersonalHealthDataFormView: View {
                 loadUserDataIfNeeded()
             }
         }
-        }
-    
+    }
+
     private func convertValuesForUnitSystem(_ unitSystem: UnitSystem) {
         switch unitSystem {
         case .metric:
@@ -167,7 +167,7 @@ struct PersonalHealthDataFormView: View {
             weight = "\(convertKilogramsToPounds(Double(weight) ?? 0))"
         }
     }
-    
+
     private func loadUserDataIfNeeded() {
         if !onBoardEntry { // Only load data if not in onboarding process
             age = String(userSettingsManager.age)
@@ -185,6 +185,7 @@ struct PersonalHealthDataFormView: View {
             height = "\(totalInches)" // Height in inches
         }
     }
+
     private func validateForm() -> Bool {
         if age.isEmpty || weight.isEmpty || height.isEmpty || sex.isEmpty || activityLevel.isEmpty {
             formError = "Please fill in all fields."
@@ -193,13 +194,24 @@ struct PersonalHealthDataFormView: View {
         formError = nil
         return true
     }
+
     private func saveUserData() {
-        userSettingsManager.saveUserSettings(age: Int(self.age) ?? 0, weight: Double(weight) ?? 0.0, height: Double(height) ?? 0.0, sex: sex, activity: activityLevel, unitSystem: unitSystem.rawValue, userName: "", userEmail: "")
+        let weightValue = unitSystem == .imperial ? convertPoundsToKilograms(Double(weight) ?? 0.0) : Double(weight) ?? 0.0
+        let heightValue = unitSystem == .imperial ? convertFeetAndInchesToCentimeters(feet: feet, inches: inches) : Double(height) ?? 0.0
+
+        userSettingsManager.saveUserSettings(
+            age: Int(self.age) ?? 0,
+            weight: weightValue,
+            height: heightValue,
+            sex: sex,
+            activity: activityLevel,
+            unitSystem: unitSystem.rawValue,
+            userName: "",
+            userEmail: ""
+        )
         userSettingsManager.loadUserSettings()
-        
-        
     }
-    
+
     func convertPoundsToKilograms(_ pounds: Double) -> Double {
         return pounds / 2.20462
     }
@@ -218,7 +230,6 @@ struct PersonalHealthDataFormView: View {
         let inches = Int(totalInches) % 12
         return (feet, inches)
     }
-
 }
 
 enum UnitSystem: String, CaseIterable {

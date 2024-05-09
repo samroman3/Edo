@@ -61,39 +61,43 @@ struct AVPlayerControllerRepresented : UIViewControllerRepresentable {
 
 struct WelcomeScreen: View {
     var onGetStarted: () -> Void
-    var player = AVPlayer(url:  Bundle.main.url(forResource: "trimwhiteedo", withExtension: "mov")!)
+    var player = AVPlayer(url:  Bundle.main.url(forResource: "trimblackedo", withExtension: "mov")!)
     
     var body: some View {
         ZStack {
+            VStack(spacing: 15) {
+            VStack{
             AVPlayerControllerRepresented(player: player)
                 .onAppear {
                     player.play()
                     player.rate = 2
                 }
                 .scaledToFill()
-            let _ =  NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { _ in
-                withAnimation(){
-                    player.seek(to: .zero)
-                    player.play()
-                    player.rate = 2
+                let _ =  NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: nil) { _ in
+                    withAnimation(){
+                        player.seek(to: .zero)
+                        player.play()
+                        player.rate = 2
+                    }
                 }
-            }
-        VStack(spacing: 15) {
+            }.padding(.leading,20)
             Spacer()
                 HStack{
                     Text("Track meals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
-                        .foregroundStyle(.black)
                         .font(AppTheme.bodyFont)
+                        .foregroundColor(.white)
                     Text("Meet goals.")
                         .multilineTextAlignment(.center)
                         .font(.title3)
-                        .foregroundStyle(.black)
                         .font(AppTheme.bodyFont)
+                        .foregroundColor(.white)
                 }
                 Text("Edo")
                     .font(AppTheme.titleFont)
+                    .foregroundColor(.white)
+                Spacer()
                 Button(action: onGetStarted) {
                     HStack {
                         Image(systemName: "arrow.right.circle.fill")
@@ -104,7 +108,7 @@ struct WelcomeScreen: View {
                     .cornerRadius(10)
                 }
         }.padding(.vertical)
-        }.background(.white)
+        }.background(.black)
     }
 }
 

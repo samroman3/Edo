@@ -1,8 +1,7 @@
+// UserSettingsManager.swift
+// caloriecounter
 //
-//  UserSettingsManager.swift
-//  caloriecounter
-//
-//  Created by Sam Roman on 12/15/23.
+// Created by Sam Roman on 12/15/23.
 //
 
 import Combine
@@ -12,42 +11,39 @@ import UIKit
 class UserSettingsManager: ObservableObject {
     private let context: NSManagedObjectContext
     private var userSettings: UserSettings?
-    
+
     @Published var profileImage: UIImage?
     @Published var age: Int = 0
-    @Published var weight: Double = 0.0
-    @Published var height: Double = 0.0
+    @Published var weight: Double = 0.0 // Stored in kg
+    @Published var height: Double = 0.0 // Stored in cm
     @Published var sex: String = ""
     @Published var activity: String = ""
     @Published var unitSystem: String = ""
     @Published var userName: String = ""
     @Published var userEmail: String = ""
-    
+
     @Published var dailyCaloricNeeds: Double = 0.0
     @Published var proteinGoal: Double = 0.0
     @Published var carbsGoal: Double = 0.0
     @Published var fatGoal: Double = 0.0
     @Published var dietaryPlan: String = ""
-    
+
     init(context: NSManagedObjectContext) {
         self.context = context
         self.loadUserSettings()
         NotificationCenter.default.addObserver(self, selector: #selector(ubiquitousKeyValueStoreDidChange(_:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: NSUbiquitousKeyValueStore.default)
-
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
 
     @objc private func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
         // Handle changes as needed, for example, reload flags
     }
 
-    
     //Mark: Key Value iCloud Markers
-    
+
     func saveOnboardingCompletedFlag(isCompleted: Bool) {
         NSUbiquitousKeyValueStore.default.set(isCompleted, forKey: "onboardingCompleted")
         NSUbiquitousKeyValueStore.default.synchronize()
@@ -57,7 +53,7 @@ class UserSettingsManager: ObservableObject {
         NSUbiquitousKeyValueStore.default.set(isGiven, forKey: "consentGiven")
         NSUbiquitousKeyValueStore.default.synchronize()
     }
-    
+
     func isOnboardingCompleted() -> Bool {
         return NSUbiquitousKeyValueStore.default.bool(forKey: "onboardingCompleted")
     }
@@ -65,22 +61,26 @@ class UserSettingsManager: ObservableObject {
     func isConsentGiven() -> Bool {
         return NSUbiquitousKeyValueStore.default.bool(forKey: "consentGiven")
     }
-    
-    private func clearUserSettings() {
-          DispatchQueue.main.async {
-              self.profileImage = nil
-              self.age = 0
-              self.weight = 0.0
-              self.height = 0.0
-              self.sex = ""
-              self.activity = ""
-              self.unitSystem = ""
-              self.userName = ""
-              self.userEmail = ""
-          }
-      }
 
-    
+    private func clearUserSettings() {
+        DispatchQueue.main.async {
+            self.profileImage = nil
+            self.age = 0
+            self.weight = 0.0
+            self.height = 0.0
+            self.sex = ""
+            self.activity = ""
+            self.unitSystem = ""
+            self.userName = ""
+            self.userEmail = ""
+            self.dailyCaloricNeeds = 0.0
+            self.proteinGoal = 0.0
+            self.carbsGoal = 0.0
+            self.fatGoal = 0.0
+            self.dietaryPlan = ""
+        }
+    }
+
     func loadUserSettings() {
         userSettings = fetchOrCreateUserSettings()
         if let settings = userSettings {
@@ -93,23 +93,25 @@ class UserSettingsManager: ObservableObject {
                 self.unitSystem = settings.unitSystem ?? "metric"
                 self.userName = settings.userName ?? ""
                 self.userEmail = settings.userEmail ?? ""
+                self.dailyCaloricNeeds = settings.dailyCalorieGoal
+                self.proteinGoal = settings.proteinGoal
+                self.carbsGoal = settings.carbsGoal
+                self.fatGoal = settings.fatsGoal
+                self.dietaryPlan = settings.dietaryPlan ?? "Custom Goal"
             }
         }
     }
-    
+
     func uploadProfileImage(_ image: UIImage) {
-//        let settings = fetchOrCreateUserSettings()
-//        let imageData = image.jpegData(compressionQuality: 1.0)
-//        settings.profileImage = imageData as NSData?
         saveContext()
     }
-    
+
     func calculateBMI() -> Double? {
         guard let settings = userSettings, settings.height > 0, settings.weight > 0 else { return nil }
         let heightInMeters = settings.height / 100 // Convert cm to m
         return settings.weight / (heightInMeters * heightInMeters)
     }
-    
+
     func saveUserSettings(age: Int, weight: Double, height: Double, sex: String, activity: String, unitSystem: String, userName: String, userEmail: String) {
         let settings = fetchOrCreateUserSettings()
         settings.age = Int16(age)
@@ -122,17 +124,19 @@ class UserSettingsManager: ObservableObject {
         settings.userEmail = userEmail
         saveContext()
     }
-    
-    func saveDietaryGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
+
+    func saveDietaryGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double, dietaryPlan: String = "Custom") {
         let settings = fetchOrCreateUserSettings()
         settings.dailyCalorieGoal = caloricNeeds
         settings.proteinGoal = protein
         settings.carbsGoal = carbs
         settings.fatsGoal = fat
-        
+        settings.dietaryPlan = dietaryPlan
+
         saveContext() // Make sure to save the context
+        loadUserSettings()
     }
-    
+
     private func fetchOrCreateUserSettings() -> UserSettings {
         if let settings = userSettings {
             return settings
@@ -152,7 +156,7 @@ class UserSettingsManager: ObservableObject {
             return newUserSettings
         }
     }
-    
+
     private func saveContext() {
         if context.hasChanges {
             do {
@@ -162,9 +166,24 @@ class UserSettingsManager: ObservableObject {
             }
         }
     }
-}
 
-// Helper extension to convert NSData to UIImage
-extension NSData {
-    var uiImage: UIImage? { UIImage(data: self as Data) }
+    // Unit conversion methods
+    func convertPoundsToKilograms(_ pounds: Double) -> Double {
+        return pounds / 2.20462
+    }
+
+    func convertKilogramsToPounds(_ kilograms: Double) -> Double {
+        return kilograms * 2.20462
+    }
+
+    func convertFeetAndInchesToCentimeters(feet: Int, inches: Int) -> Double {
+        return Double(feet) * 30.48 + Double(inches) * 2.54
+    }
+
+    func convertCentimetersToFeetAndInches(_ centimeters: Double) -> (feet: Int, inches: Int) {
+        let totalInches = centimeters / 2.54
+        let feet = Int(totalInches) / 12
+        let inches = Int(totalInches) % 12
+        return (feet, inches)
+    }
 }
