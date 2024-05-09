@@ -38,7 +38,3 @@ struct DiaryView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle()) // Ensures NavigationView uses the full width on iPads
     }}
-
-//#Preview {
-//    DiaryView()
-//}

@@ -446,18 +446,19 @@ struct PreviousEntriesView: View {
     }
 }
 
+// MacroNutrientInputTile.swift
 struct MacroNutrientInputTile: View {
     let nutrient: NutrientType
     var addItemEntry: Bool
     @Binding var value: String?
     @Binding var isSelected: Bool
     @FocusState var isInputActive: Bool
-    
+
     // Define maximum values for each nutrient for the purpose of the animation
     private let maxValues: [NutrientType: Double] = [
         .calories: 2000, .protein: 200, .carbs: 300, .fats: 100
     ]
-    
+
     // Calculate the current percentage of the nutrient value
     private var nutrientPercent: Double {
         guard let currentValue = Double(value ?? "0"), let maxValue = maxValues[nutrient] else {
@@ -465,9 +466,9 @@ struct MacroNutrientInputTile: View {
         }
         return (currentValue / maxValue) * 100
     }
-    
+
     @State private var waveOffset = Angle(degrees: 0)
-    
+
     var body: some View {
         Button(action: {
             isSelected = true
@@ -493,21 +494,25 @@ struct MacroNutrientInputTile: View {
                 .clipShape(.rect(cornerRadius: 20))
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
-            }.background(
-                withAnimation(.spring){
+            }
+            .background(
+                addItemEntry ? AnyView(
                     Wave(offSet: Angle(degrees: waveOffset.degrees), percent: nutrientPercent)
                         .fill(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
                         .clipShape(Rectangle())
                         .padding(.bottom, 5)
-                })
+                ) : AnyView(EmptyView())
+            )
         }
         .onAppear {
-            withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
-                self.waveOffset = Angle(degrees: 360)
+            if addItemEntry {
+                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                    waveOffset = Angle(degrees: 360)
+                }
             }
         }
     }
-    
+
     private func getNutrientTheme(_ type: NutrientType) -> Color {
         switch type {
         case .calories:
@@ -524,7 +529,6 @@ struct MacroNutrientInputTile: View {
     }
 }
 
-// Updated AddItemFormView_Previews with a mock data store
 struct AddItemFormView_Previews: PreviewProvider {
     static var previews: some View {
         AddItemFormView(
