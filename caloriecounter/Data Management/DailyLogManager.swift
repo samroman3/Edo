@@ -257,11 +257,11 @@ class DailyLogManager: ObservableObject {
         case MealType.breakfast:
             return breakfastCarbs
         case MealType.lunch:
-            return lunchCalories
+            return lunchCarbs
         case MealType.dinner:
-           return dinnerCalories
+           return dinnerCarbs
         case MealType.snack:
-           return snackCalories
+           return snackCarbs
         case MealType.water:
             return 0.0
         }

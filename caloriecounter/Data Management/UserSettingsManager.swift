@@ -12,7 +12,7 @@ class UserSettingsManager: ObservableObject {
     private let context: NSManagedObjectContext
     private var userSettings: UserSettings?
 
-    @Published var profileImage: UIImage?
+    @Published var profileImage: Data?
     @Published var age: Int = 0
     @Published var weight: Double = 0.0 // Stored in kg
     @Published var height: Double = 0.0 // Stored in cm
@@ -85,6 +85,7 @@ class UserSettingsManager: ObservableObject {
         userSettings = fetchOrCreateUserSettings()
         if let settings = userSettings {
             DispatchQueue.main.async {
+                self.profileImage = settings.profileImage
                 self.age = Int(settings.age)
                 self.weight = settings.weight
                 self.height = settings.height
@@ -103,6 +104,14 @@ class UserSettingsManager: ObservableObject {
     }
 
     func uploadProfileImage(_ image: UIImage) {
+        let user = fetchOrCreateUserSettings()
+        user.profileImage = image.jpegData(compressionQuality: 0.8)
+        saveContext()
+    }
+    
+    func saveUserName(_ name: String) {
+        let user = fetchOrCreateUserSettings()
+        user.userName = name
         saveContext()
     }
 

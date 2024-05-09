@@ -100,7 +100,11 @@ struct AddItemFormView: View {
                                     userNote: $userNote,
                                     mealPhoto: $mealPhoto,
                                     isFavorite: $isFavorite,
-                                    dismiss: { isNameTextFieldFocused.toggle() }
+                                    dismiss: {
+                    withAnimation{
+                        isNameTextFieldFocused.toggle()
+                    }
+                }
                 )
                 Spacer()
                 Button(action: {
@@ -427,7 +431,7 @@ struct PreviousEntriesView: View {
         if selectedTab == 0 {
             entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
         } else {
-            favoriteEntries = dataStore?.fetchEntries(favorites: true) ?? []
+            favoriteEntries = dataStore?.fetchEntries(favorites: true, nameSearch: name) ?? []
         }
     }
     
@@ -455,17 +459,17 @@ struct MacroNutrientInputTile: View {
     @FocusState var isInputActive: Bool
 
     // Define maximum values for each nutrient for the purpose of the animation
-    private let maxValues: [NutrientType: Double] = [
-        .calories: 2000, .protein: 200, .carbs: 300, .fats: 100
-    ]
+//    private let maxValues: [NutrientType: Double] = [
+//        .calories: 2000, .protein: 200, .carbs: 300, .fats: 100
+//    ]
 
     // Calculate the current percentage of the nutrient value
-    private var nutrientPercent: Double {
-        guard let currentValue = Double(value ?? "0"), let maxValue = maxValues[nutrient] else {
-            return 0
-        }
-        return (currentValue / maxValue) * 100
-    }
+//    private var nutrientPercent: Double {
+//        guard let currentValue = Double(value ?? "0"), let maxValue = maxValues[nutrient] else {
+//            return 0
+//        }
+//        return (currentValue / maxValue) * 100
+//    }
 
     @State private var waveOffset = Angle(degrees: 0)
 
@@ -495,22 +499,22 @@ struct MacroNutrientInputTile: View {
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
             }
-            .background(
-                addItemEntry ? AnyView(
-                    Wave(offSet: Angle(degrees: waveOffset.degrees), percent: nutrientPercent)
-                        .fill(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
-                        .clipShape(Rectangle())
-                        .padding(.bottom, 5)
-                ) : AnyView(EmptyView())
-            )
+//            .background(
+//                addItemEntry ? AnyView(
+//                    Wave(offSet: Angle(degrees: waveOffset.degrees), percent: nutrientPercent)
+//                        .fill(isSelected ? getNutrientTheme(nutrient) : AppTheme.reverse)
+//                        .clipShape(Rectangle())
+//                        .padding(.bottom, 5)
+//                ) : AnyView(EmptyView())
+//            )
         }
-        .onAppear {
-            if addItemEntry {
-                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
-                    waveOffset = Angle(degrees: 360)
-                }
-            }
-        }
+//        .onAppear {
+//            if addItemEntry {
+//                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+//                    waveOffset = Angle(degrees: 360)
+//                }
+//            }
+//        }
     }
 
     private func getNutrientTheme(_ type: NutrientType) -> Color {

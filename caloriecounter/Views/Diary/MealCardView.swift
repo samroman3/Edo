@@ -131,10 +131,10 @@ class MacroLabel {
                 HStack {
                     Image(systemName: "c.circle")
                         .font(.title2)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     value
                         .font(.caption)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     Spacer()
                 }
                     .background(AppTheme.sageGreen)
@@ -145,10 +145,10 @@ class MacroLabel {
                 HStack {
                     Image(systemName: "p.circle")
                         .font(.title2)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     value
                         .font(.caption)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     Spacer()
                 }
                     .background(AppTheme.softPurple)
@@ -159,10 +159,10 @@ class MacroLabel {
                 HStack {
                     Image(systemName: "c.circle")
                         .font(.title2)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     value
                         .font(.caption)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     Spacer()
                 }
                     .background(AppTheme.goldenrod)
@@ -173,10 +173,10 @@ class MacroLabel {
                 HStack {
                     Image(systemName: "f.circle")
                         .font(.title2)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     value
                         .font(.caption)
-                        .foregroundStyle(AppTheme.reverse)
+                        .foregroundStyle(.black)
                     Spacer()
                 }
                     .background(AppTheme.carrot)

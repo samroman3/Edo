@@ -10,7 +10,6 @@
 		3A0829EE2B2CB66B001EB95E /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829ED2B2CB66B001EB95E /* UserSettingsManager.swift */; };
 		3A0829F02B3DE8EA001EB95E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829EF2B3DE8EA001EB95E /* ProfileView.swift */; };
 		3A0829F22B3DE9FD001EB95E /* GoalSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */; };
-		3A0829F52B3F603A001EB95E /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0829F42B3F603A001EB95E /* ProfileImageView.swift */; };
 		3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */; };
 		3A22EAC22BD4334100E0CEBD /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */; };
 		3A22EAC42BD4347D00E0CEBD /* AddItemMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */; };
@@ -90,7 +89,6 @@
 		3A0829ED2B2CB66B001EB95E /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
 		3A0829EF2B3DE8EA001EB95E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		3A0829F12B3DE9FD001EB95E /* GoalSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSelectionView.swift; sourceTree = "<group>"; };
-		3A0829F42B3F603A001EB95E /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		3A22EABE2BD41CD100E0CEBD /* HapticFeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticFeedbackProvider.swift; sourceTree = "<group>"; };
 		3A22EAC12BD4334100E0CEBD /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
 		3A22EAC32BD4347D00E0CEBD /* AddItemMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemMainView.swift; sourceTree = "<group>"; };
@@ -312,7 +310,6 @@
 			isa = PBXGroup;
 			children = (
 				3A0829EF2B3DE8EA001EB95E /* ProfileView.swift */,
-				3A0829F42B3F603A001EB95E /* ProfileImageView.swift */,
 				3AF67D672B4EA9200013F078 /* CaloricNeedsView.swift */,
 				3A17D54E2B93B9C100D74874 /* Health Forms */,
 			);
@@ -575,7 +572,6 @@
 				3A0829F02B3DE8EA001EB95E /* ProfileView.swift in Sources */,
 				3ABA27652B12CD4000DE4FB1 /* MealSelectionViewModel.swift in Sources */,
 				3AF36CDC2B106DCB00775DF6 /* MacroPieView.swift in Sources */,
-				3A0829F52B3F603A001EB95E /* ProfileImageView.swift in Sources */,
 				3AF36CFE2B10750700775DF6 /* MealCardView.swift in Sources */,
 				3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */,
 				3AC3C3C12B242B6B00C5F751 /* DoubleExtensions.swift in Sources */,

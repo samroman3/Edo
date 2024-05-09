@@ -4,7 +4,6 @@
 //
 //  Created by Sam Roman on 12/28/23.
 //
-
 import SwiftUI
 
 struct ProfileView: View {
@@ -18,103 +17,133 @@ struct ProfileView: View {
     @State var showCaloricNeedsView = false
     
     private var profileImage: Image? {
-        if let profileImage = userSettingsManager.profileImage{
-            return Image(uiImage: profileImage)
+        if let imageData = userSettingsManager.profileImage {
+            if let image = UIImage(data: imageData) {
+                return Image(uiImage: image)
+            }
         }
         return nil
     }
     
     var body: some View {
-        NavigationView{
-            ZStack {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            isEditMode.toggle()
-                        }) {
-                            Image(systemName: "pencil")
-                                .foregroundStyle(AppTheme.textColor)
-                        }
-                    }
-                    .padding()
-                    VStack {
-                        // Weight and Height section
-                        Section() {
-                            VStack {
-                                if isEditMode {
-                                    TextField("User Name", text: $userSettingsManager.userName)
-                                    profileImageView
-                                    Button("Select a profile picture") { showingImagePicker = true }
-                                } else {
-                                    HStack {
-                                        profileImageView
-                                            .padding()
-                                    }
-                                }
-                                
-                                VStack {
-                                    HStack {
-                                        Text("Weight:")
-                                            .fontWeight(.light)
-                                            .font(.title2)
-                                        Spacer()
-                                        Text("\(userSettingsManager.weight, specifier: "%.0f") kg")
-                                    }
-                                    .frame(minWidth: 0, maxWidth: .infinity)
-                                    
-                                    HStack {
-                                        Text("Height:")
-                                            .fontWeight(.light)
-                                            .font(.title2)
-                                        Spacer()
-                                        Text("\(userSettingsManager.height, specifier: "%.0f") cm")
-                                    }
-                                    .frame(minWidth: 0, maxWidth: .infinity)
-                                    HStack {
-                                        Text("BMI:")
-                                            .fontWeight(.light)
-                                            .font(.title2)
-                                        Spacer()
-                                        Text("\(userSettingsManager.calculateBMI() ?? 0.0,specifier: "%.0f")")
-                                    }
-                                    
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                    Divider().background(AppTheme.textColor)
-                    
-                    // Menu options
-                    if !isEditMode {
-                        Group {
-                            ProfileMenuItem(type: .goals).onTapGesture {
-                                self.showCaloricNeedsView.toggle()
-                            }
-//                            Divider().background(AppTheme.textColor)
-//                            NavigationLink(destination: WeightDynamicsView()) {
-//                                ProfileMenuItem(type: .weightDynamics)
-//                            }
-                            Divider().background(AppTheme.textColor)
-                            NavigationLink(destination: EmptyView()) {
-                                ProfileMenuItem(type: .permissions)
-                            }
-                            
-//                            Divider().background(AppTheme.textColor)
-//                            NavigationLink(destination: EmptyView()) {
-//                                ProfileMenuItem(type: .notifications)
-//                            }
-                            Divider().background(AppTheme.textColor)
-                        }
-                    }
-                    Spacer()
+        NavigationView {
+            VStack {
+                header
+                profileInfoSection.background(.ultraThinMaterial).clipShape(.rect(cornerRadius: 30))
+                if !isEditMode {
+                    menuSection
                 }
+                Spacer()
+            }
+            .padding()
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
+                ImagePicker(image: self.$inputImage)
+            }
+            .sheet(isPresented: $showCaloricNeedsView) {
+                CaloricNeedsView(onboardEntry: false, onComplete: {})
+            }
+            .onAppear {
+                self.editingUserName = self.userSettingsManager.userName
             }
         }
-        .sheet(isPresented: $showCaloricNeedsView) {
-            CaloricNeedsView(onboardEntry: false, onComplete: {})
+    }
+    
+    private var header: some View {
+        HStack {
+            Spacer()
+            editButton
         }
+    }
+    
+    private var profileInfoSection: some View {
+        VStack {
+            if isEditMode {
+                TextField("User Name", text: $editingUserName)
+                    .font(.title2)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 10).stroke(AppTheme.textColor, lineWidth: 1))
+                profileImageView
+                Button("Select a profile picture") {
+                    showingImagePicker = true
+                }
+                .font(.headline)
+                .padding(.top)
+            } else {
+                VStack {
+                    Text(userSettingsManager.userName)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    profileImageView
+                        .padding()
+                }
+            }
+            weightHeightSection
+        }
+        .padding()
+    }
+    
+    private var weightHeightSection: some View {
+        VStack(spacing: 8) {
+            profileInfoRow(label: "Weight:", value: "\(String(format: "%.0f", userSettingsManager.weight)) kg")
+            profileInfoRow(label: "Height:", value: "\(String(format: "%.0f", userSettingsManager.height)) cm")
+            profileInfoRow(label: "BMI:", value: "\(String(format: "%.1f", userSettingsManager.calculateBMI() ?? 0.0))")
+        }
+    }
+    
+    private var menuSection: some View {
+        Group {
+            Divider().background(AppTheme.textColor)
+            ProfileMenuItem(type: .goals).onTapGesture {
+                self.showCaloricNeedsView.toggle()
+            }
+            Divider().background(AppTheme.textColor)
+            NavigationLink(destination: EmptyView()) {
+                ProfileMenuItem(type: .permissions)
+            }
+        }
+    }
+    
+    private func profileInfoRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .fontWeight(.light)
+                .font(.title2)
+            Spacer()
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+        }
+    }
+    
+    private var editButton: some View {
+        Button(action: {
+            if isEditMode {
+                saveProfile()
+                isEditMode.toggle()
+            } else {
+                isEditMode.toggle()
+            }
+        }) {
+            Text(isEditMode ? "Save" : "Edit")
+                .font(.headline)
+                .foregroundStyle(AppTheme.textColor)
+        }
+    }
+    
+    private func saveProfile() {
+        if let inputImage {
+            userSettingsManager.uploadProfileImage(inputImage)
+        }
+        if editingUserName != userSettingsManager.userName {
+            userSettingsManager.saveUserName(editingUserName)
+        }
+        userSettingsManager.loadUserSettings()
+    }
+    
+    private func loadImage() {
+        guard let inputImage = inputImage else { return }
+        userSettingsManager.profileImage = inputImage.jpegData(compressionQuality: 300)
     }
     
     private var profileImageView: some View {
@@ -133,10 +162,9 @@ struct ProfileView: View {
                     .foregroundColor(.gray)
             }
         }
+        .padding()
     }
 }
-
-
 
 struct ProfileMenuItem: View {
     let type: ProfileItemType
@@ -144,46 +172,47 @@ struct ProfileMenuItem: View {
     var icon: Image {
         switch type {
         case .notifications:
-            Image(systemName: "bell")
+            return Image(systemName: "bell")
         case .weightDynamics:
-            Image(systemName:"chart.line.downtrend.xyaxis")
+            return Image(systemName: "chart.line.downtrend.xyaxis")
         case .permissions:
-            Image(systemName: "heart.text.square")
+            return Image(systemName: "heart.text.square")
         case .goals:
-            Image(systemName: "flag")
+            return Image(systemName: "flag")
         }
     }
     
     var tint: Color {
         switch type {
         case .notifications:
-            AppTheme.skyBlue
+            return AppTheme.skyBlue
         case .weightDynamics:
-            AppTheme.lime
+            return AppTheme.lime
         case .permissions:
-            AppTheme.coral
+            return AppTheme.coral
         case .goals:
-            AppTheme.goldenrod
+            return AppTheme.goldenrod
         }
     }
     
     var name: String {
         switch type {
         case .permissions:
-            "Permissions"
+            return "Permissions"
         case .notifications:
-            "Notifications"
+            return "Notifications"
         case .weightDynamics:
-            "Dynamics"
+            return "Dynamics"
         case .goals:
-            "Goals"
+            return "Goals"
         }
     }
+    
     var body: some View {
-        VStack() {
+        VStack {
             HStack {
                 Text(name)
-                    .font(.largeTitle)
+                    .font(.title3)
                     .fontWeight(.light)
                 Spacer()
                 icon
@@ -194,11 +223,10 @@ struct ProfileMenuItem: View {
             }
             .padding(.horizontal)
             .contentShape(Rectangle())
-        }.foregroundStyle(AppTheme.textColor)
-        
+        }
+        .foregroundStyle(AppTheme.textColor)
     }
 }
-
 
 enum ProfileItemType {
     case weightDynamics
@@ -206,6 +234,7 @@ enum ProfileItemType {
     case permissions
     case goals
 }
+
 #Preview(body: {
     ProfileView().environmentObject(UserSettingsManager(context: PersistenceController.init(inMemory: false).container.viewContext))
 })

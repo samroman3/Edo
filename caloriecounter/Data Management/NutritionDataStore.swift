@@ -134,7 +134,7 @@ class NutritionDataStore: ObservableObject {
     
     // Adding a predicate to filter for favorite entries
     if favorites {
-        let favoritePredicate = NSPredicate(format: "favorite == %@", NSNumber(value: true))
+        let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
         predicates.append(favoritePredicate)
     }
     
