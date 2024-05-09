@@ -62,9 +62,9 @@ struct TabBarButton: View {
             .imageScale(.medium)
             .font(.system(size: 25))
             .onTapGesture {
-                withAnimation(.spring(.smooth)) {
+                withAnimation(.snappy) {
                     HapticFeedbackProvider.impact()
-                    
+                    selectedTab = tab
                 }
 
             }
