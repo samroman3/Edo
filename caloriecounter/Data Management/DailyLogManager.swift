@@ -313,7 +313,7 @@ class DailyLogManager: ObservableObject {
     }
     
     var breakfastCarbPercentage: Double {
-        return breakfastCalories / carbGoal
+        return breakfastCarbs / carbGoal
     }
 
     var lunchCarbPercentage: Double {
