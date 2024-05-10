@@ -7,14 +7,15 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 class DailyLogManager: ObservableObject {
     @Published var selectedDate: Date
     @Published var meals: [Meal] = []
     private var context: NSManagedObjectContext
     
+    @EnvironmentObject var userSettingsManager: UserSettingsManager
     
-//TODO: values should come from usersettings after apple id integration
     @Published var calorieGoal: Double = 1900.0
     @Published var proteinGoal: Double = 110.0
     @Published var fatGoal: Double = 50.0
