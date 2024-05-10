@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
-	<string>Access is needed to read your health data.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>Access is needed to write your health data.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>JF-Standard.otf</string>

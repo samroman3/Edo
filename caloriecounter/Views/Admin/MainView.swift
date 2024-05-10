@@ -6,33 +6,39 @@
 //
 
 import SwiftUI
+
 struct MainView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSettingsManager: UserSettingsManager
     @EnvironmentObject var nutritionDataStore: NutritionDataStore
 
-    @State private var iCloudAvailable: Bool = false
+    @State private var iCloudAvailable: Bool?
 
-    
     var body: some View {
         Group {
-            if iCloudAvailable {
-                if !appState.hasCompletedOnboarding {
-                    OnboardingView(onOnboardingComplete: {
-                        appState.completeOnboarding()
-                        userSettingsManager.loadUserSettings()
-                    })
+            if let iCloudAvailable = iCloudAvailable {
+                if iCloudAvailable {
+                    if !appState.hasCompletedOnboarding {
+                        OnboardingView(onOnboardingComplete: {
+                            appState.completeOnboarding()
+                            userSettingsManager.loadUserSettings()
+                        })
+                    } else {
+                        CustomTabBarView()
+                            .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
+                            .environmentObject(nutritionDataStore)
+                    }
                 } else {
-                    CustomTabBarView()
-                        .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
-                        .environmentObject(nutritionDataStore)
+                    iCloudRequiredView()
                 }
             } else {
-                iCloudRequiredView()
-            }
-        }.onAppear {
-            userSettingsManager.checkiCloudAvailability { available in
-                iCloudAvailable = available
+                // Placeholder view while checking iCloud availability
+                ProgressView()
+                    .onAppear {
+                        userSettingsManager.checkiCloudAvailability { available in
+                            iCloudAvailable = available
+                        }
+                    }
             }
         }
     }
