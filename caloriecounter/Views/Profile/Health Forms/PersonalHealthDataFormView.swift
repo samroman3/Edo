@@ -102,8 +102,11 @@ struct PersonalHealthDataFormView: View {
                         Text(formError)
                             .foregroundColor(.red)
                     }
+                    Text("Calculations are made using the Mifflin St Jeor equation and may not be suitable for everyone. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals.")
+                        .font(AppTheme.standardBookCaption)
+                        .multilineTextAlignment(.center)
                 }
-                calculateButton
+                 calculateButton
                 .sheet(isPresented: $showHealthKitConsent) {
                     HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
                         self.age = age
@@ -147,7 +150,7 @@ struct PersonalHealthDataFormView: View {
             HapticFeedbackProvider.impact()
         }) {
             Text("Calculate")
-                .foregroundStyle(AppTheme.reverse)
+                .foregroundStyle(.white)
                 .font(.largeTitle)
                 .frame(maxWidth: .infinity)
                 .padding()

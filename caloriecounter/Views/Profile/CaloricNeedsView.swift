@@ -11,30 +11,30 @@ import SwiftUI
 struct CaloricNeedsView: View {
     @EnvironmentObject private var userSettingsManager: UserSettingsManager
     @EnvironmentObject var dailyLogManager: DailyLogManager
-    @EnvironmentObject var nutritionDataStore: NutritionDataStore
     @Environment(\.presentationMode) var presentationMode
-
+    
     @State private var selectedGoal: GoalSelectionView.Goal?
     let columns: [GridItem] = Array(repeating: .init(.adaptive(minimum: 200, maximum: 600)), count: 2)
     let macroNutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fats]
-
+    
     let proteinPerCalorie = 4.0
     let carbsPerCalorie = 4.0
     let fatPerCalorie = 9.0
-
+    
     @State private var nutrientValues: [NutrientType: String] = [.calories: "0", .protein: "0", .carbs: "0", .fats: "0"]
     var onboardEntry: Bool
     var onComplete: () -> Void
-
+    
     @FocusState private var isInputActive: Bool
     @State private var selectedNutrient: NutrientType?
-
+    @State private var showAlert = false
+    
     var body: some View {
         NavigationView {
             VStack {
                 HStack(alignment: .center) {
                     Button(action: {
-                        withAnimation(.bouncy) {
+                        withAnimation(.easeInOut) {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }) {
@@ -42,7 +42,7 @@ struct CaloricNeedsView: View {
                             .foregroundColor(AppTheme.textColor)
                     }.padding([.vertical, .horizontal])
                 }
-
+                
                 ScrollView {
                     if let cal = nutrientValues[.calories] {
                         goalSelectionSection(caloricNeeds: Double(cal) ?? 0.0)
@@ -58,7 +58,7 @@ struct CaloricNeedsView: View {
                                     set: { newValue in
                                         if newValue {
                                             selectedNutrient = nutrient
-                                            selectedGoal = .custom  // Set the goal to custom when a tile is tapped
+                                            selectedGoal = .custom
                                         }
                                     }
                                 ),
@@ -70,7 +70,7 @@ struct CaloricNeedsView: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-
+                
                 VStack {
                     if selectedGoal == .custom {
                         HStack {
@@ -87,7 +87,7 @@ struct CaloricNeedsView: View {
                             .padding(.horizontal)
                             .foregroundColor(AppTheme.textColor)
                             Spacer()
-
+                            
                             Button(action: {
                                 hideKeyboard()
                             }, label: {
@@ -99,7 +99,7 @@ struct CaloricNeedsView: View {
                             .padding([.vertical, .horizontal])
                         }
                     }
-
+                    
                     if !isInputActive {
                         saveButton
                     }
@@ -108,16 +108,23 @@ struct CaloricNeedsView: View {
             .onAppear {
                 loadUserSettings()
             }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Calorie Mismatch"),
+                    message: Text("The sum of macros exceeds the total calories. Please adjust to fit within the calorie limit."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
     }
-
+    
     private func selectedNutrientTextBinding() -> Binding<String> {
         Binding<String>(
             get: { self.nutrientValues[self.selectedNutrient ?? .calories] ?? "0" },
             set: { self.nutrientValues[self.selectedNutrient ?? .calories] = $0 }
         )
     }
-
+    
     private func goalSelectionSection(caloricNeeds: Double) -> some View {
         VStack {
             Text("Macros are adjusted based on your selected goal and your personal health information.")
@@ -132,24 +139,30 @@ struct CaloricNeedsView: View {
                 .padding(.vertical)
         }
     }
-
+    
     private func calculateCaloricNeeds() {
         let bmr = calculateBMR()
         let activityMultiplier = getActivityMultiplier()
         var adjustedCaloricNeeds = bmr * activityMultiplier
+        
         adjustCaloricNeedsBasedOnGoal(&adjustedCaloricNeeds)
-        nutrientValues[.calories] = String(format: "%.2f", adjustedCaloricNeeds)
+        
+        nutrientValues[.calories] = String(format: "%.0f", adjustedCaloricNeeds)
         updateMacros(for: adjustedCaloricNeeds)
     }
-
+    
     private func calculateBMR() -> Double {
         let weightInKg = userSettingsManager.weight
         let heightInCm = userSettingsManager.height
         let age = Double(userSettingsManager.age)
-        let s = userSettingsManager.sex == "Female" ? -161 : 5
-        return (10 * weightInKg) + (6.25 * heightInCm) - (5 * age) + Double(s)
+        
+        if userSettingsManager.sex == "Female" {
+            return 10 * weightInKg + 6.25 * heightInCm - 5 * age - 161
+        } else {
+            return 10 * weightInKg + 6.25 * heightInCm - 5 * age + 5
+        }
     }
-
+    
     private func getActivityMultiplier() -> Double {
         switch userSettingsManager.activity {
         case "Sedentary": return 1.2
@@ -159,188 +172,156 @@ struct CaloricNeedsView: View {
         default: return 1.2
         }
     }
-
+    
     private func adjustCaloricNeedsBasedOnGoal(_ caloricNeeds: inout Double) {
         guard let goal = selectedGoal else { return }
+        
         switch goal {
         case .loseWeight:
-            caloricNeeds *= 0.9 // 10% caloric deficit
+            caloricNeeds -= caloricNeeds * 0.15 // 15% caloric deficit
         case .gainWeight:
-            caloricNeeds *= 1.1 // 10% caloric surplus
+            caloricNeeds += caloricNeeds * 0.15 // 15% caloric surplus
         case .buildMuscle:
-            caloricNeeds *= 1.2 // 20% caloric surplus
+            caloricNeeds += caloricNeeds * 0.1 // 10% caloric surplus
         case .enhancePerformance, .maintainWeight:
-            // No adjustment needed for maintenance or performance enhancement
             break
         default:
             break
         }
     }
-
+    
     private func updateMacros(for caloricNeeds: Double) {
         guard let goal = selectedGoal else { return }
-
-        // Define default macro ratios
-        var proteinRatio = 0.3
+        
+        var proteinRatio = 0.4
         var carbsRatio = 0.4
-        var fatRatio = 0.3
-
-        // Adjust macros based on the goal
+        var fatRatio = 0.2
+        
         switch goal {
         case .loseWeight:
             proteinRatio = 0.4
             carbsRatio = 0.3
             fatRatio = 0.3
-        case .gainWeight:
+        case .gainWeight, .buildMuscle:
             proteinRatio = 0.3
             carbsRatio = 0.5
-            fatRatio = 0.2
-        case .buildMuscle:
-            proteinRatio = 0.4
-            carbsRatio = 0.4
             fatRatio = 0.2
         case .enhancePerformance, .maintainWeight:
             proteinRatio = 0.3
             carbsRatio = 0.4
             fatRatio = 0.3
-        default:
-            break
+        case .custom:
+            // For custom, ensure macros do not exceed total calories
+            let proteinCalories = Double(nutrientValues[.protein]!)! * proteinPerCalorie
+            let carbsCalories = Double(nutrientValues[.carbs]!)! * carbsPerCalorie
+            let fatCalories = Double(nutrientValues[.fats]!)! * fatPerCalorie
+            let totalMacroCalories = proteinCalories + carbsCalories + fatCalories
+            
+            if totalMacroCalories > caloricNeeds {
+                showAlert = true
+                return
+            }
+            return // No need to adjust macros if custom and within limits
         }
-
-        // Calculate macros
-        nutrientValues[.protein] = String(format: "%.2f", (caloricNeeds * proteinRatio) / proteinPerCalorie)
-        nutrientValues[.carbs] = String(format: "%.2f", (caloricNeeds * carbsRatio) / carbsPerCalorie)
-        nutrientValues[.fats] = String(format: "%.2f", (caloricNeeds * fatRatio) / fatPerCalorie)
+        
+        // Update macros based on ratios and caloric needs
+        nutrientValues[.protein] = String(format: "%.0f", (caloricNeeds * proteinRatio) / proteinPerCalorie)
+        nutrientValues[.carbs] = String(format: "%.0f", (caloricNeeds * carbsRatio) / carbsPerCalorie)
+        nutrientValues[.fats] = String(format: "%.0f", (caloricNeeds * fatRatio) / fatPerCalorie)
     }
-
+    
     private func saveCaloricNeeds() {
-        guard let cal = nutrientValues[.calories] else { return }
-        guard let protein = nutrientValues[.protein] else { return }
-        guard let carbs = nutrientValues[.carbs] else { return }
-        guard let fats = nutrientValues[.fats] else { return }
-
-        let calToSave = Double(cal) ?? 0.0
-        let proteinToSave = Double(protein) ?? 0.0
-        let carbToSave = Double(carbs) ?? 0.0
-        let fatsToSave = Double(fats) ?? 0.0
-
+        guard let cal = nutrientValues[.calories], let caloricNeeds = Double(cal) else { return }
+        guard let protein = nutrientValues[.protein], let proteinToSave = Double(protein) else { return }
+        guard let carbs = nutrientValues[.carbs], let carbsToSave = Double(carbs) else { return }
+        guard let fats = nutrientValues[.fats], let fatsToSave = Double(fats) else { return }
+        
+        let totalMacroCalories = (proteinToSave * proteinPerCalorie) +
+        (carbsToSave * carbsPerCalorie) +
+        (fatsToSave * fatPerCalorie)
+        
+        if selectedGoal == .custom && totalMacroCalories > caloricNeeds {
+            showAlert = true
+            return
+        }
+        
         userSettingsManager.saveDietaryGoals(
-            caloricNeeds: calToSave,
+            caloricNeeds: caloricNeeds,
             protein: proteinToSave,
-            carbs: carbToSave,
+            carbs: carbsToSave,
             fat: fatsToSave,
-            dietaryPlan: selectedGoal!.rawValue
+            dietaryPlan: selectedGoal?.rawValue ?? "Custom"
         )
-
+        
         if onboardEntry {
             onComplete()
-        }
-        
-        nutritionDataStore.updateTodayGoals(caloricNeeds: calToSave, protein: proteinToSave, carbs: carbToSave, fat: fatsToSave)
-        
-        if !onboardEntry {
+        } else {
             dailyLogManager.updateGoalsBasedOnDate()
         }
-        self.presentationMode.wrappedValue.dismiss()
+        
+        presentationMode.wrappedValue.dismiss()
     }
-
-    private func loadUserSettings() {
-        userSettingsManager.loadUserSettings()
-        if onboardEntry {
-            // Set a default goal if coming from onboarding
-            selectedGoal = determineDefaultGoal()
-        } else {
-            // Load the existing goal from user settings
-            selectedGoal = determineGoalBasedOnSettings()
-        }
-
-        nutrientValues[.calories] = String(format: "%.2f", userSettingsManager.dailyCaloricNeeds)
-        nutrientValues[.protein] = String(format: "%.2f", userSettingsManager.proteinGoal)
-        nutrientValues[.carbs] = String(format: "%.2f", userSettingsManager.carbsGoal)
-        nutrientValues[.fats] = String(format: "%.2f", userSettingsManager.fatGoal)
-    }
-
-    private func determineDefaultGoal() -> GoalSelectionView.Goal {
-        // Default to "Maintain Weight" if coming from onboarding
-        return .maintainWeight
-    }
-
-    private func determineGoalBasedOnSettings() -> GoalSelectionView.Goal? {
-        // Determine the current goal based on saved dietary plan or macros
-        switch userSettingsManager.dietaryPlan {
-        case "Lose Weight":
-            return .loseWeight
-        case "Gain Weight":
-            return .gainWeight
-        case "Build Muscle":
-            return .buildMuscle
-        case "Enhance Performance":
-            return .enhancePerformance
-        case "Maintain Weight":
-            return .maintainWeight
-        default:
-            return .custom
-        }
-    }
-
+    
     private var saveButton: some View {
         Button(action: {
             saveCaloricNeeds()
         }) {
             Text("Save")
-                .foregroundStyle(AppTheme.reverse)
+                .foregroundColor(.white)
                 .font(.largeTitle)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(AppTheme.textColor)
+                .background(AppTheme.carrot)
                 .cornerRadius(10)
         }
         .disabled(selectedGoal == nil)
         .padding(.horizontal)
         .padding(.bottom, 20)
-    }
-
-    struct MacroNutrientView: View {
-        var nutrient: String
-        var value: Double
-        var disabled: Bool
-
-        var background: Color {
-            switch nutrient {
-            case "Calories":
-                return AppTheme.sageGreen
-            case "Proteins":
-                return AppTheme.lavender
-            case "Carbs":
-                return AppTheme.goldenrod
-            case "Fats":
-                return AppTheme.coral
-            default:
-                return AppTheme.basic
-            }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Calorie Mismatch"),
+                message: Text("The sum of macros exceeds the total calories. Please adjust to fit within the calorie limit."),
+                dismissButton: .default(Text("OK"))
+            )
         }
-        let screenWidth = UIScreen.main.bounds.width
-
-        var body: some View {
-            VStack {
-                Text(nutrient)
-                    .foregroundStyle(AppTheme.textColor)
-                    .fontWeight(.light)
-                Text("\(Int(value))g")
-                    .fontWeight(.heavy)
-                    .foregroundStyle(AppTheme.textColor)
-
-            }
-            .frame(width: screenWidth / 3, height: screenWidth / 5)
-            .padding()
-            .background(disabled ? background : .gray)
-            .cornerRadius(5)
+    }
+    
+    private func loadUserSettings() {
+        userSettingsManager.loadUserSettings()
+        
+        if onboardEntry {
+            selectedGoal = determineDefaultGoal()
+        } else {
+            selectedGoal = determineGoalBasedOnSettings()
+        }
+        
+        // Preload the macro values
+        let caloricNeeds = userSettingsManager.dailyCaloricNeeds
+        nutrientValues[.calories] = String(format: "%.0f", caloricNeeds)
+        nutrientValues[.protein] = String(format: "%.0f", userSettingsManager.proteinGoal)
+        nutrientValues[.carbs] = String(format: "%.0f", userSettingsManager.carbsGoal)
+        nutrientValues[.fats] = String(format: "%.0f", userSettingsManager.fatGoal)
+    }
+    
+    private func determineDefaultGoal() -> GoalSelectionView.Goal {
+        // Default to "Maintain Weight" if coming from onboarding
+        return .maintainWeight
+    }
+    
+    private func determineGoalBasedOnSettings() -> GoalSelectionView.Goal? {
+        switch userSettingsManager.dietaryPlan {
+        case "Lose Weight": return .loseWeight
+        case "Gain Weight": return .gainWeight
+        case "Build Muscle": return .buildMuscle
+        case "Enhance Performance": return .enhancePerformance
+        case "Maintain Weight": return .maintainWeight
+        default: return .custom
         }
     }
 }
-
-#Preview {
-    CaloricNeedsView(onboardEntry: true, onComplete: {})
-        .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
-}
-
+    
+    #Preview {
+        CaloricNeedsView(onboardEntry: true, onComplete: {})
+            .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
+//            .environmentObject(DailyLogManager(context: context, userSettings: UserSettingsManager(context: context)))
+    }
