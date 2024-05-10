@@ -17,8 +17,9 @@
 		3A22EACF2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */; };
 		3A3679432BEDA9A800A5A918 /* JF-Standard.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A3679422BED868300A5A918 /* JF-Standard.otf */; };
 		3A3679452BEE8D5C00A5A918 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */; };
+		3A3679492BEEC71400A5A918 /* edoSplash.mov in Resources */ = {isa = PBXBuildFile; fileRef = 3A3679482BEEC71300A5A918 /* edoSplash.mov */; };
+		3A36794B2BEECEB900A5A918 /* iCloudRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36794A2BEECEB900A5A918 /* iCloudRequiredView.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
-		3A58D0A02BE6B1BF00CA243B /* trimblackedo.mov in Resources */ = {isa = PBXBuildFile; fileRef = 3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */; };
 		3A58D0A62BE7F4AF00CA243B /* Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A52BE7F4AF00CA243B /* Wave.swift */; };
 		3A58D0A82BE7F4FD00CA243B /* MockNutritionDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A72BE7F4FD00CA243B /* MockNutritionDataStore.swift */; };
 		3A58D0AA2BE8019A00CA243B /* SFXManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A92BE8019A00CA243B /* SFXManager.swift */; };
@@ -98,8 +99,9 @@
 		3A3679422BED868300A5A918 /* JF-Standard.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JF-Standard.otf"; sourceTree = "<group>"; };
 		3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		3A3679462BEEB3CA00A5A918 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		3A3679482BEEC71300A5A918 /* edoSplash.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = edoSplash.mov; sourceTree = "<group>"; };
+		3A36794A2BEECEB900A5A918 /* iCloudRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudRequiredView.swift; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = trimblackedo.mov; sourceTree = "<group>"; };
 		3A58D0A52BE7F4AF00CA243B /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
 		3A58D0A72BE7F4FD00CA243B /* MockNutritionDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNutritionDataStore.swift; sourceTree = "<group>"; };
 		3A58D0A92BE8019A00CA243B /* SFXManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFXManager.swift; sourceTree = "<group>"; };
@@ -184,7 +186,8 @@
 			isa = PBXGroup;
 			children = (
 				3AC3C3C22B274AD200C5F751 /* OnboardingView.swift */,
-				3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */,
+				3A36794A2BEECEB900A5A918 /* iCloudRequiredView.swift */,
+				3A3679482BEEC71300A5A918 /* edoSplash.mov */,
 				3AC3C3C42B278AA000C5F751 /* HealthKitConsentView.swift */,
 			);
 			path = Onboarding;
@@ -514,7 +517,7 @@
 			files = (
 				3A3679432BEDA9A800A5A918 /* JF-Standard.otf in Resources */,
 				3AF36CB52B106C2400775DF6 /* Preview Assets.xcassets in Resources */,
-				3A58D0A02BE6B1BF00CA243B /* trimblackedo.mov in Resources */,
+				3A3679492BEEC71400A5A918 /* edoSplash.mov in Resources */,
 				3AF36CB22B106C2400775DF6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -549,6 +552,7 @@
 				3AC3C3BC2B229C8D00C5F751 /* DailySummaryView.swift in Sources */,
 				3AD9CC802B19449D00B9A23E /* AppTheme.swift in Sources */,
 				3A0829EE2B2CB66B001EB95E /* UserSettingsManager.swift in Sources */,
+				3A36794B2BEECEB900A5A918 /* iCloudRequiredView.swift in Sources */,
 				3AC3C3CB2B2B5E3900C5F751 /* PersonalHealthDataFormView.swift in Sources */,
 				3AF36CE82B106F4700775DF6 /* AddItemFormView.swift in Sources */,
 				3A0829F22B3DE9FD001EB95E /* GoalSelectionView.swift in Sources */,

@@ -61,7 +61,7 @@ struct AVPlayerControllerRepresented : UIViewControllerRepresentable {
 
 struct WelcomeScreen: View {
     var onGetStarted: () -> Void
-    var player = AVPlayer(url:  Bundle.main.url(forResource: "trimblackedo", withExtension: "mov")!)
+    var player = AVPlayer(url:  Bundle.main.url(forResource: "edoSplash", withExtension: "mov")!)
     
     var body: some View {
         ZStack {

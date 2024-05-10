@@ -7,6 +7,7 @@
 import Combine
 import CoreData
 import UIKit
+import CloudKit
 import HealthKit
 
 class UserSettingsManager: ObservableObject {
@@ -46,6 +47,28 @@ class UserSettingsManager: ObservableObject {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    //MARK: CloudKit Sync
+    func checkiCloudAvailability(completion: @escaping (Bool) -> Void) {
+        CKContainer.default().accountStatus { accountStatus, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error checking iCloud account status: \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    switch accountStatus {
+                    case .available:
+                        completion(true)
+                    default:
+                        // Inform the user that they are not signed into iCloud
+                        completion(false)
+                    }
+                }
+            }
+        }
+    }
+    
+    //Mark: Key Value iCloud Markers
 
     @objc private func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
         DispatchQueue.main.async {
@@ -55,7 +78,6 @@ class UserSettingsManager: ObservableObject {
     }
 
 
-    //Mark: Key Value iCloud Markers
 
     func saveOnboardingCompletedFlag(isCompleted: Bool) {
         NSUbiquitousKeyValueStore.default.set(isCompleted, forKey: "onboardingCompleted")

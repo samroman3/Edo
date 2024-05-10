@@ -11,18 +11,28 @@ struct MainView: View {
     @EnvironmentObject var userSettingsManager: UserSettingsManager
     @EnvironmentObject var nutritionDataStore: NutritionDataStore
 
+    @State private var iCloudAvailable: Bool = false
+
     
     var body: some View {
         Group {
-            if !appState.hasCompletedOnboarding {
-                OnboardingView(onOnboardingComplete: {
-                    appState.completeOnboarding()
-                    userSettingsManager.loadUserSettings()
-                })
+            if iCloudAvailable {
+                if !appState.hasCompletedOnboarding {
+                    OnboardingView(onOnboardingComplete: {
+                        appState.completeOnboarding()
+                        userSettingsManager.loadUserSettings()
+                    })
+                } else {
+                    CustomTabBarView()
+                        .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
+                        .environmentObject(nutritionDataStore)
+                }
             } else {
-                CustomTabBarView()
-                    .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
-                    .environmentObject(nutritionDataStore)
+                iCloudRequiredView()
+            }
+        }.onAppear {
+            userSettingsManager.checkiCloudAvailability { available in
+                iCloudAvailable = available
             }
         }
     }
