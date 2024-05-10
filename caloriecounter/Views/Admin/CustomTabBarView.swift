@@ -13,6 +13,8 @@ struct CustomTabBarView: View {
     @EnvironmentObject private var nutritionDataStore: NutritionDataStore
     @State private var selectedTab: Tab = .diary
     
+    @State var profileEditing: Bool = false
+    
     var body: some View {
         VStack {
             if selectedTab != .profile {
@@ -29,16 +31,18 @@ struct CustomTabBarView: View {
             case .statistics:
                 DailySummaryView(viewModel: DailySummaryViewModel(dailyLogManager: dailyLogManager))
             case .profile:
-                ProfileView()
+                ProfileView(profileEditing: $profileEditing)
             }
-            // Custom Tab Bar
-            HStack(spacing: 50) {
-                TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: AppTheme.sageGreen)
-                TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.lavender)
-                TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.carrot)
-                
+            if !profileEditing {
+                // Custom Tab Bar
+                HStack(spacing: 50) {
+                    TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: AppTheme.sageGreen)
+                    TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.lavender)
+                    TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.carrot)
+                    
+                }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }.onAppear(){
             dailyLogManager.refreshData()
         }

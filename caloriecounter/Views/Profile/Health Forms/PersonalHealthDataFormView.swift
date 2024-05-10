@@ -102,23 +102,8 @@ struct PersonalHealthDataFormView: View {
                         Text(formError)
                             .foregroundColor(.red)
                     }
-
-                    Button(action: {
-                        if validateForm() {
-                            saveUserData()
-                            withAnimation {
-                                showCaloricNeedsView = true
-                            }
-                        }
-                    }) {
-                        Text("Calculate")
-                            .foregroundColor(AppTheme.milk)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(AppTheme.carrot)
-                            .cornerRadius(10)
-                    }
                 }
+                calculateButton
                 .sheet(isPresented: $showHealthKitConsent) {
                     HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
                         self.age = age
@@ -150,7 +135,28 @@ struct PersonalHealthDataFormView: View {
             }
         }
     }
-
+    
+    private var calculateButton: some View {
+        Button(action: {
+            if validateForm() {
+                saveUserData()
+                withAnimation {
+                    showCaloricNeedsView = true
+                }
+            }
+            HapticFeedbackProvider.impact()
+        }) {
+            Text("Calculate")
+                .foregroundStyle(AppTheme.reverse)
+                .font(.largeTitle)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(AppTheme.carrot)
+                .cornerRadius(10)
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 20)
+    }
     private func convertValuesForUnitSystem(_ unitSystem: UnitSystem) {
         switch unitSystem {
         case .metric:
@@ -198,14 +204,13 @@ struct PersonalHealthDataFormView: View {
     private func saveUserData() {
         let weightValue = unitSystem == .imperial ? convertPoundsToKilograms(Double(weight) ?? 0.0) : Double(weight) ?? 0.0
         let heightValue = unitSystem == .imperial ? convertFeetAndInchesToCentimeters(feet: feet, inches: inches) : Double(height) ?? 0.0
-
         userSettingsManager.saveUserSettings(
             age: Int(self.age) ?? 0,
             weight: weightValue,
             height: heightValue,
             sex: sex,
             activity: activityLevel,
-            unitSystem: unitSystem.rawValue,
+            unitSystem: unitSystem.rawValue.lowercased(),
             userName: "",
             userEmail: ""
         )

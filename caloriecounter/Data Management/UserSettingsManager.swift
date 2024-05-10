@@ -176,7 +176,20 @@ class UserSettingsManager: ObservableObject {
         }
     }
 
-    // Unit conversion methods
+    func calculateBMI(isMetric: Bool) -> Double? {
+        guard let settings = userSettings, settings.height > 0, settings.weight > 0 else { return nil }
+        
+        if isMetric {
+            // Metric calculation (kg/m^2)
+            let heightInMeters = settings.height / 100
+            return settings.weight / (heightInMeters * heightInMeters)
+        } else {
+            // Imperial calculation (lbs/in^2) and then converted to BMI by multiplying by 703
+            let heightInInches = settings.height
+            return (settings.weight / (heightInInches * heightInInches)) * 703
+        }
+    }
+
     func convertPoundsToKilograms(_ pounds: Double) -> Double {
         return pounds / 2.20462
     }
@@ -196,3 +209,5 @@ class UserSettingsManager: ObservableObject {
         return (feet, inches)
     }
 }
+
+
