@@ -92,6 +92,7 @@ struct ProfileView: View {
     @State private var editingActivityLevel: String = ""
     
     @State var showCaloricNeedsView = false
+    @State var showPermissionsView = false
     @State private var isMetric: Bool = true
     
     @FocusState private var isInputActive: Bool
@@ -120,6 +121,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage)
+            }
+            .sheet(isPresented: $showPermissionsView) {
+                PermissionsView()
             }
             .sheet(isPresented: $showCaloricNeedsView) {
                 CaloricNeedsView(onboardEntry: false, onComplete: {})
@@ -207,6 +211,7 @@ struct ProfileView: View {
                 )
             }
             activityLevelSection
+            BMISection
         }
     }
     
@@ -233,9 +238,24 @@ struct ProfileView: View {
                         .font(AppTheme.standardBookBody)
                     Spacer()
                     Text(userSettingsManager.activity)
-                        .font(AppTheme.standardBookTitle)
+                        .font(AppTheme.standardBookBody)
                     Image(systemName: ActivityLevel.getSymbol(for: userSettingsManager.activity))
                         .foregroundColor(AppTheme.sageGreen)
+                        .font(AppTheme.standardBookTitle)
+                }
+            }
+        }
+    }
+    
+    private var BMISection: some View {
+        VStack {
+            if !isEditMode {
+                HStack {
+                    Text("BMI:")
+                        .font(AppTheme.standardBookBody)
+                    Spacer()
+                    Text("\(userSettingsManager.calculateBMI() ?? 0, specifier: "%.f")")
+                        .font(AppTheme.standardBookTitle)
                 }
             }
         }
@@ -307,9 +327,10 @@ struct ProfileView: View {
                 self.showCaloricNeedsView.toggle()
             }
             Divider().background(AppTheme.textColor)
-            NavigationLink(destination: EmptyView()) {
-                ProfileMenuItem(type: .permissions)
+            ProfileMenuItem(type: .permissions).onTapGesture {
+                self.showPermissionsView.toggle()
             }
+            
         }
     }
     

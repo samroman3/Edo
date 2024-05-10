@@ -16,6 +16,7 @@
 		3A22EACE2BD5677200E0CEBD /* Recipe+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EACC2BD5677200E0CEBD /* Recipe+CoreDataClass.swift */; };
 		3A22EACF2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */; };
 		3A3679432BEDA9A800A5A918 /* JF-Standard.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A3679422BED868300A5A918 /* JF-Standard.otf */; };
+		3A3679452BEE8D5C00A5A918 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A58D0A02BE6B1BF00CA243B /* trimblackedo.mov in Resources */ = {isa = PBXBuildFile; fileRef = 3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */; };
 		3A58D0A62BE7F4AF00CA243B /* Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A52BE7F4AF00CA243B /* Wave.swift */; };
@@ -95,6 +96,7 @@
 		3A22EACC2BD5677200E0CEBD /* Recipe+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3A3679422BED868300A5A918 /* JF-Standard.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JF-Standard.otf"; sourceTree = "<group>"; };
+		3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = trimblackedo.mov; sourceTree = "<group>"; };
 		3A58D0A52BE7F4AF00CA243B /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				3A0829EF2B3DE8EA001EB95E /* ProfileView.swift */,
+				3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */,
 				3AF67D672B4EA9200013F078 /* CaloricNeedsView.swift */,
 				3A17D54E2B93B9C100D74874 /* Health Forms */,
 			);
@@ -582,6 +585,7 @@
 				3AF36CDC2B106DCB00775DF6 /* MacroPieView.swift in Sources */,
 				3AF36CFE2B10750700775DF6 /* MealCardView.swift in Sources */,
 				3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */,
+				3A3679452BEE8D5C00A5A918 /* PermissionsView.swift in Sources */,
 				3AC3C3C12B242B6B00C5F751 /* DoubleExtensions.swift in Sources */,
 				3A58D0A62BE7F4AF00CA243B /* Wave.swift in Sources */,
 				3AC3C3B42B1F8F5500C5F751 /* DiaryView.swift in Sources */,

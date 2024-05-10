@@ -27,6 +27,10 @@ class UserSettingsManager: ObservableObject {
     @Published var carbsGoal: Double = 0.0
     @Published var fatGoal: Double = 0.0
     @Published var dietaryPlan: String = ""
+    
+    
+    @Published var canWriteToHealthApp: Bool = false
+    @Published var canReadFromHealthApp: Bool = false
 
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -62,6 +66,17 @@ class UserSettingsManager: ObservableObject {
         return NSUbiquitousKeyValueStore.default.bool(forKey: "consentGiven")
     }
 
+    func saveHealthAppPermissions(write: Bool, read: Bool) {
+        NSUbiquitousKeyValueStore.default.set(write, forKey: "canWriteToHealthApp")
+        NSUbiquitousKeyValueStore.default.set(read, forKey: "canReadFromHealthApp")
+        NSUbiquitousKeyValueStore.default.synchronize()
+
+        DispatchQueue.main.async {
+            self.canWriteToHealthApp = write
+            self.canReadFromHealthApp = read
+        }
+    }
+    
     private func clearUserSettings() {
         DispatchQueue.main.async {
             self.profileImage = nil
@@ -99,6 +114,8 @@ class UserSettingsManager: ObservableObject {
                 self.carbsGoal = settings.carbsGoal
                 self.fatGoal = settings.fatsGoal
                 self.dietaryPlan = settings.dietaryPlan ?? "Custom Goal"
+                self.canWriteToHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canWriteToHealthApp")
+                self.canReadFromHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canReadFromHealthApp")
             }
         }
     }
