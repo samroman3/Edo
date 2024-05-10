@@ -20,6 +20,11 @@ extension DailyLog {
     @NSManaged public var id: UUID?
     @NSManaged public var meals: NSSet?
     @NSManaged public var waterIntake: Double
+    @NSManaged public var calGoal: Double
+    @NSManaged public var protGoal: Double
+    @NSManaged public var carbGoal: Double
+    @NSManaged public var fatsGoal: Double
+
 
 }
 
