@@ -10,13 +10,11 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var dataStore: NutritionDataStore
     
     var body: some View {
         MainView()
-            .environmentObject(DailyLogManager(context: viewContext))
-            .environmentObject(MealSelectionViewModel(dataStore: NutritionDataStore(context: viewContext), context: viewContext))
-            .environmentObject(NutritionDataStore(context: viewContext))
-            .environmentObject(UserSettingsManager(context: viewContext))
-            .environmentObject(AppState.shared)
+            .environmentObject(MealSelectionViewModel(dataStore: dataStore, context: viewContext))
+
     }
 }

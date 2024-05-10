@@ -215,7 +215,7 @@ struct ProfileView: View {
             if isEditMode {
                 HStack{
                     Text("Activity Level:")
-                        .font(AppTheme.standardBookTitle)
+                        .font(AppTheme.standardBookBody)
                     Spacer()
                     
                     Picker("Activity Level", selection: $editingActivityLevel) {
@@ -230,10 +230,10 @@ struct ProfileView: View {
             } else {
                 HStack {
                     Text("Activity Level:")
-                        .font(AppTheme.standardBookTitle)
+                        .font(AppTheme.standardBookBody)
                     Spacer()
                     Text(userSettingsManager.activity)
-                        .font(AppTheme.standardBookBody)
+                        .font(AppTheme.standardBookTitle)
                     Image(systemName: ActivityLevel.getSymbol(for: userSettingsManager.activity))
                         .foregroundColor(AppTheme.sageGreen)
                 }
@@ -244,7 +244,7 @@ struct ProfileView: View {
     private func editableWeightHeightField(label: String, value: Binding<Double>, unit: String) -> some View {
         HStack {
             Text(label)
-                .font(AppTheme.standardBookTitle)
+                .font(AppTheme.standardBookBody)
             Spacer()
             if label == "Height:" && !isMetric {
                 HStack {
@@ -269,12 +269,13 @@ struct ProfileView: View {
             } else {
                 TextField("", value: value, formatter: NumberFormatter())
                     .keyboardType(.decimalPad)
+                    .font(AppTheme.standardBookTitle)
                     .multilineTextAlignment(.trailing)
                     .frame(width: 80)
                     .focused($isInputActive)
             }
             Text(unit)
-                .font(AppTheme.standardBookBody)
+                .font(AppTheme.standardBookTitle)
         }
         .padding(.vertical, 8)
         .padding(.horizontal)
@@ -315,10 +316,10 @@ struct ProfileView: View {
     private func profileInfoRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
-                .font(AppTheme.standardBookTitle)
+                .font(AppTheme.standardBookBody)
             Spacer()
             Text(value)
-                .font(AppTheme.standardBookBody)
+                .font(AppTheme.standardBookTitle)
         }
     }
     
