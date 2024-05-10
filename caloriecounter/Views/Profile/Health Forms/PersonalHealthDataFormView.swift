@@ -102,7 +102,9 @@ struct PersonalHealthDataFormView: View {
                         Text(formError)
                             .foregroundColor(.red)
                     }
-                    Text("Calculations are made using the Mifflin St Jeor equation and may not be suitable for everyone. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals.")
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(AppTheme.carrot)
+                    Text("Calculations are made using the Harris-Benedict equation and may not be suitable for everyone. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals.")
                         .font(AppTheme.standardBookCaption)
                         .multilineTextAlignment(.center)
                 }

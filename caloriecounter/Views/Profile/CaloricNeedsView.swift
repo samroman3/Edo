@@ -211,19 +211,22 @@ struct CaloricNeedsView: View {
             carbsRatio = 0.4
             fatRatio = 0.3
         case .custom:
-            // For custom, ensure macros do not exceed total calories
-            let proteinCalories = Double(nutrientValues[.protein]!)! * proteinPerCalorie
-            let carbsCalories = Double(nutrientValues[.carbs]!)! * carbsPerCalorie
-            let fatCalories = Double(nutrientValues[.fats]!)! * fatPerCalorie
+            let proteinCalories = Double(nutrientValues[.protein] ?? "0") ?? 0 * proteinPerCalorie
+            let carbsCalories = Double(nutrientValues[.carbs] ?? "0") ?? 0 * carbsPerCalorie
+            let fatCalories = Double(nutrientValues[.fats] ?? "0") ?? 0 * fatPerCalorie
             let totalMacroCalories = proteinCalories + carbsCalories + fatCalories
             
             if totalMacroCalories > caloricNeeds {
                 showAlert = true
-                return
+            } else {
+                // Only update if within the limit
+                nutrientValues[.protein] = String(format: "%.0f", proteinCalories / proteinPerCalorie)
+                nutrientValues[.carbs] = String(format: "%.0f", carbsCalories / carbsPerCalorie)
+                nutrientValues[.fats] = String(format: "%.0f", fatCalories / fatPerCalorie)
             }
-            return // No need to adjust macros if custom and within limits
+            return
         }
-        
+
         // Update macros based on ratios and caloric needs
         nutrientValues[.protein] = String(format: "%.0f", (caloricNeeds * proteinRatio) / proteinPerCalorie)
         nutrientValues[.carbs] = String(format: "%.0f", (caloricNeeds * carbsRatio) / carbsPerCalorie)
