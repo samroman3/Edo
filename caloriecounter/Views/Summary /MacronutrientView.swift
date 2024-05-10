@@ -42,7 +42,6 @@ struct MacronutrientView: View {
                     }
                 }
             }.padding()
-
         }
     }
 }
@@ -56,12 +55,12 @@ struct MacronutrientRingView: View {
     
     var body: some View {
         VStack {
-            RingView(consumed: consumed, goal: goal, color: isSelected ? AppTheme.milk : color, isSelected: isSelected)
+            RingView(consumed: consumed, goal: goal, color: isSelected ? AppTheme.milk : color, isSelected: isSelected).shadow(radius: 4, x: 2, y: 4)
+            Spacer()
             // Display the label and the current number/goal below the ring
-            VStack {
+            VStack(spacing: 10) {
                 Text(label)
-                    .font(.headline)
-                    .fontWeight(.bold)
+                    .font(AppTheme.standardBookBody)
                     .foregroundStyle(AppTheme.textColor)
                 MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g"))
             }

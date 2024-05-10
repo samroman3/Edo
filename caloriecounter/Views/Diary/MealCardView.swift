@@ -20,13 +20,13 @@ struct MealCardView: View {
         VStack(alignment: .leading) {
             HStack {
                 Text(mealType)
-                    .font(.largeTitle)
-                    .fontWeight(.light)
+                    .font(AppTheme.standardBookLargeTitle)
                     .foregroundStyle(AppTheme.textColor)
                 Spacer()
                 Button(action: onAddTapped) {
                     Image(systemName: "plus")
                         .resizable()
+                        .font(AppTheme.standardBookLargeTitle)
                         .foregroundStyle(AppTheme.textColor)
                         .frame(width: 25, height: 25)
                 }
@@ -122,18 +122,19 @@ struct ChevronView: View {
 }
 
 class MacroLabel {
+    
     static let shared = MacroLabel()
     
     func labelView(macro: String, value: Text) -> some View {
         switch macro {
         case "calories":
             return AnyView(
-                HStack {
+                HStack(alignment: .center) {
                     Image(systemName: "c.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
                     value
-                        .font(.caption)
+                        .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
                     Spacer()
                 }
@@ -142,12 +143,12 @@ class MacroLabel {
             )
         case "protein":
             return AnyView(
-                HStack {
+                HStack(alignment: .center) {
                     Image(systemName: "p.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
                     value
-                        .font(.caption)
+                        .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
                     Spacer()
                 }
@@ -156,12 +157,12 @@ class MacroLabel {
             )
         case "carbs":
             return AnyView(
-                HStack {
+                HStack(alignment: .center) {
                     Image(systemName: "c.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
                     value
-                        .font(.caption)
+                        .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
                     Spacer()
                 }
@@ -170,12 +171,12 @@ class MacroLabel {
             )
         case "fats":
             return AnyView(
-                HStack {
+                HStack(alignment: .center) {
                     Image(systemName: "f.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
                     value
-                        .font(.caption)
+                        .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
                     Spacer()
                 }

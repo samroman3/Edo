@@ -17,39 +17,46 @@ struct HealthKitConsentView: View {
         NavigationView {
             VStack(spacing: 20) {
                 Text("Health Data Access")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
+                    .font(AppTheme.standardBookLargeTitle)
                 Text("Edo would like to use data from the Health app to streamline your experience. This includes your gender, date of birth, height, and weight. All data is stored privately and only accessible to you through iCloud.")
-                    .font(.body)
+                    .font(.callout)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.primary)
                     .padding()
                 
+                continueButton
                 Button(action: {
-                    requestHealthKitPermission()
+                    isPresented = false
                 }) {
-                    Text("Continue with HealthKit")
+                    Text("No Thanks")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(.clear)
                         .cornerRadius(10)
                 }
-                
-                Button("No Thanks") {
-                    isPresented = false
-                }
-                .foregroundColor(.red)
                 
                 Spacer()
             }
             .padding()
-            .navigationBarItems(trailing: Button("Close") {
-                isPresented = false
-            })
         }
     }
+    
+    private var continueButton: some View {
+        Button(action: {
+            requestHealthKitPermission()
+            HapticFeedbackProvider.impact()
+        }) {
+            Text("Continue")
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(AppTheme.carrot)
+                .cornerRadius(10)
+        }
+        .padding(.horizontal)
+    }
+    
     private func requestHealthKitPermission() {
         guard let biologicalSexType = HKObjectType.characteristicType(forIdentifier: .biologicalSex),
               let dateOfBirthType = HKObjectType.characteristicType(forIdentifier: .dateOfBirth),

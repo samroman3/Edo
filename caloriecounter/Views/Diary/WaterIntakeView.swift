@@ -54,8 +54,7 @@ struct WaterIntakeView: View {
         VStack {
             HStack {
                 Text("Water")
-                    .font(.largeTitle)
-                    .fontWeight(.light)
+                    .font(AppTheme.standardBookLargeTitle)
                     .foregroundStyle(AppTheme.textColor)
                 Spacer()
                 if viewModel.goalMet {
@@ -105,18 +104,18 @@ struct WaterIntakeView: View {
                 Text("Water intake goal reached. \n Water needs are approximate, keep hydrated.")
                     .foregroundStyle(AppTheme.grayDark)
                     .multilineTextAlignment(.center)
-                    .font(.caption)
+                    .font(AppTheme.standardBookBody)
                     .padding(.bottom, 5)
             }
             
             Text("\(viewModel.currentIntake, specifier: "%.1f") out of \(viewModel.goalIntake.formattedAsPrettyString()) L")
                 .foregroundColor(AppTheme.textColor)
-                .font(.caption)
+                .font(AppTheme.standardBookBody)
                 .padding(.bottom, 5)
             
             Text("One glass of water ≈ \((viewModel.glassSize * 1000).formattedAsPrettyString()) ml")
                 .foregroundColor(AppTheme.grayDark)
-                .font(.caption)
+                .font(AppTheme.standardBookCaption)
         }
         .frame(maxWidth: .infinity)
     }

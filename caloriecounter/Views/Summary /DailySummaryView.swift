@@ -23,7 +23,7 @@ struct DailySummaryView: View {
             VStack {
                 Divider().background(AppTheme.textColor)
                 
-                VStack(spacing: 16) {
+                VStack(spacing: 10) {
                     // Macro percentages view
                     Spacer()
                     
@@ -39,10 +39,8 @@ struct DailySummaryView: View {
                             dailyLogManager.totalGramsFats
                         ),
                         summaryViewModel: viewModel
-                    ).shadow(radius: 4, x: 2, y: 4)
-                    
+                    )
                     Divider().background(AppTheme.textColor)
-                    
                     HStack {
                         MacroPieView(
                             percentages: withAnimation { dailyLogManager.getPercentages(for: viewModel.selectedMacro) }
@@ -52,7 +50,7 @@ struct DailySummaryView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 15))
                         .shadow(radius: 5)
                         
-                        VStack(alignment: .center, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 8) {
                             ForEach(MealType.allCases.filter { $0 != .water }, id: \.self) { mealType in
                                 MealSummaryRow(
                                     mealType: mealType,
@@ -64,7 +62,6 @@ struct DailySummaryView: View {
                         .padding()
                         .background(.ultraThinMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 15))
-                        .shadow(radius: 3)
                     }
                     .padding(.horizontal)
                 }
@@ -121,17 +118,16 @@ struct DailySummaryView: View {
                     Image(systemName: "circle.fill")
                         .foregroundColor(iconColor)
                     Text("\(mealType.rawValue):")
-                        .font(.headline)
+                        .font(AppTheme.standardBookBody)
                         .foregroundColor(AppTheme.textColor)
                 }
                     Text("\(value) \(label)")
-                        .font(.subheadline)
+                    .font(AppTheme.standardBookCaption)
                         .foregroundColor(AppTheme.textColor)
             }
             .padding(.vertical, 4)
             .padding(.horizontal)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-            .shadow(radius: 2)
         }
     }
 }

@@ -82,21 +82,19 @@ struct WelcomeScreen: View {
                 }
             }.padding(.leading,20)
             Spacer()
+                Text("EDO")
+                    .font(AppTheme.standardBookLargeTitle)
+                    .foregroundColor(.white)
                 HStack{
                     Text("Track meals.")
                         .multilineTextAlignment(.center)
-                        .font(.title3)
-                        .font(AppTheme.bodyFont)
+                        .font(AppTheme.standardBookBody)
                         .foregroundColor(.white)
                     Text("Meet goals.")
                         .multilineTextAlignment(.center)
-                        .font(.title3)
-                        .font(AppTheme.bodyFont)
+                        .font(AppTheme.standardBookBody)
                         .foregroundColor(.white)
                 }
-                Text("Edo")
-                    .font(AppTheme.titleFont)
-                    .foregroundColor(.white)
                 Spacer()
                 Button(action: onGetStarted) {
                     HStack {
@@ -121,9 +119,9 @@ struct ConsentView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     Text("Privacy & Data Use")
-                        .font(.title)
+                        .font(AppTheme.standardBookLargeTitle)
                         .foregroundColor(AppTheme.textColor)
-                        .padding()
+                        .padding(.vertical)
 
                     VStack(alignment: .leading) {
                         HStack {
@@ -131,46 +129,64 @@ struct ConsentView: View {
                                 .foregroundColor(.blue)
                                 .imageScale(.large)
                             Text("iCloud Sync")
-                                .font(.headline)
+                                .font(AppTheme.standardBookTitle)
                                 .foregroundStyle(AppTheme.textColor)
                         }
+                        Spacer()
                         Text("Your data is securely stored in iCloud, ensuring it's private and accessible across all your devices. We use iCloud to keep your meal entries and nutrition data in sync.")
                             .foregroundStyle(AppTheme.textColor)
-                            .padding(.bottom)
+                            .font(.callout)
+                            .padding(.vertical)
 
                         HStack {
                             Image(systemName: "heart.fill")
                                 .foregroundColor(.red)
                                 .imageScale(.large)
                             Text("HealthKit Integration")
-                                .font(.headline)
+                                .font(AppTheme.standardBookTitle)
                                 .foregroundStyle(AppTheme.textColor)
                         }
-                        Text("With your consent, we access HealthKit to track relevant health data, activity levels, and calories burned. This data remains on your device to maintain your privacy.")
+                        Spacer()
+                        Text("With your consent, we access the Health app to track relevant health data, activity levels, and calories burned. This data remains on your device to maintain your privacy.")
+                            .font(.callout)
                             .foregroundStyle(AppTheme.textColor)
+                            .padding(.vertical)
+
                     }
                     .padding()
-
+                    Spacer()
                     ConsentAgreementText()
-
-                    Button("Continue", action: onConsentGiven)
-                        .font(.headline)
-                        .foregroundColor(AppTheme.textColor)
-                        .padding()
-                        .background(AppTheme.carrot)
-                        .cornerRadius(10)
+                    Spacer()
+                    continueButton
                 }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cornerRadius(20)
     }
+    
+    private var continueButton: some View {
+        Button(action: {
+            onConsentGiven()
+            HapticFeedbackProvider.impact()
+        }) {
+            Text("Continue")
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(AppTheme.carrot)
+                .cornerRadius(10)
+        }
+        .padding(.horizontal)
+    }
+    
 }
+
 
 struct ConsentAgreementText: View {
     var body: some View {
         Text("""
-            By continuing, you acknowledge and agree to the use of iCloud for storage and HealthKit for health data integration as outlined above. Your privacy is our top priority, and you have full control over your data.
+            By continuing, you acknowledge and agree to the use of iCloud for storage and Health app for health data integration as outlined above. Your privacy is our top priority, and you have full control over your data.
             """)
             .font(.callout)
             .foregroundStyle(AppTheme.textColor)

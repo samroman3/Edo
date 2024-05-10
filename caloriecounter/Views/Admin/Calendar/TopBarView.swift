@@ -47,16 +47,14 @@ struct TopBarView: View {
                                 todayComponents.day == selectedDateComponents.day {
                                 HStack(alignment: .center){
                                     Text("Today")
-                                        .font(.title2)
-                                        .fontWeight(.light)
+                                        .font(AppTheme.standardBookTitle)
                                         .foregroundStyle(AppTheme.textColor)
                                     
                                 }
                                 
                             }
                             Text(selectedDate, style: .date)
-                                .font(.title2)
-                                .fontWeight(.light)
+                                .font(AppTheme.standardBookBody)
                                 .foregroundStyle(AppTheme.textColor)
                             Spacer()
                         } else {
@@ -65,16 +63,15 @@ struct TopBarView: View {
                                 todayComponents.day == selectedDateComponents.day {
                                 HStack(alignment: .center){
                                     Text("Today")
-                                        .font(.title2)
-                                        .fontWeight(.light)
+                                        .font(AppTheme.standardBookTitle)
                                         .foregroundStyle(AppTheme.textColor)
                                 }
                                 Spacer()
                             } else {
                                 Text(selectedDate, style: .date)
-                                    .font(.title2)
-                                    .fontWeight(.light)
+                                    .font(AppTheme.standardBookTitle)
                                     .foregroundStyle(AppTheme.textColor)
+                                Spacer()
                             }
                         }
                         

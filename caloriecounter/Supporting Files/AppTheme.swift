@@ -90,6 +90,12 @@ struct AppTheme {
            }
        })
     
+    
+    static let standardBookLargeTitle = Font.custom("JF-Standard", size: 34)
+    static let standardBookTitle = Font.custom("JF-Standard", size: 28)
+    static let standardBookBody = Font.custom("JF-Standard", size: 17)
+    static let standardBookCaption = Font.custom("JF-Standard", size: 15)
+
 
     static let titleFont = Font.system(size: 28, weight: .bold, design: .default)
     static let bodyFont = Font.system(size: 17, weight: .regular, design: .default)

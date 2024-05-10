@@ -13,6 +13,8 @@ struct MealsView: View {
     @ObservedObject var mealSelectionViewModel: MealSelectionViewModel
     @ObservedObject var nutritionDataStore: NutritionDataStore
     
+    @Environment(\.colorScheme) var colorScheme
+    
     func calculateTotalCalories(entries: [NutritionEntry]) -> Double {
         // Logic to calculate total calories
         entries.reduce(0) { $0 + Double($1.calories) }
@@ -56,6 +58,7 @@ struct MealsView: View {
                             isExpanded: isExpandedBinding,
                             onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
                                 deleteEntry(entry)})
+
                         if !entries.isEmpty {
                             ChevronView(isExpanded: isExpandedBinding, 
                             totalCalories: calculateTotalCalories(entries: entries), 
@@ -100,8 +103,7 @@ struct MealsView: View {
             VStack() {
                 HStack {
                     Text(mealType)
-                        .font(.largeTitle)
-                        .fontWeight(.light)
+                        .font(AppTheme.standardBookLargeTitle)
                     Spacer()
                     Button(action:{
                         let _ = HapticFeedbackProvider.impact()
@@ -120,4 +122,5 @@ struct MealsView: View {
             
         }
     }
+  
 }

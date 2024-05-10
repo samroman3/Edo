@@ -12,7 +12,7 @@ struct NutritionEntryView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(entry.name)
-                .font(.headline)
+                .font(AppTheme.standardBookBody)
             HStack {
                 HStack{
                     Text("*")
