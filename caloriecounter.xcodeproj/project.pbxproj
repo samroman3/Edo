@@ -97,6 +97,7 @@
 		3A22EACD2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3A3679422BED868300A5A918 /* JF-Standard.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JF-Standard.otf"; sourceTree = "<group>"; };
 		3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
+		3A3679462BEEB3CA00A5A918 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A58D09F2BE6B1BF00CA243B /* trimblackedo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = trimblackedo.mov; sourceTree = "<group>"; };
 		3A58D0A52BE7F4AF00CA243B /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
@@ -242,6 +243,7 @@
 		3A58D0AB2BE816AC00CA243B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A3679462BEEB3CA00A5A918 /* HealthKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

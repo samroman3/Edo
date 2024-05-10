@@ -7,6 +7,7 @@
 import Combine
 import CoreData
 import UIKit
+import HealthKit
 
 class UserSettingsManager: ObservableObject {
     private let context: NSManagedObjectContext
@@ -28,6 +29,7 @@ class UserSettingsManager: ObservableObject {
     @Published var fatGoal: Double = 0.0
     @Published var dietaryPlan: String = ""
     
+    private var healthStore: HKHealthStore?
     
     @Published var canWriteToHealthApp: Bool = false
     @Published var canReadFromHealthApp: Bool = false
@@ -36,6 +38,9 @@ class UserSettingsManager: ObservableObject {
         self.context = context
         self.loadUserSettings()
         NotificationCenter.default.addObserver(self, selector: #selector(ubiquitousKeyValueStoreDidChange(_:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: NSUbiquitousKeyValueStore.default)
+        if HKHealthStore.isHealthDataAvailable() {
+            healthStore = HKHealthStore()
+        }
     }
 
     deinit {
@@ -43,8 +48,12 @@ class UserSettingsManager: ObservableObject {
     }
 
     @objc private func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
-        // Handle changes as needed, for example, reload flags
+        DispatchQueue.main.async {
+            self.canWriteToHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canWriteToHealthApp")
+            self.canReadFromHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canReadFromHealthApp")
+        }
     }
+
 
     //Mark: Key Value iCloud Markers
 
@@ -148,7 +157,59 @@ class UserSettingsManager: ObservableObject {
         settings.unitSystem = unitSystem
         settings.userName = userName
         settings.userEmail = userEmail
+
         saveContext()
+        loadUserSettings()
+
+        if canWriteToHealthApp {
+            saveHealthDataToHealthKit()
+        }
+    }
+    
+    func saveHealthDataToHealthKit() {
+        guard let healthStore = healthStore,
+              canWriteToHealthApp else { return }
+        let weightQuantity = HKQuantity(unit: HKUnit.gramUnit(with: .kilo), doubleValue: weight)
+        let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass)!
+        let weightSample = HKQuantitySample(type: weightType, quantity: weightQuantity, start: Date(), end: Date())
+
+        let heightQuantity = HKQuantity(unit: HKUnit.meter(), doubleValue: height / 100) // Convert cm to meters
+        let heightType = HKQuantityType.quantityType(forIdentifier: .height)!
+        let heightSample = HKQuantitySample(type: heightType, quantity: heightQuantity, start: Date(), end: Date())
+
+        healthStore.save([weightSample, heightSample]) { success, error in
+            if !success {
+                print("Error saving to HealthKit: \(String(describing: error))")
+            }
+        }
+    }
+    
+    func updateHealthInformation() {
+        guard let healthStore = healthStore else { return }
+
+        let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass)!
+        let heightType = HKQuantityType.quantityType(forIdentifier: .height)!
+
+        let queryWeight = HKSampleQuery(sampleType: weightType, predicate: nil, limit: 1, sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]) { _, results, _ in
+            if let result = results?.first as? HKQuantitySample {
+                let weightInKilograms = result.quantity.doubleValue(for: HKUnit.gramUnit(with: .kilo))
+                DispatchQueue.main.async {
+                    self.weight = weightInKilograms
+                }
+            }
+        }
+
+        let queryHeight = HKSampleQuery(sampleType: heightType, predicate: nil, limit: 1, sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]) { _, results, _ in
+            if let result = results?.first as? HKQuantitySample {
+                let heightInMeters = result.quantity.doubleValue(for: HKUnit.meter())
+                DispatchQueue.main.async {
+                    self.height = heightInMeters * 100 // Convert to cm
+                }
+            }
+        }
+
+        healthStore.execute(queryWeight)
+        healthStore.execute(queryHeight)
     }
 
     func saveDietaryGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double, dietaryPlan: String = "Custom") {

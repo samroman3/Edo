@@ -11,20 +11,24 @@ import HealthKit
 struct HealthKitConsentView: View {
     @Binding var isPresented: Bool
     let healthStore = HKHealthStore()
-    var onFetchComplete: ((String, String, String, String) -> Void)?
     
+    var onFetchComplete: ((String, String, String, String) -> Void)?
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 Text("Health Data Access")
-                    .font(AppTheme.standardBookLargeTitle)
-                Text("Edo would like to use data from the Health app to streamline your experience. This includes your gender, date of birth, height, and weight. All data is stored privately and only accessible to you through iCloud.")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding()
+                
+                Text("We would like to use data from the Health app to streamline your experience. This includes your gender, date of birth, height, and weight. All data is stored privately and only accessible to you through iCloud.")
                     .font(.callout)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.primary)
                     .padding()
                 
                 continueButton
+                
                 Button(action: {
                     isPresented = false
                 }) {
@@ -32,12 +36,14 @@ struct HealthKitConsentView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(.clear)
+                        .background(Color.red)
                         .cornerRadius(10)
                 }
+                .padding(.horizontal)
                 
                 Spacer()
             }
+            .navigationBarTitle("HealthKit Permission", displayMode: .inline)
             .padding()
         }
     }
@@ -45,13 +51,12 @@ struct HealthKitConsentView: View {
     private var continueButton: some View {
         Button(action: {
             requestHealthKitPermission()
-            HapticFeedbackProvider.impact()
         }) {
             Text("Continue")
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(AppTheme.carrot)
+                .background(Color.blue)
                 .cornerRadius(10)
         }
         .padding(.horizontal)
@@ -62,35 +67,45 @@ struct HealthKitConsentView: View {
               let dateOfBirthType = HKObjectType.characteristicType(forIdentifier: .dateOfBirth),
               let heightType = HKObjectType.quantityType(forIdentifier: .height),
               let bodyMassType = HKObjectType.quantityType(forIdentifier: .bodyMass) else {
-            // One or more of the required types are unavailable
+            print("One or more required types are unavailable.")
             return
         }
         
-        let readTypes = Set([biologicalSexType, dateOfBirthType, heightType, bodyMassType])
-        
+        // Define the data types that may be written and read from HealthKit.
+        let readTypes: Set<HKObjectType> = [biologicalSexType, dateOfBirthType, heightType, bodyMassType]
+        let writeTypes: Set<HKSampleType> = [heightType, bodyMassType]
+
         // Check if HealthKit is available
         if HKHealthStore.isHealthDataAvailable() {
-            // Request authorization
-            healthStore.requestAuthorization(toShare: nil, read: readTypes) { (success, error) in
+            healthStore.requestAuthorization(toShare: writeTypes, read: readTypes) { success, error in
                 if success {
-                    fetchDataFromHealthKit()
+                    DispatchQueue.main.async {
+                        fetchDataFromHealthKit()
+                    }
                 } else {
-                    print("error accesing healthkit, check permissions")
+                    print("Error accessing HealthKit: \(error?.localizedDescription ?? "Unknown error")")
                 }
             }
+        } else {
+            print("HealthKit is not available on this device.")
         }
     }
-    private func fetchDataFromHealthKit(){
+    
+    private func fetchDataFromHealthKit() {
         let dispatchGroup = DispatchGroup()
         var weight = ""
         var height = ""
         var age = ""
         var sex = ""
+
         // Fetch Height
         if let heightType = HKSampleType.quantityType(forIdentifier: .height) {
             dispatchGroup.enter()
-            fetchMostRecentSample(for: heightType) { (sample, error) in
-                height = (sample as? HKQuantitySample)?.quantity.doubleValue(for: HKUnit.meterUnit(with: .centi)).description ?? ""             
+            fetchMostRecentSample(for: heightType) { sample, error in
+                if let sample = sample as? HKQuantitySample {
+                    let meters = sample.quantity.doubleValue(for: HKUnit.meter())
+                    height = String(format: "%.2f", meters)
+                }
                 dispatchGroup.leave()
             }
         }
@@ -98,67 +113,72 @@ struct HealthKitConsentView: View {
         // Fetch Weight
         if let weightType = HKSampleType.quantityType(forIdentifier: .bodyMass) {
             dispatchGroup.enter()
-            fetchMostRecentSample(for: weightType) { (sample, error) in
-                weight = (sample as? HKQuantitySample)?.quantity.doubleValue(for: HKUnit.gramUnit(with: .kilo)).description ?? ""
+            fetchMostRecentSample(for: weightType) { sample, error in
+                if let sample = sample as? HKQuantitySample {
+                    let kilograms = sample.quantity.doubleValue(for: HKUnit.gramUnit(with: .kilo))
+                    weight = String(format: "%.2f", kilograms)
+                }
                 dispatchGroup.leave()
             }
         }
         
         // Fetch Biological Sex
+        dispatchGroup.enter()
         do {
-            dispatchGroup.enter()
             let biologicalSex = try healthStore.biologicalSex().biologicalSex
             sex = biologicalSex.stringRepresentation()
-            dispatchGroup.leave()
         } catch {
-            print("error getting sex")
+            print("Error fetching biological sex: \(error.localizedDescription)")
         }
+        dispatchGroup.leave()
         
         // Fetch Age (Date of Birth)
+        dispatchGroup.enter()
         do {
-            dispatchGroup.enter()
             let birthdayComponents = try healthStore.dateOfBirthComponents()
             let calendar = Calendar.current
-            let ageDate = calendar.dateComponents([.year], from: birthdayComponents.date!, to: Date()).year!
-            age = String(ageDate)
-            dispatchGroup.leave()
+            let ageComponents = calendar.dateComponents([.year], from: birthdayComponents.date ?? Date(), to: Date())
+            age = "\(ageComponents.year ?? 0)"
         } catch {
-            print("error getting age")
+            print("Error fetching date of birth: \(error.localizedDescription)")
         }
+        dispatchGroup.leave()
         
+        // Once all data is fetched, update the UI
         dispatchGroup.notify(queue: .main) {
-               self.onFetchComplete?(age, weight, height, sex)
-               self.isPresented = false
-           }
-
+            onFetchComplete?(age, weight, height, sex)
+            isPresented = false
+        }
     }
     
     private func fetchMostRecentSample(for sampleType: HKSampleType, completion: @escaping (HKSample?, Error?) -> Void) {
         let mostRecentPredicate = HKQuery.predicateForSamples(withStart: Date.distantPast, end: Date(), options: .strictEndDate)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-        let query = HKSampleQuery(sampleType: sampleType, predicate: mostRecentPredicate, limit: 1, sortDescriptors: [sortDescriptor]) { query, samples, error in
+        
+        let query = HKSampleQuery(sampleType: sampleType, predicate: mostRecentPredicate, limit: 1, sortDescriptors: [sortDescriptor]) { _, samples, error in
             DispatchQueue.main.async {
                 completion(samples?.first, error)
             }
         }
+        
         healthStore.execute(query)
     }
 }
 
-    extension HKBiologicalSex {
-        func stringRepresentation() -> String {
-            switch self {
-            case .female: return "Female"
-            case .male: return "Male"
-            case .other: return "Other"
-            default: return "Not Set"
-            }
+extension HKBiologicalSex {
+    func stringRepresentation() -> String {
+        switch self {
+        case .female: return "Female"
+        case .male: return "Male"
+        case .other: return "Other"
+        default: return "Not Set"
         }
     }
+}
 
 struct HealthKitConsentView_Previews: PreviewProvider {
     static var previews: some View {
-        HealthKitConsentView(isPresented: .constant(true), onFetchComplete: {_,_,_,_ in })
+        HealthKitConsentView(isPresented: .constant(true), onFetchComplete: { _, _, _, _ in })
     }
 }
 

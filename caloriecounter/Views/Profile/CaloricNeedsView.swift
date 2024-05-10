@@ -237,7 +237,10 @@ struct CaloricNeedsView: View {
         }
         
         nutritionDataStore.updateTodayGoals(caloricNeeds: calToSave, protein: proteinToSave, carbs: carbToSave, fat: fatsToSave)
-        dailyLogManager.updateGoalsBasedOnDate()
+        
+        if !onboardEntry {
+            dailyLogManager.updateGoalsBasedOnDate()
+        }
         self.presentationMode.wrappedValue.dismiss()
     }
 
