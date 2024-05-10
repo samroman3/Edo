@@ -57,8 +57,6 @@ class NutritionDataStore: ObservableObject {
         return newLog
     }
     
-    
-    
     private func fetchOrCreateMeal(in dailyLog: DailyLog, type: String) -> Meal {
         let existingMeals = dailyLog.meals as? Set<Meal> ?? []
         if let existingMeal = existingMeals.first(where: { $0.type == type }) {
@@ -92,9 +90,7 @@ class NutritionDataStore: ObservableObject {
         newEntry.mealPhoto = mealPhoto
         newEntry.mealPhotoLink = mealPhotoLink ?? ""
         newEntry.isFavorite = isFavorite
-        
-//        newEntry.timestamp = date
-        
+                
         if let entries = meal.entries as? Set<NutritionEntry>, !entries.contains(newEntry) {
             meal.addToEntries(newEntry)
         }
@@ -114,9 +110,7 @@ class NutritionDataStore: ObservableObject {
         saveContext()
     }
     
-    
-    
-    
+
     // Read entries for a specific date
     func readEntries(for date: Date) -> [NutritionEntry] {
         let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
@@ -158,6 +152,20 @@ class NutritionDataStore: ObservableObject {
     }
 }
     
+    func updateTodayGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
+        let date = Date()
+        let dailyLog = fetchOrCreateDailyLog(for: date)
+
+        // Update the goals
+        dailyLog.calGoal = caloricNeeds
+        dailyLog.protGoal = protein
+        dailyLog.carbGoal = carbs
+        dailyLog.fatsGoal = fat
+
+        // Save the context to persist changes
+        saveContext()
+    }
+    
     // Update an existing entry
     func updateEntry(_ entry: NutritionEntry) {
         // Update entry properties as needed
@@ -181,4 +189,5 @@ class NutritionDataStore: ObservableObject {
         }
     }
 }
+
 

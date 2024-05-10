@@ -27,19 +27,7 @@ struct DailySummaryView: View {
                     // Macro percentages view
                     Spacer()
                     
-                    MacronutrientView(
-                        carbGoal: dailyLogManager.carbGoal,
-                        fatGoal: dailyLogManager.fatGoal,
-                        proteinGoal: dailyLogManager.proteinGoal,
-                        calorieGoal: dailyLogManager.calorieGoal,
-                        macros: (
-                            dailyLogManager.totalCaloriesConsumed,
-                            dailyLogManager.totalGramsCarbs,
-                            dailyLogManager.totalGramsProtein,
-                            dailyLogManager.totalGramsFats
-                        ),
-                        summaryViewModel: viewModel
-                    )
+                    MacronutrientView(summaryViewModel: viewModel)
                     Divider().background(AppTheme.textColor)
                     HStack {
                         MacroPieView(
@@ -65,16 +53,6 @@ struct DailySummaryView: View {
                     }
                     .padding(.horizontal)
                 }
-            }
-        }
-        .onAppear {
-            dailyLogManager.refreshData {
-                viewModel.refreshViewData()
-            }
-        }
-        .onReceive(dailyLogManager.$selectedDate) { _ in
-            dailyLogManager.refreshData {
-                viewModel.refreshViewData()
             }
         }
     }

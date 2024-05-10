@@ -10,7 +10,6 @@ struct MainView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSettingsManager: UserSettingsManager
     @EnvironmentObject var nutritionDataStore: NutritionDataStore
-    @EnvironmentObject var dailyLogManager: DailyLogManager
 
     
     var body: some View {
@@ -22,7 +21,7 @@ struct MainView: View {
                 })
             } else {
                 CustomTabBarView()
-                    .environmentObject(dailyLogManager)
+                    .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
                     .environmentObject(nutritionDataStore)
             }
         }

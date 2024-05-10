@@ -8,22 +8,18 @@
 import SwiftUI
 
 struct MacronutrientView: View {
-    @State var carbGoal: Double
-    @State var fatGoal: Double
-    @State var proteinGoal: Double
-    @State var calorieGoal: Double
-    @State var macros: (calories: Double, carbs: Double, protein: Double, fat: Double)
     @ObservedObject var summaryViewModel: DailySummaryViewModel
+    @EnvironmentObject var dailyLogManager: DailyLogManager
     
     var body: some View {
         VStack {
             HStack() {
-                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .calories , label: "Calories", consumed: macros.calories , goal: calorieGoal, color: AppTheme.sageGreen).onTapGesture {
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .calories , label: "Calories", consumed: dailyLogManager.totalCaloriesConsumed , goal: dailyLogManager.calorieGoal, color: AppTheme.sageGreen).onTapGesture {
                     withAnimation(.bouncy){
                         summaryViewModel.selectedMacro = .calories
                     }
                 }
-                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .protein, label: "Protein", consumed: macros.protein, goal: proteinGoal, color: AppTheme.lavender).onTapGesture {
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .protein, label: "Protein", consumed: dailyLogManager.totalGramsProtein, goal: dailyLogManager.proteinGoal, color: AppTheme.lavender).onTapGesture {
                     withAnimation(.bouncy) {
                         summaryViewModel.selectedMacro = .protein
                     }
@@ -31,12 +27,12 @@ struct MacronutrientView: View {
             }.padding()
 
             HStack{
-                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .carbs, label: "Carbs", consumed: macros.carbs, goal: carbGoal, color: AppTheme.goldenrod).onTapGesture {
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .carbs, label: "Carbs", consumed: dailyLogManager.totalGramsCarbs, goal: dailyLogManager.carbGoal, color: AppTheme.goldenrod).onTapGesture {
                     withAnimation(.bouncy) {
                         summaryViewModel.selectedMacro = .carbs
                     }
                 }
-                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .fats, label: "Fats", consumed: macros.fat, goal: fatGoal, color: AppTheme.carrot).onTapGesture {
+                MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .fats, label: "Fats", consumed: dailyLogManager.totalGramsFats, goal: dailyLogManager.fatGoal, color: AppTheme.carrot).onTapGesture {
                     withAnimation(.bouncy) {
                         summaryViewModel.selectedMacro = .fats
                     }
@@ -124,7 +120,3 @@ struct RingView: View {
     }
 }
 
-//
-//#Preview {
-//    MacronutrientView()
-//}

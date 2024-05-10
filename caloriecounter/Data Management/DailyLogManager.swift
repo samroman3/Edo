@@ -14,12 +14,12 @@ class DailyLogManager: ObservableObject {
     @Published var meals: [Meal] = []
     private var context: NSManagedObjectContext
     
-    @EnvironmentObject var userSettingsManager: UserSettingsManager
+    var userSettingsManager: UserSettingsManager
     
-    @Published var calorieGoal: Double = 1900.0
-    @Published var proteinGoal: Double = 110.0
-    @Published var fatGoal: Double = 50.0
-    @Published var carbGoal: Double = 80.0
+    @Published var calorieGoal: Double = 0.0
+    @Published var proteinGoal: Double = 0.0
+    @Published var fatGoal: Double = 0.0
+    @Published var carbGoal: Double = 0.0
     
     @Published var breakfastCalories: Double = 0.0
     @Published var lunchCalories: Double = 0.0
@@ -50,6 +50,7 @@ class DailyLogManager: ObservableObject {
     var totalCaloriesConsumed: Double {
         return breakfastCalories + lunchCalories + dinnerCalories + snackCalories
     }
+    
     private lazy var initialMacros: [String: Double] = {
         var initialMacros: [String: Double] = [:]
 
@@ -358,22 +359,13 @@ class DailyLogManager: ObservableObject {
     var snackFatsPercentage: Double {
         return snackFats / fatGoal
     }
-
-    // Call this method whenever the selected date changes or when the meals have been updated.
-    func refreshData(completion: (() -> Void)? = nil) {
-        fetchDailyLogForSelectedDate()
-        calculateMealCalories()
-        calculateMealFats()
-        calculateMealCarbs()
-        calculateMealProtein()
-        calculateMacronutrientTotals()
-        completion?()
-    }
     
-    init(context: NSManagedObjectContext, initialDate: Date = Date()) {
+    init(context: NSManagedObjectContext, userSettings: UserSettingsManager, initialDate: Date = Date()) {
         self.context = context
         self.selectedDate = initialDate
+        self.userSettingsManager = userSettings
         self.macros = initialMacros
+
         refreshData()
     }
 
@@ -381,7 +373,93 @@ class DailyLogManager: ObservableObject {
         selectedDate = newDate
         refreshData()
     }
+    
+    func refreshData(completion: (() -> Void)? = nil) {
+        fetchDailyLogForSelectedDate()
+        fetchGoalsFromDailyLog()
+        updateGoalsBasedOnDate()
+        calculateAllMeals()
+        calculateMacronutrientTotals()
+        completion?()
+    }
+    
+    private func calculateAllMeals() {
+        calculateMealCalories()
+        calculateMealProtein()
+        calculateMealCarbs()
+        calculateMealFats()
+    }
+    
+    // Fetch goals based on the selected date
+    func updateGoalsBasedOnDate() {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(selectedDate) || selectedDate > Date() {
+            // Use current goals from UserSettingsManager
+            calorieGoal = userSettingsManager.dailyCaloricNeeds
+            proteinGoal = userSettingsManager.proteinGoal
+            carbGoal = userSettingsManager.carbsGoal
+            fatGoal = userSettingsManager.fatGoal
+        } else {
+            // Fetch from CoreData if available (for past dates)
+            fetchGoalsFromDailyLog()
+        }
+    }
+    
 
+    private func fetchGoalsFromDailyLog() {
+        let request: NSFetchRequest<DailyLog> = DailyLog.fetchRequest()
+        let startOfDay = Calendar.current.startOfDay(for: selectedDate)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        request.predicate = NSPredicate(format: "(date >= %@) AND (date < %@)", startOfDay as NSDate, endOfDay as NSDate)
+        
+        do {
+            let results = try context.fetch(request)
+            if let dailyLog = results.first {
+                // Check if the goals exist and are greater than 0, otherwise reset to default
+                if dailyLog.calGoal > 0 {
+                    calorieGoal = dailyLog.calGoal
+                } else {
+                    calorieGoal = userSettingsManager.dailyCaloricNeeds
+                }
+
+                if dailyLog.protGoal > 0 {
+                    proteinGoal = dailyLog.protGoal
+                } else {
+                    proteinGoal = userSettingsManager.proteinGoal
+                }
+
+                if  dailyLog.carbGoal > 0 {
+                    carbGoal = dailyLog.carbGoal
+                } else {
+                    carbGoal = userSettingsManager.carbsGoal
+                }
+
+                if dailyLog.fatsGoal > 0 {
+                    fatGoal = dailyLog.fatsGoal
+                } else {
+                    fatGoal = userSettingsManager.fatGoal
+                }
+
+                // Update meals from the found log
+//                meals = Array(dailyLog.meals as? Set<Meal> ?? [])
+            } else {
+                // No log found, use user settings
+                resetToDefaultGoals()
+            }
+        } catch {
+            print("Error fetching DailyLog for goals: \(error)")
+            resetToDefaultGoals()
+        }
+    }
+    
+    private func resetToDefaultGoals() {
+        calorieGoal = userSettingsManager.dailyCaloricNeeds
+        proteinGoal = userSettingsManager.proteinGoal
+        carbGoal = userSettingsManager.carbsGoal
+        fatGoal = userSettingsManager.fatGoal
+    }
+    
     func fetchDailyLogForSelectedDate() {
         var calendar = Calendar.current
         calendar.timeZone = NSTimeZone.local
@@ -397,7 +475,7 @@ class DailyLogManager: ObservableObject {
             if let dailyLog = results.first {
                 // DailyLog exists, update meals and waterIntake
                 meals = Array(dailyLog.meals as? Set<Meal> ?? [])
-                waterIntake = dailyLog.waterIntake ?? 0.0
+                waterIntake = dailyLog.waterIntake
             } else {
                 // No DailyLog found, create a new one
                 let newDailyLog = DailyLog(context: context)
@@ -422,5 +500,3 @@ class DailyLogManager: ObservableObject {
         }
     }
 }
-
-

@@ -10,6 +10,8 @@ import SwiftUI
 
 struct CaloricNeedsView: View {
     @EnvironmentObject private var userSettingsManager: UserSettingsManager
+    @EnvironmentObject var dailyLogManager: DailyLogManager
+    @EnvironmentObject var nutritionDataStore: NutritionDataStore
     @Environment(\.presentationMode) var presentationMode
 
     @State private var selectedGoal: GoalSelectionView.Goal?
@@ -233,6 +235,9 @@ struct CaloricNeedsView: View {
         if onboardEntry {
             onComplete()
         }
+        
+        nutritionDataStore.updateTodayGoals(caloricNeeds: calToSave, protein: proteinToSave, carbs: carbToSave, fat: fatsToSave)
+        dailyLogManager.updateGoalsBasedOnDate()
         self.presentationMode.wrappedValue.dismiss()
     }
 
@@ -335,3 +340,4 @@ struct CaloricNeedsView: View {
     CaloricNeedsView(onboardEntry: true, onComplete: {})
         .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
 }
+
