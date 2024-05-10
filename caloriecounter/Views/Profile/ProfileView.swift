@@ -370,6 +370,11 @@ struct ProfileView: View {
         )
         
         userSettingsManager.loadUserSettings()
+        
+        //Show Caloric needs view if weight or height was changed with updated goals:
+        if weightToSave != userSettingsManager.weight || heightToSave != userSettingsManager.height || editingActivityLevel != userSettingsManager.activity {
+            showCaloricNeedsView.toggle()
+        }
     }
     
     private func loadImage() {
