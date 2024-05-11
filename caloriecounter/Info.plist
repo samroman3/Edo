@@ -4,8 +4,7 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>JF-Standard.otf</string>
-		<string></string>
+		<string>JF Standard.otf</string>
 	</array>
 </dict>
 </plist>

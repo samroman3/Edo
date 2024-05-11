@@ -58,7 +58,8 @@ struct MacronutrientRingView: View {
                 Text(label)
                     .font(AppTheme.standardBookBody)
                     .foregroundStyle(AppTheme.textColor)
-                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(consumed, specifier: "%.1f")/\(goal, specifier: "%.1f")g"))
+                    .padding()
+                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(Int(consumed))/\(Int(goal))g"))
             }
                 
         }.padding()

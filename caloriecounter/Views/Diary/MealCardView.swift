@@ -105,11 +105,11 @@ struct ChevronView: View {
             Spacer()
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                 .font(.system(size: 25))
-            HStack(alignment: .firstTextBaseline, spacing: 5){
-                MacroLabel.shared.labelView(macro: "calories", value:  Text("\(totalCalories, specifier: "%.f")g"))
-                MacroLabel.shared.labelView(macro: "protein", value:  Text("\(totalProtein, specifier: "%.f")g"))
-                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(totalCarbs, specifier: "%.f")g"))
-                MacroLabel.shared.labelView(macro: "fats", value:  Text("\(totalFats, specifier: "%.f")g"))
+            HStack(alignment: .firstTextBaseline, spacing: 3){
+                MacroLabel.shared.labelView(macro: "calories", value:  Text("\(Int(totalCalories))g"))
+                MacroLabel.shared.labelView(macro: "protein", value:  Text("\(Int(totalProtein))g"))
+                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(Int(totalProtein))g"))
+                MacroLabel.shared.labelView(macro: "fats", value:  Text("\(Int(totalFats))g"))
             }.padding()
             Spacer()
         }
