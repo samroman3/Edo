@@ -108,7 +108,7 @@ struct ChevronView: View {
             HStack(alignment: .firstTextBaseline, spacing: 3){
                 MacroLabel.shared.labelView(macro: "calories", value:  Text("\(Int(totalCalories))g"))
                 MacroLabel.shared.labelView(macro: "protein", value:  Text("\(Int(totalProtein))g"))
-                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(Int(totalProtein))g"))
+                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(Int(totalCarbs))g"))
                 MacroLabel.shared.labelView(macro: "fats", value:  Text("\(Int(totalFats))g"))
             }.padding()
             Spacer()
