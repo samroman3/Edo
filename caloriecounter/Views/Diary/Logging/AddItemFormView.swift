@@ -442,10 +442,6 @@ struct PreviousEntriesView: View {
         nutrientValues[.protein] = String(entry.protein)
         nutrientValues[.carbs] = String(entry.carbs)
         nutrientValues[.fats] = String(entry.fat)
-        userNote = entry.userNotes
-        if let image = UIImage(data: entry.mealPhoto){
-            mealPhoto = image
-        }
         dismiss()
     }
 }
@@ -457,7 +453,7 @@ struct MacroNutrientInputTile: View {
     @Binding var value: String?
     @Binding var isSelected: Bool
     @FocusState var isInputActive: Bool
-
+    //Wave Animation
     // Define maximum values for each nutrient for the purpose of the animation
 //    private let maxValues: [NutrientType: Double] = [
 //        .calories: 2000, .protein: 200, .carbs: 300, .fats: 100
@@ -499,6 +495,7 @@ struct MacroNutrientInputTile: View {
                 .padding()
                 .shadow(radius: 4, x: 2, y: 4)
             }
+            //Wave Animation
 //            .background(
 //                addItemEntry ? AnyView(
 //                    Wave(offSet: Angle(degrees: waveOffset.degrees), percent: nutrientPercent)
