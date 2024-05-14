@@ -7,7 +7,7 @@ An intuitive way to track your daily eating habits.
 ---
 
 ## About
-Eazeat is a calorie and nutrition tracking app designed to make meal tracking and dietary management both fun and easy. With a focus on simplicity and a user-friendly interface, Eazeat helps you stay on top of your eating habits without the hassle.
+Edo is a calorie and nutrition tracking app designed to make meal tracking and dietary management both fun and easy. With a focus on simplicity and a user-friendly interface, Eazeat helps you stay on top of your eating habits without the hassle.
 
 ## Features
 - 🥗 **Track Your Meals:** Log your breakfast, lunch, dinner, and snacks with ease.
