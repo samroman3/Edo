@@ -1,4 +1,4 @@
-# Eazeat 
+# Edo 
 <img src="https://github.com/samroman3/eazeat/assets/52180475/9fa792f1-1ea4-4ce1-82c1-3664e275ec6a" width = "200" height = "200">
 
 
