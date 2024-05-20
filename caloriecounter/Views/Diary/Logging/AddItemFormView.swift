@@ -74,7 +74,7 @@ struct AddItemFormView: View {
                     TextField("Enter Name...", text: $name)
                         .focused($isNameTextFieldFocused)
                         .foregroundColor(AppTheme.textColor)
-                        .font(.title3)
+                        .font(AppTheme.standardBookBody)
                         .fontWeight(.light)
                         .multilineTextAlignment(.leading)
                         .padding(.horizontal)
@@ -151,7 +151,7 @@ struct AddItemFormView: View {
                                     TextField("Enter a note...", text: $userNote)
                                         .focused($isUserNoteFocused)
                                         .foregroundColor(AppTheme.textColor)
-                                        .font(.title2)
+                                        .font(AppTheme.standardBookBody)
                                         .fontWeight(.light)
                                         .multilineTextAlignment(.leading)
                                         .padding(.horizontal)
@@ -231,6 +231,7 @@ struct AddItemFormView: View {
                                                 HStack {
                                                     Spacer()
                                                     Text("+ Add Image")
+                                                        .font(AppTheme.standardBookLargeTitle)
                                                         .foregroundColor(AppTheme.textColor)
                                                     Spacer()
                                                 }
@@ -257,9 +258,8 @@ struct AddItemFormView: View {
                                 })
                                 .keyboardType(.decimalPad)
                                 .focused($isInputActive)
-                                .font(.largeTitle)
+                                .font(AppTheme.standardBookLargeTitle)
                                 .frame(height: 70)
-                                .fontWeight(.light)
                                 .padding(.horizontal)
                                 .foregroundColor(AppTheme.textColor)
                                 Spacer()
@@ -284,8 +284,7 @@ struct AddItemFormView: View {
                                 isPresented = false
                             }) {
                                 Text("Add +")
-                                    .font(.title)
-                                    .fontWeight(.light)
+                                    .font(AppTheme.standardBookLargeTitle)
                                     .frame(height: 70)
                                     .frame(maxWidth: .infinity)
                                     .foregroundColor(AppTheme.textColor)
@@ -326,11 +325,11 @@ struct AddItemFormView: View {
                     VStack(alignment: .center) {
                         HStack {
                             Text(value ?? "")
+                                .font(AppTheme.standardBookBody)
                             Text("mg")
+                                .font(AppTheme.standardBookBody)
                         }
                         .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)
-                        .font(.headline)
-                        .fontWeight(.light)
                         Text(nutrient.rawValue)
                     }
                     .foregroundColor(isSelected ? AppTheme.reverse : AppTheme.textColor)

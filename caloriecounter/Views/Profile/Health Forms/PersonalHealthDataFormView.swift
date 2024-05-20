@@ -102,13 +102,10 @@ struct PersonalHealthDataFormView: View {
                         Text(formError)
                             .foregroundColor(.red)
                     }
-                    Image(systemName: "info.circle")
-                        .foregroundStyle(AppTheme.carrot)
-                    Text("Calculations are made using the Harris-Benedict equation and may not be suitable for everyone. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals.")
-                        .font(AppTheme.standardBookCaption)
-                        .multilineTextAlignment(.center)
                 }
-                 calculateButton
+
+                calculateButton
+                
                 .sheet(isPresented: $showHealthKitConsent) {
                     HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
                         self.age = age
@@ -133,6 +130,33 @@ struct PersonalHealthDataFormView: View {
                     )
                     .environmentObject(userSettingsManager)
                 }
+                
+                Image(systemName: "info.circle")
+                    .foregroundStyle(AppTheme.carrot)
+               
+                    VStack(alignment: .center) {
+                        Text("Calculations are made using the Mifflin-St Jeor equation and may not be suitable for everyone. This app is not intended to diagnose, treat, cure, or prevent any disease. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals. Learn more from the following sources:")
+                            .font(AppTheme.standardBookCaption)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.gray)
+                        
+                        VStack(alignment: .center) {
+                            Link("Mifflin-St Jeor Equation", destination: URL(string: "https://reference.medscape.com/calculator/846/mifflin-st-jeor-equation")!)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        VStack(alignment: .center) {
+                            Link("Research on BMR", destination: URL(string: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7478086/")!)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        VStack(alignment: .center) {
+                            Link("Journal Article", destination: URL(string: "https://www.jandonline.org/article/S0002-8223(05)00149-5/abstract")!)
+                                .foregroundColor(.blue)
+                    }
+
+                }
+                .padding(.vertical)
             }
             .background(Color(.systemBackground))
             .onAppear {
@@ -162,6 +186,7 @@ struct PersonalHealthDataFormView: View {
         .padding(.horizontal)
         .padding(.bottom, 20)
     }
+    
     private func convertValuesForUnitSystem(_ unitSystem: UnitSystem) {
         switch unitSystem {
         case .metric:
@@ -256,6 +281,3 @@ struct PersonalHealthDataFormView_Previews: PreviewProvider {
             .environment(\.colorScheme, .dark) // Preview in dark mode
     }
 }
-
-
-

@@ -322,9 +322,8 @@ struct CaloricNeedsView: View {
         }
     }
 }
-    
-    #Preview {
-        CaloricNeedsView(onboardEntry: true, onComplete: {})
-            .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
-//            .environmentObject(DailyLogManager(context: context, userSettings: UserSettingsManager(context: context)))
-    }
+
+#Preview {
+    CaloricNeedsView(onboardEntry: true, onComplete: {})
+        .environmentObject(UserSettingsManager(context: PersistenceController(inMemory: false).container.viewContext))
+}
