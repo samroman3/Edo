@@ -769,6 +769,7 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Edo would like to access the camera to scan barcodes and provide nutrtional data.";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Access is needed to read your health data.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Edo requires access to write nutritional data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Access is needed to write your health data.";
@@ -812,6 +813,7 @@
 				INFOPLIST_FILE = caloriecounter/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Edo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Edo would like to access the camera to scan barcodes and provide nutrtional data.";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Access is needed to read your health data.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "\"Edo requires access to write nutritional data to HealthKit to keep all your health information in one place and to track your fitness goals.\"";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Access is needed to write your health data.";

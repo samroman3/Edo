@@ -8,14 +8,17 @@
 import SwiftUI
 
 struct DailySummaryView: View {
-    @EnvironmentObject private var dailyLogManager: DailyLogManager
-    @EnvironmentObject private var mealSelectionViewModel: MealSelectionViewModel
-    @EnvironmentObject private var nutritionDataStore: NutritionDataStore
+    @ObservedObject private var dailyLogManager: DailyLogManager
+    @ObservedObject private var nutritionDataStore: NutritionDataStore
     
     @ObservedObject private var viewModel: DailySummaryViewModel
     
-    init(viewModel: DailySummaryViewModel) {
-        self.viewModel = viewModel
+    init(dailyLogManager: DailyLogManager, dataStore: NutritionDataStore) {
+        self.dailyLogManager = dailyLogManager
+        self.nutritionDataStore = dataStore
+        
+        self.viewModel = DailySummaryViewModel(dailyLogManager: dailyLogManager)
+        
     }
     
     var body: some View {
@@ -54,6 +57,8 @@ struct DailySummaryView: View {
                     .padding(.horizontal)
                 }
             }
+        }.onAppear(){
+            dailyLogManager.refreshData()
         }
     }
     
