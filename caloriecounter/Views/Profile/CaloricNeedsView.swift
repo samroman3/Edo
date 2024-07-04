@@ -141,93 +141,93 @@ struct CaloricNeedsView: View {
     }
     
     private func calculateBMR() -> Double {
-            let weightInKg = userSettingsManager.weight
-            let heightInCm = userSettingsManager.height
-            let age = Double(userSettingsManager.age)
-            
-            if userSettingsManager.sex == "Female" {
-                return 447.593 + (9.247 * weightInKg) + (3.098 * heightInCm) - (4.330 * age)
-            } else {
-                return 88.362 + (13.397 * weightInKg) + (4.799 * heightInCm) - (5.677 * age)
-            }
-        }
-        
-        private func getActivityMultiplier() -> Double {
-            switch userSettingsManager.activity {
-            case "Sedentary": return 1.2
-            case "Lightly Active": return 1.375
-            case "Moderately Active": return 1.55
-            case "Very Active": return 1.725
-            default: return 1.2
-            }
-        }
+          let weightInKg = userSettingsManager.weight
+          let heightInCm = userSettingsManager.height
+          let age = Double(userSettingsManager.age)
+          
+          if userSettingsManager.sex == "Female" {
+              return 447.593 + (9.247 * weightInKg) + (3.098 * heightInCm) - (4.330 * age)
+          } else {
+              return 88.362 + (13.397 * weightInKg) + (4.799 * heightInCm) - (5.677 * age)
+          }
+      }
+      
+      private func getActivityMultiplier() -> Double {
+          switch userSettingsManager.activity {
+          case "Sedentary": return 1.2
+          case "Lightly Active": return 1.375
+          case "Moderately Active": return 1.55
+          case "Very Active": return 1.725
+          default: return 1.2
+          }
+      }
     
     private func calculateCaloricNeeds() {
-           let bmr = calculateBMR()
-           let activityMultiplier = getActivityMultiplier()
-           var adjustedCaloricNeeds = bmr * activityMultiplier
-           
-           adjustCaloricNeedsBasedOnGoal(&adjustedCaloricNeeds)
-           
-           nutrientValues[.calories] = String(format: "%.0f", adjustedCaloricNeeds)
-           updateMacros(for: adjustedCaloricNeeds)
-       }
+          let bmr = calculateBMR()
+          let activityMultiplier = getActivityMultiplier()
+          var adjustedCaloricNeeds = bmr * activityMultiplier
+          
+          adjustCaloricNeedsBasedOnGoal(&adjustedCaloricNeeds)
+          
+          nutrientValues[.calories] = String(format: "%.0f", adjustedCaloricNeeds)
+          updateMacros(for: adjustedCaloricNeeds)
+      }
        
-       private func adjustCaloricNeedsBasedOnGoal(_ caloricNeeds: inout Double) {
+    private func adjustCaloricNeedsBasedOnGoal(_ caloricNeeds: inout Double) {
            guard let goal = selectedGoal else { return }
            
            switch goal {
            case .loseWeight:
-               caloricNeeds = max(1200, caloricNeeds - 500) // 500 calorie deficit, but not below 1200
+               caloricNeeds = max(1200, caloricNeeds * 0.85) // 15% deficit, but not below 1200
            case .gainWeight:
-               caloricNeeds += 300 // 300 calorie surplus for gradual weight gain
+               caloricNeeds *= 1.1 // 10% surplus for gradual weight gain
            case .buildMuscle:
-               caloricNeeds += 200 // 200 calorie surplus for lean muscle gain
+               caloricNeeds *= 1.05 // 5% surplus for lean muscle gain
            case .enhancePerformance, .maintainWeight:
                break // No change
            case .custom:
                break // No change, user will input their own values
            }
        }
+       
     
     private func updateMacros(for caloricNeeds: Double) {
-        guard let goal = selectedGoal else { return }
-        
-        var proteinRatio = 0.3
-        var carbsRatio = 0.4
-        var fatRatio = 0.3
-        
-        switch goal {
-        case .loseWeight:
-            proteinRatio = 0.35
-            carbsRatio = 0.35
-            fatRatio = 0.3
-        case .gainWeight:
-            proteinRatio = 0.25
-            carbsRatio = 0.5
-            fatRatio = 0.25
-        case .buildMuscle:
-            proteinRatio = 0.35
-            carbsRatio = 0.45
-            fatRatio = 0.2
-        case .enhancePerformance:
-            proteinRatio = 0.3
-            carbsRatio = 0.5
-            fatRatio = 0.2
-        case .maintainWeight:
-            var proteinRatio = 0.3
-            var carbsRatio = 0.4
-            var fatRatio = 0.3
-        case .custom:
-            // Use user-input values
-            return
-        }
+           guard let goal = selectedGoal else { return }
+           
+           let weightInKg = userSettingsManager.weight
+           
+           var proteinMultiplier: Double
+           var fatMultiplier: Double
+           
+           switch goal {
+           case .loseWeight:
+               proteinMultiplier = 1.6 // grams per kg of body weight
+               fatMultiplier = 0.8 // grams per kg of body weight
+           case .gainWeight, .buildMuscle:
+               proteinMultiplier = 2.0
+               fatMultiplier = 1.0
+           case .enhancePerformance:
+               proteinMultiplier = 1.8
+               fatMultiplier = 1.0
+           case .maintainWeight:
+               proteinMultiplier = 1.6
+               fatMultiplier = 0.9
+           case .custom:
+               // Use user-input values
+               return
+           }
 
-        // Update macros based on ratios and caloric needs
-        nutrientValues[.protein] = String(format: "%.0f", (caloricNeeds * proteinRatio) / proteinPerCalorie)
-        nutrientValues[.carbs] = String(format: "%.0f", (caloricNeeds * carbsRatio) / carbsPerCalorie)
-        nutrientValues[.fats] = String(format: "%.0f", (caloricNeeds * fatRatio) / fatPerCalorie)
-    }
+           let proteinGrams = weightInKg * proteinMultiplier
+           let fatGrams = weightInKg * fatMultiplier
+           let proteinCalories = proteinGrams * proteinPerCalorie
+           let fatCalories = fatGrams * fatPerCalorie
+           let carbsCalories = caloricNeeds - proteinCalories - fatCalories
+           let carbsGrams = carbsCalories / carbsPerCalorie
+
+           nutrientValues[.protein] = String(format: "%.0f", proteinGrams)
+           nutrientValues[.carbs] = String(format: "%.0f", max(0, carbsGrams))
+           nutrientValues[.fats] = String(format: "%.0f", fatGrams)
+       }
     
     private func saveCaloricNeeds() {
         guard let cal = nutrientValues[.calories], let caloricNeeds = Double(cal) else { return }
