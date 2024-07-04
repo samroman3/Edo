@@ -24,8 +24,7 @@ struct MacronutrientView: View {
                         summaryViewModel.selectedMacro = .protein
                     }
                 }
-            }.padding()
-
+            }
             HStack{
                 MacronutrientRingView(isSelected: summaryViewModel.selectedMacro == .carbs, label: "Carbs", consumed: dailyLogManager.totalGramsCarbs, goal: dailyLogManager.carbGoal, color: AppTheme.goldenrod).onTapGesture {
                     withAnimation(.bouncy) {
@@ -37,7 +36,8 @@ struct MacronutrientView: View {
                         summaryViewModel.selectedMacro = .fats
                     }
                 }
-            }.padding()
+            }
+            Spacer()
         }
     }
 }
