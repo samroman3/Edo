@@ -8,13 +8,24 @@
 import Foundation
 import Combine
 import CoreData
-
+import WidgetKit
 
 class NutritionDataStore: ObservableObject {
     let context: NSManagedObjectContext
     
+    
+    
+    private let userDefaults: UserDefaults
+    
+    private let appGroupIdentifier = "group.com.samroman.caloriecounter"
+    
     init(context: NSManagedObjectContext) {
         self.context = context
+        if let groupDefaults = UserDefaults(suiteName: appGroupIdentifier) {
+                   self.userDefaults = groupDefaults
+               } else {
+                   fatalError("Failed to initialize UserDefaults with App Group")
+               }
     }
     
     // Create a new entry
@@ -102,13 +113,18 @@ class NutritionDataStore: ObservableObject {
         let dailyLog = fetchOrCreateDailyLog(for: date)
         dailyLog.waterIntake = intake
         saveContext()
+        userDefaults.set(intake, forKey: "currentWaterIntake")
     }
     
     func resetWaterIntake(date: Date) {
         let dailyLog = fetchOrCreateDailyLog(for: date)
         dailyLog.waterIntake = 0.0
         saveContext()
+        userDefaults.set(0.0, forKey: "currentWaterIntake")
+        WidgetCenter.shared.reloadTimelines(ofKind:"WaterIntakeWidget")
     }
+    
+    
     
 
     // Read entries for a specific date

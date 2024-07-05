@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import SwiftUI
+import WidgetKit
 
 class DailyLogManager: ObservableObject {
     @Published var selectedDate: Date
@@ -42,10 +43,13 @@ class DailyLogManager: ObservableObject {
     @Published var snackFats = 0.0
     
     @Published var waterIntake: Double = 0.0
+    @Published var waterIntakeGoal: Double = 2.7
+
  
     @Published var totalGramsCarbs: Double = 0.0
     @Published var totalGramsProtein: Double = 0.0
     @Published var totalGramsFats: Double = 0.0
+    
     
     var totalCaloriesConsumed: Double {
         return breakfastCalories + lunchCalories + dinnerCalories + snackCalories
@@ -360,13 +364,42 @@ class DailyLogManager: ObservableObject {
         return snackFats / fatGoal
     }
     
+    private let userDefaults: UserDefaults
+    
+    private let appGroupIdentifier = "group.com.samroman.caloriecounter"
+    
     init(context: NSManagedObjectContext, userSettings: UserSettingsManager, initialDate: Date = Date()) {
         self.context = context
         self.selectedDate = initialDate
         self.userSettingsManager = userSettings
+        if let groupDefaults = UserDefaults(suiteName: appGroupIdentifier) {
+                   self.userDefaults = groupDefaults
+               } else {
+                   fatalError("Failed to initialize UserDefaults with App Group")
+               }
         self.macros = initialMacros
 
         refreshData()
+    }
+    func saveDataForWidget() {
+        userDefaults.set(totalCaloriesConsumed, forKey: "totalCaloriesConsumed")
+        userDefaults.set(calorieGoal, forKey: "calorieGoal")
+        userDefaults.set(totalGramsProtein, forKey: "totalGramsProtein")
+        userDefaults.set(proteinGoal, forKey: "proteinGoal")
+        userDefaults.set(totalGramsCarbs, forKey: "totalGramsCarbs")
+        userDefaults.set(carbGoal, forKey: "carbGoal")
+        userDefaults.set(totalGramsFats, forKey: "totalGramsFats")
+        userDefaults.set(fatGoal, forKey: "fatGoal")
+        
+        // Save individual meal calories
+        userDefaults.set(breakfastCalories, forKey: "breakfastCalories")
+        userDefaults.set(lunchCalories, forKey: "lunchCalories")
+        userDefaults.set(dinnerCalories, forKey: "dinnerCalories")
+        userDefaults.set(snackCalories, forKey: "snackCalories")
+        
+        userDefaults.set(waterIntake, forKey: "currentWaterIntake")
+        userDefaults.set(waterIntakeGoal, forKey: "waterIntakeGoal")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func updateSelectedDate(newDate: Date) {
@@ -380,6 +413,7 @@ class DailyLogManager: ObservableObject {
         updateGoalsBasedOnDate()
         calculateAllMeals()
         calculateMacronutrientTotals()
+        saveDataForWidget()
         completion?()
     }
     

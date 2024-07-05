@@ -19,6 +19,14 @@
 		3A3679452BEE8D5C00A5A918 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3679442BEE8D5C00A5A918 /* PermissionsView.swift */; };
 		3A3679492BEEC71400A5A918 /* edoSplash.mov in Resources */ = {isa = PBXBuildFile; fileRef = 3A3679482BEEC71300A5A918 /* edoSplash.mov */; };
 		3A36794B2BEECEB900A5A918 /* iCloudRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36794A2BEECEB900A5A918 /* iCloudRequiredView.swift */; };
+		3A42391D2C37516300C93BB4 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A42391C2C37516300C93BB4 /* WidgetKit.framework */; };
+		3A42391F2C37516300C93BB4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A42391E2C37516300C93BB4 /* SwiftUI.framework */; };
+		3A4239222C37516300C93BB4 /* MacroWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4239212C37516300C93BB4 /* MacroWidgetBundle.swift */; };
+		3A4239242C37516300C93BB4 /* MacroWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4239232C37516300C93BB4 /* MacroWidget.swift */; };
+		3A4239262C37516500C93BB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A4239252C37516500C93BB4 /* Assets.xcassets */; };
+		3A42392A2C37516500C93BB4 /* MacroWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3A42391B2C37516300C93BB4 /* MacroWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3A4239312C37558F00C93BB4 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4239302C37558F00C93BB4 /* AppTheme.swift */; };
+		3A4239322C37558F00C93BB4 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4239302C37558F00C93BB4 /* AppTheme.swift */; };
 		3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */; };
 		3A58D0A62BE7F4AF00CA243B /* Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A52BE7F4AF00CA243B /* Wave.swift */; };
 		3A58D0A82BE7F4FD00CA243B /* MockNutritionDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A72BE7F4FD00CA243B /* MockNutritionDataStore.swift */; };
@@ -71,6 +79,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3A4239282C37516500C93BB4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AF36CA02B106C2300775DF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A42391A2C37516300C93BB4;
+			remoteInfo = MacroWidgetExtension;
+		};
 		3AF36CBB2B106C2500775DF6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3AF36CA02B106C2300775DF6 /* Project object */;
@@ -87,6 +102,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3A42392B2C37516500C93BB4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3A42392A2C37516500C93BB4 /* MacroWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		3A0829ED2B2CB66B001EB95E /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
 		3A0829EF2B3DE8EA001EB95E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -101,6 +130,15 @@
 		3A3679462BEEB3CA00A5A918 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		3A3679482BEEC71300A5A918 /* edoSplash.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = edoSplash.mov; sourceTree = "<group>"; };
 		3A36794A2BEECEB900A5A918 /* iCloudRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudRequiredView.swift; sourceTree = "<group>"; };
+		3A42391B2C37516300C93BB4 /* MacroWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MacroWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A42391C2C37516300C93BB4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		3A42391E2C37516300C93BB4 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		3A4239212C37516300C93BB4 /* MacroWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroWidgetBundle.swift; sourceTree = "<group>"; };
+		3A4239232C37516300C93BB4 /* MacroWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroWidget.swift; sourceTree = "<group>"; };
+		3A4239252C37516500C93BB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3A4239272C37516500C93BB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3A42392F2C37517000C93BB4 /* MacroWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacroWidgetExtension.entitlements; sourceTree = "<group>"; };
+		3A4239302C37558F00C93BB4 /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTheme.swift; path = "caloriecounter/Supporting Files/AppTheme.swift"; sourceTree = SOURCE_ROOT; };
 		3A52A8E42B5C5071001C7B47 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3A58D0A52BE7F4AF00CA243B /* Wave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wave.swift; sourceTree = "<group>"; };
 		3A58D0A72BE7F4FD00CA243B /* MockNutritionDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNutritionDataStore.swift; sourceTree = "<group>"; };
@@ -158,6 +196,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3A4239182C37516300C93BB4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A42391F2C37516300C93BB4 /* SwiftUI.framework in Frameworks */,
+				3A42391D2C37516300C93BB4 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AF36CA52B106C2300775DF6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -243,10 +290,24 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		3A4239202C37516300C93BB4 /* MacroWidget */ = {
+			isa = PBXGroup;
+			children = (
+				3A4239212C37516300C93BB4 /* MacroWidgetBundle.swift */,
+				3A4239232C37516300C93BB4 /* MacroWidget.swift */,
+				3A4239302C37558F00C93BB4 /* AppTheme.swift */,
+				3A4239252C37516500C93BB4 /* Assets.xcassets */,
+				3A4239272C37516500C93BB4 /* Info.plist */,
+			);
+			path = MacroWidget;
+			sourceTree = "<group>";
+		};
 		3A58D0AB2BE816AC00CA243B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				3A3679462BEEB3CA00A5A918 /* HealthKit.framework */,
+				3A42391C2C37516300C93BB4 /* WidgetKit.framework */,
+				3A42391E2C37516300C93BB4 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -334,7 +395,9 @@
 		3AF36C9F2B106C2300775DF6 = {
 			isa = PBXGroup;
 			children = (
+				3A42392F2C37517000C93BB4 /* MacroWidgetExtension.entitlements */,
 				3AF36CAA2B106C2300775DF6 /* caloriecounter */,
+				3A4239202C37516300C93BB4 /* MacroWidget */,
 				3AF36CA92B106C2300775DF6 /* Products */,
 				3A58D0AB2BE816AC00CA243B /* Frameworks */,
 			);
@@ -346,6 +409,7 @@
 				3AF36CA82B106C2300775DF6 /* caloriecounter.app */,
 				3AF36CBA2B106C2500775DF6 /* caloriecounterTests.xctest */,
 				3AF36CC42B106C2500775DF6 /* caloriecounterUITests.xctest */,
+				3A42391B2C37516300C93BB4 /* MacroWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -410,6 +474,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3A42391A2C37516300C93BB4 /* MacroWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A42392E2C37516500C93BB4 /* Build configuration list for PBXNativeTarget "MacroWidgetExtension" */;
+			buildPhases = (
+				3A4239172C37516300C93BB4 /* Sources */,
+				3A4239182C37516300C93BB4 /* Frameworks */,
+				3A4239192C37516300C93BB4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MacroWidgetExtension;
+			productName = MacroWidgetExtension;
+			productReference = 3A42391B2C37516300C93BB4 /* MacroWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		3AF36CA72B106C2300775DF6 /* caloriecounter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3AF36CCE2B106C2500775DF6 /* Build configuration list for PBXNativeTarget "caloriecounter" */;
@@ -417,10 +498,12 @@
 				3AF36CA42B106C2300775DF6 /* Sources */,
 				3AF36CA52B106C2300775DF6 /* Frameworks */,
 				3AF36CA62B106C2300775DF6 /* Resources */,
+				3A42392B2C37516500C93BB4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3A4239292C37516500C93BB4 /* PBXTargetDependency */,
 			);
 			name = caloriecounter;
 			packageProductDependencies = (
@@ -475,6 +558,9 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					3A42391A2C37516300C93BB4 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
 					3AF36CA72B106C2300775DF6 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -506,11 +592,20 @@
 				3AF36CA72B106C2300775DF6 /* caloriecounter */,
 				3AF36CB92B106C2500775DF6 /* caloriecounterTests */,
 				3AF36CC32B106C2500775DF6 /* caloriecounterUITests */,
+				3A42391A2C37516300C93BB4 /* MacroWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3A4239192C37516300C93BB4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A4239262C37516500C93BB4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AF36CA62B106C2300775DF6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -539,6 +634,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3A4239172C37516300C93BB4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A4239322C37558F00C93BB4 /* AppTheme.swift in Sources */,
+				3A4239242C37516300C93BB4 /* MacroWidget.swift in Sources */,
+				3A4239222C37516300C93BB4 /* MacroWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AF36CA42B106C2300775DF6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -577,6 +682,7 @@
 				3AB88BB52B13F85700739CDC /* MealsView.swift in Sources */,
 				3ABA27622B12B49400DE4FB1 /* NutritionEntry+CoreDataProperties.swift in Sources */,
 				3ABA27602B12B49400DE4FB1 /* DailyLog+CoreDataProperties.swift in Sources */,
+				3A4239312C37558F00C93BB4 /* AppTheme.swift in Sources */,
 				3AC3C3B62B1F936500C5F751 /* CustomTabBarView.swift in Sources */,
 				3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */,
 				3AF67D682B4EA9200013F078 /* CaloricNeedsView.swift in Sources */,
@@ -620,6 +726,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3A4239292C37516500C93BB4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3A42391A2C37516300C93BB4 /* MacroWidgetExtension */;
+			targetProxy = 3A4239282C37516500C93BB4 /* PBXContainerItemProxy */;
+		};
 		3AF36CBC2B106C2500775DF6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3AF36CA72B106C2300775DF6 /* caloriecounter */;
@@ -633,6 +744,64 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3A42392C2C37516500C93BB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = MacroWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BHJSDBBPS7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacroWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacroWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = samroman.caloriecounter.MacroWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3A42392D2C37516500C93BB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = MacroWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BHJSDBBPS7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacroWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacroWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = samroman.caloriecounter.MacroWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		3AF36CCC2B106C2500775DF6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -755,6 +924,7 @@
 		3AF36CCF2B106C2500775DF6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -799,6 +969,7 @@
 		3AF36CD02B106C2500775DF6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -919,6 +1090,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3A42392E2C37516500C93BB4 /* Build configuration list for PBXNativeTarget "MacroWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A42392C2C37516500C93BB4 /* Debug */,
+				3A42392D2C37516500C93BB4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3AF36CA32B106C2300775DF6 /* Build configuration list for PBXProject "caloriecounter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
