@@ -42,7 +42,12 @@ class DailyLogManager: ObservableObject {
     @Published var dinnerFats = 0.0
     @Published var snackFats = 0.0
     
-    @Published var waterIntake: Double = 0.0
+    @Published var waterIntake: Double = 0.0 {
+           didSet {
+               updateWaterIntake(newValue: waterIntake)
+           }
+       }
+
     @Published var waterIntakeGoal: Double = 2.7
 
  
@@ -381,6 +386,7 @@ class DailyLogManager: ObservableObject {
 
         refreshData()
     }
+    
     func saveDataForWidget() {
         userDefaults.set(totalCaloriesConsumed, forKey: "totalCaloriesConsumed")
         userDefaults.set(calorieGoal, forKey: "calorieGoal")
@@ -402,6 +408,26 @@ class DailyLogManager: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    func updateWaterIntake(newValue: Double) {
+            let dailyLog = fetchOrCreateDailyLog(for: selectedDate)
+
+            dailyLog.waterIntake = newValue
+            
+            saveContext()
+            
+            // Update UserDefaults
+            userDefaults.set(newValue, forKey: "currentWaterIntake")
+            
+            // Trigger widget update
+            WidgetCenter.shared.reloadTimelines(ofKind: "WaterIntakeWidget")
+            
+            // Ensure UI update on main thread
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+            }
+        }
+    
+    
     func updateSelectedDate(newDate: Date) {
         selectedDate = newDate
         refreshData()
@@ -486,6 +512,29 @@ class DailyLogManager: ObservableObject {
             resetToDefaultGoals()
         }
     }
+    
+    private func fetchOrCreateDailyLog(for date: Date) -> DailyLog {
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: date)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+            
+            let request: NSFetchRequest<DailyLog> = DailyLog.fetchRequest()
+            request.predicate = NSPredicate(format: "(date >= %@) AND (date < %@)", startOfDay as NSDate, endOfDay as NSDate)
+            
+            do {
+                let results = try context.fetch(request)
+                if let existingLog = results.first {
+                    return existingLog
+                }
+            } catch {
+                print("Error fetching DailyLog: \(error)")
+            }
+            
+            let newLog = DailyLog(context: context)
+            newLog.date = startOfDay
+            return newLog
+        }
+
     
     private func resetToDefaultGoals() {
         calorieGoal = userSettingsManager.dailyCaloricNeeds

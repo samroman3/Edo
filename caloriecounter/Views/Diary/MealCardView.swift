@@ -23,7 +23,12 @@ struct MealCardView: View {
                     .font(AppTheme.standardBookLargeTitle)
                     .foregroundStyle(AppTheme.textColor)
                 Spacer()
-                Button(action: onAddTapped) {
+                Button(action:{
+                    let _ = HapticFeedbackProvider.impact()
+                    onAddTapped()
+                    onAddTapped()
+                }
+                ) {
                     Image(systemName: "plus")
                         .resizable()
                         .font(AppTheme.standardBookLargeTitle)

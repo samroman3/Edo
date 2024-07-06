@@ -107,6 +107,7 @@ struct CaloricNeedsView: View {
             }
             .onAppear {
                 loadUserSettings()
+                calculateCaloricNeeds()
             }
             .alert(isPresented: $showAlert) {
                 Alert(
@@ -294,12 +295,12 @@ struct CaloricNeedsView: View {
             selectedGoal = determineGoalBasedOnSettings()
         }
         
-        // Preload the macro values
-        let caloricNeeds = userSettingsManager.dailyCaloricNeeds
-        nutrientValues[.calories] = String(format: "%.0f", caloricNeeds)
-        nutrientValues[.protein] = String(format: "%.0f", userSettingsManager.proteinGoal)
-        nutrientValues[.carbs] = String(format: "%.0f", userSettingsManager.carbsGoal)
-        nutrientValues[.fats] = String(format: "%.0f", userSettingsManager.fatGoal)
+//        // Preload the macro values
+//        let caloricNeeds = userSettingsManager.dailyCaloricNeeds
+//        nutrientValues[.calories] = String(format: "%.0f", caloricNeeds)
+//        nutrientValues[.protein] = String(format: "%.0f", userSettingsManager.proteinGoal)
+//        nutrientValues[.carbs] = String(format: "%.0f", userSettingsManager.carbsGoal)
+//        nutrientValues[.fats] = String(format: "%.0f", userSettingsManager.fatGoal)
     }
     
     private func determineDefaultGoal() -> GoalSelectionView.Goal {

@@ -6,6 +6,7 @@
 //
 //
 import SwiftUI
+import Combine
 
 struct PersonalHealthDataFormView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -22,6 +23,9 @@ struct PersonalHealthDataFormView: View {
 
     @State private var showCaloricNeedsView = false
     @State private var showHealthKitConsent = false
+    
+    @State private var keyboardHeight: CGFloat = 0
+
 
     var onBoardEntry: Bool
     var onOnboardingComplete: () -> Void
@@ -43,97 +47,85 @@ struct PersonalHealthDataFormView: View {
                 }
                 .background(Color(.systemBackground))
                 .padding()
-
-                Form {
-                    Section(header: Text("Your Details").foregroundColor(AppTheme.basic)) {
-                        TextField("Age", text: $age)
-                            .keyboardType(.numberPad)
-
-                        Picker("Unit System", selection: $unitSystem) {
-                            ForEach(UnitSystem.allCases, id: \.self) { unit in
-                                Text(unit.rawValue).tag(unit)
-                            }
-                        }
-                        .onChange(of: unitSystem) { newValue in
-                            convertValuesForUnitSystem(newValue)
-                        }
-
-                        if unitSystem == .metric {
-                            TextField("Weight (kg)", text: $weight)
-                                .keyboardType(.decimalPad)
-                            TextField("Height (cm)", text: $height)
-                                .keyboardType(.decimalPad)
-                        } else {
-                            TextField("Weight (lb)", text: $weight)
-                                .keyboardType(.decimalPad)
-                            HStack {
-                                Picker("Feet", selection: $feet) {
-                                    ForEach(0..<10, id: \.self) { i in
-                                        Text("\(i) ft").tag(i)
-                                    }
-                                }
-                                Picker("Inches", selection: $inches) {
-                                    ForEach(0..<12, id: \.self) { i in
-                                        Text("\(i) in").tag(i)
-                                    }
+                    Form{
+                        Section(header: Text("Your Details").foregroundColor(AppTheme.basic)) {
+                            TextField("Age", text: $age)
+                                .keyboardType(.numberPad)
+                            
+                            Picker("Unit System", selection: $unitSystem) {
+                                ForEach(UnitSystem.allCases, id: \.self) { unit in
+                                    Text(unit.rawValue).tag(unit)
                                 }
                             }
-                            .onChange(of: feet) { _ in updateHeight() }
-                            .onChange(of: inches) { _ in updateHeight() }
-                        }
-
-                        Picker("Sex", selection: $sex) {
-                            Text("").tag("")
-                            Text("Male").tag("Male")
-                            Text("Female").tag("Female")
-                            Text("Other").tag("Other")
-                        }
-
-                        Picker("Activity Level", selection: $activityLevel) {
-                            Text("").tag("")
-                            Text("Sedentary").tag("Sedentary")
-                            Text("Lightly Active").tag("Lightly Active")
-                            Text("Moderately Active").tag("Moderately Active")
-                            Text("Very Active").tag("Very Active")
+                            .onChange(of: unitSystem) { newValue in
+                                convertValuesForUnitSystem(newValue)
+                            }
+                            
+                            if unitSystem == .metric {
+                                TextField("Weight (kg)", text: $weight)
+                                    .keyboardType(.decimalPad)
+                                TextField("Height (cm)", text: $height)
+                                    .keyboardType(.decimalPad)
+                            } else {
+                                TextField("Weight (lb)", text: $weight)
+                                    .keyboardType(.decimalPad)
+                                HStack {
+                                    Picker("Feet", selection: $feet) {
+                                        ForEach(0..<10, id: \.self) { i in
+                                            Text("\(i) ft").tag(i)
+                                        }
+                                    }
+                                    Picker("Inches", selection: $inches) {
+                                        ForEach(0..<12, id: \.self) { i in
+                                            Text("\(i) in").tag(i)
+                                        }
+                                    }
+                                }
+                                .onChange(of: feet) { _ in updateHeight() }
+                                .onChange(of: inches) { _ in updateHeight() }
+                            }
+                            
+                            Picker("Sex", selection: $sex) {
+                                Text("").tag("")
+                                Text("Male").tag("Male")
+                                Text("Female").tag("Female")
+                                Text("Other").tag("Other")
+                            }
+                            
+                            Picker("Activity Level", selection: $activityLevel) {
+                                Text("").tag("")
+                                Text("Sedentary").tag("Sedentary")
+                                Text("Lightly Active").tag("Lightly Active")
+                                Text("Moderately Active").tag("Moderately Active")
+                                Text("Very Active").tag("Very Active")
+                            }
                         }
                     }
-
+                    
                     if let formError = formError {
                         Text(formError)
                             .foregroundColor(.red)
                     }
-                }
-
-                calculateButton
-                
-                .sheet(isPresented: $showHealthKitConsent) {
-                    HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
-                        self.age = age
-                        self.sex = sex
-                        if unitSystem == .imperial {
-                            // Convert metric (HealthKit default) values to imperial
-                            let (convertedFeet, convertedInches) = convertCentimetersToFeetAndInches(Double(height) ?? 0.0)
-                            feet = convertedFeet
-                            inches = convertedInches
-                            self.weight = "\(convertKilogramsToPounds(Double(weight) ?? 0.0))"
-                        } else {
-                            // Directly use the metric values from HealthKit
-                            self.height = "\(height)"
-                            self.weight = "\(weight)"
-                        }
-                    }
-                }
-                .sheet(isPresented: $showCaloricNeedsView) {
-                    CaloricNeedsView(
-                        onboardEntry: onBoardEntry,
-                        onComplete: onOnboardingComplete
-                    )
-                    .environmentObject(userSettingsManager)
+                if validateForm(){
+                    calculateButton
                 }
                 
-                Image(systemName: "info.circle")
-                    .foregroundStyle(AppTheme.carrot)
-               
+                if keyBoardOpen() {
+                    Button(action: {
+                        hideKeyboard()
+                    }, label: {
+                        Image(systemName: "keyboard.chevron.compact.down")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(AppTheme.textColor)
+                    })
+                    .padding([.vertical,.horizontal])
+                } else {
+                    
+                    
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(AppTheme.carrot)
+                    
                     VStack(alignment: .center) {
                         Text("Calculations are made using the Mifflin-St Jeor equation and may not be suitable for everyone. This app is not intended to diagnose, treat, cure, or prevent any disease. Consult with a healthcare professional or a registered dietitian to determine the appropriate calorie and macronutrient targets based on individual needs and goals. Learn more from the following sources:")
                             .font(AppTheme.standardBookCaption)
@@ -153,17 +145,47 @@ struct PersonalHealthDataFormView: View {
                         VStack(alignment: .center) {
                             Link("Journal Article", destination: URL(string: "https://www.jandonline.org/article/S0002-8223(05)00149-5/abstract")!)
                                 .foregroundColor(.blue)
+                        }
+                        
                     }
-
+                    .padding(.vertical)
                 }
-                .padding(.vertical)
+            }
+            .sheet(isPresented: $showHealthKitConsent) {
+                HealthKitConsentView(isPresented: $showHealthKitConsent) { age, weight, height, sex in
+                    self.age = age
+                    self.sex = sex
+                    if unitSystem == .imperial {
+                        // Convert metric (HealthKit default) values to imperial
+                        let (convertedFeet, convertedInches) = convertCentimetersToFeetAndInches(Double(height) ?? 0.0)
+                        feet = convertedFeet
+                        inches = convertedInches
+                        self.weight = "\(convertKilogramsToPounds(Double(weight) ?? 0.0))"
+                    } else {
+                        // Directly use the metric values from HealthKit
+                        self.height = "\(height)"
+                        self.weight = "\(weight)"
+                    }
+                }
+            }
+            .sheet(isPresented: $showCaloricNeedsView) {
+                CaloricNeedsView(
+                    onboardEntry: onBoardEntry,
+                    onComplete: onOnboardingComplete
+                )
+                .environmentObject(userSettingsManager)
             }
             .background(Color(.systemBackground))
+            .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
             .onAppear {
                 loadUserDataIfNeeded()
             }
         }
     }
+    
+    private func keyBoardOpen() -> Bool {
+           return keyboardHeight > 0
+       }
     
     private var calculateButton: some View {
         Button(action: {

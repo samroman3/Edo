@@ -30,6 +30,7 @@ class WaterIntakeViewModel: ObservableObject {
         if currentIntake + glassSize <= goalIntake {
             currentIntake += glassSize
             self.nutritionDataStore.updateWaterIntake(intake: currentIntake, date: self.dailyLogManager.selectedDate)
+            dailyLogManager.waterIntake += 0.3
         }
         dailyLogManager.saveDataForWidget()
     }
@@ -37,6 +38,7 @@ class WaterIntakeViewModel: ObservableObject {
         if currentIntake > 0.0 {
             currentIntake -= glassSize
             self.nutritionDataStore.updateWaterIntake(intake: currentIntake, date: self.dailyLogManager.selectedDate)
+            dailyLogManager.waterIntake -= 0.3
         }
         dailyLogManager.saveDataForWidget()
     }
@@ -44,6 +46,7 @@ class WaterIntakeViewModel: ObservableObject {
     func resetWaterIntake() {
         currentIntake = 0.0
         self.nutritionDataStore.resetWaterIntake(date: self.dailyLogManager.selectedDate)
+        self.dailyLogManager.waterIntake = 0.0
         dailyLogManager.saveDataForWidget()
     }
     
