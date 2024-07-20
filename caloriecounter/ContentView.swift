@@ -6,15 +6,21 @@
 //
 
 import SwiftUI
-import CoreData
+//import GoogleMobileAds
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var dataStore: NutritionDataStore
-    
-    var body: some View {
-        MainView()
-            .environmentObject(MealSelectionViewModel(dataStore: dataStore, context: viewContext))
+    @StateObject private var purchaseManager = PurchaseManager.shared
 
+    var body: some View {
+        VStack {
+            MainView()
+                .environmentObject(MealSelectionViewModel(dataStore: dataStore, context: viewContext))
+            if !purchaseManager.isAdRemoved {
+                EmptyView()
+                    .frame(height: 50)
+            }
+        }
     }
 }

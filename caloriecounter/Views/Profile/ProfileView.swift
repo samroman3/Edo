@@ -20,7 +20,9 @@ struct ProfileMenuItem: View {
             return Image(systemName: "heart.text.square")
         case .goals:
             return Image(systemName: "flag")
-        }
+        case .removeAds:
+               return Image(systemName: "nosign")
+           }
     }
     
     var tint: Color {
@@ -33,21 +35,25 @@ struct ProfileMenuItem: View {
             return AppTheme.coral
         case .goals:
             return AppTheme.goldenrod
-        }
+    case .removeAds:
+           return .red
+       }
     }
     
-    var name: String {
-        switch type {
-        case .permissions:
-            return "Permissions"
-        case .notifications:
-            return "Notifications"
-        case .weightDynamics:
-            return "Dynamics"
-        case .goals:
-            return "Goals"
-        }
+var name: String {
+    switch type {
+    case .permissions:
+        return "Permissions"
+    case .notifications:
+        return "Notifications"
+    case .weightDynamics:
+        return "Dynamics"
+    case .goals:
+        return "Goals"
+    case .removeAds:
+        return "Remove Ads"
     }
+}
     
     var body: some View {
         VStack {
@@ -73,6 +79,7 @@ enum ProfileItemType {
     case notifications
     case permissions
     case goals
+    case removeAds 
 }
 
 struct ProfileView: View {
@@ -93,6 +100,7 @@ struct ProfileView: View {
     
     @State var showCaloricNeedsView = false
     @State var showPermissionsView = false
+    @State var showRemoveAdsView = false
     @State private var isMetric: Bool = true
     
     @FocusState private var isInputActive: Bool
@@ -128,6 +136,9 @@ struct ProfileView: View {
             .sheet(isPresented: $showCaloricNeedsView) {
                 CaloricNeedsView(onboardEntry: false, onComplete: {})
             }
+            .sheet(isPresented: $showRemoveAdsView) { 
+                     PurchaseView()
+                 }
             .onAppear {
                 self.editingUserName = self.userSettingsManager.userName
                 self.editingActivityLevel = self.userSettingsManager.activity
@@ -330,7 +341,10 @@ struct ProfileView: View {
             ProfileMenuItem(type: .permissions).onTapGesture {
                 self.showPermissionsView.toggle()
             }
-            
+            Divider().background(AppTheme.textColor)
+            ProfileMenuItem(type: .removeAds).onTapGesture {
+                self.showRemoveAdsView.toggle()
+            }
         }
     }
     
