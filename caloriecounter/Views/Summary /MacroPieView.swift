@@ -4,7 +4,6 @@
 //
 //  Created by Sam Roman on 11/24/23.
 //
-
 import SwiftUI
 
 struct MacroPieView: View {
@@ -16,7 +15,6 @@ struct MacroPieView: View {
     var overPercentage: Double {
         max(totalCaloriesConsumed - 1.0, 0)
     }
-
 
     func mealColor(mealType: MealType) -> Color {
         switch mealType {
@@ -32,6 +30,7 @@ struct MacroPieView: View {
             return .black
         }
     }
+    
     var body: some View {
         VStack {
             ZStack {
@@ -96,7 +95,3 @@ struct PieSegmentView: View {
         }
     }
 }
-
-
-
-

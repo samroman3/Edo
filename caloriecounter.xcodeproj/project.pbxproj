@@ -33,6 +33,13 @@
 		3A58D0AA2BE8019A00CA243B /* SFXManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A58D0A92BE8019A00CA243B /* SFXManager.swift */; };
 		3A5F84A12B5B680400A1A66C /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */; };
 		3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */; };
+		3A8E44BA2C4B2C84007225F1 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44B92C4B2C84007225F1 /* PurchaseManager.swift */; };
+		3A8E44BC2C4B2CA5007225F1 /* AdBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44BB2C4B2CA5007225F1 /* AdBannerView.swift */; };
+		3A8E44BE2C4B303F007225F1 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44BD2C4B303F007225F1 /* PurchaseView.swift */; };
+		3A8E44C02C4BE239007225F1 /* BarDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44BF2C4BE239007225F1 /* BarDisplayView.swift */; };
+		3A8E44C22C4BE26D007225F1 /* WaveDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44C12C4BE26D007225F1 /* WaveDisplayView.swift */; };
+		3A8E44C42C4C01DD007225F1 /* StackedBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44C32C4C01DD007225F1 /* StackedBarChartView.swift */; };
+		3A8E44C62C4C346E007225F1 /* WeeklyLogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8E44C52C4C346E007225F1 /* WeeklyLogManager.swift */; };
 		3A9CAD5E2B5DB69300E4F306 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */; };
 		3AB88BB52B13F85700739CDC /* MealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB88BB42B13F85700739CDC /* MealsView.swift */; };
 		3ABA27522B11A8FF00DE4FB1 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */; };
@@ -145,6 +152,13 @@
 		3A58D0A92BE8019A00CA243B /* SFXManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFXManager.swift; sourceTree = "<group>"; };
 		3A5F84A02B5B680400A1A66C /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
 		3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
+		3A8E44B92C4B2C84007225F1 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		3A8E44BB2C4B2CA5007225F1 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		3A8E44BD2C4B303F007225F1 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
+		3A8E44BF2C4BE239007225F1 /* BarDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarDisplayView.swift; sourceTree = "<group>"; };
+		3A8E44C12C4BE26D007225F1 /* WaveDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveDisplayView.swift; sourceTree = "<group>"; };
+		3A8E44C32C4C01DD007225F1 /* StackedBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackedBarChartView.swift; sourceTree = "<group>"; };
+		3A8E44C52C4C346E007225F1 /* WeeklyLogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyLogManager.swift; sourceTree = "<group>"; };
 		3A9CAD5D2B5DB69300E4F306 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		3AB88BB42B13F85700739CDC /* MealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsView.swift; sourceTree = "<group>"; };
 		3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
@@ -312,6 +326,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3A8E44B82C4B2C6C007225F1 /* Ad Management */ = {
+			isa = PBXGroup;
+			children = (
+				3A8E44B92C4B2C84007225F1 /* PurchaseManager.swift */,
+				3A8E44BD2C4B303F007225F1 /* PurchaseView.swift */,
+				3A8E44BB2C4B2CA5007225F1 /* AdBannerView.swift */,
+			);
+			path = "Ad Management";
+			sourceTree = "<group>";
+		};
 		3ABA27502B11A8C600DE4FB1 /* CoreData Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,6 +398,9 @@
 			isa = PBXGroup;
 			children = (
 				3AC3C3BB2B229C8D00C5F751 /* DailySummaryView.swift */,
+				3A8E44C32C4C01DD007225F1 /* StackedBarChartView.swift */,
+				3A8E44BF2C4BE239007225F1 /* BarDisplayView.swift */,
+				3A8E44C12C4BE26D007225F1 /* WaveDisplayView.swift */,
 				3A6CF4A22B6EE7EA00F45A1F /* DailySummaryViewModel.swift */,
 				3AF36CDB2B106DCB00775DF6 /* MacroPieView.swift */,
 				3AF67D6D2B59C4CC0013F078 /* MacronutrientView.swift */,
@@ -422,6 +449,7 @@
 				3AF36CAB2B106C2300775DF6 /* caloriecounterApp.swift */,
 				3AF36CAD2B106C2300775DF6 /* ContentView.swift */,
 				3A17D54F2B93BAAC00D74874 /* Views */,
+				3A8E44B82C4B2C6C007225F1 /* Ad Management */,
 				3AF36D072B119F3E00775DF6 /* Data Management */,
 				3ABA27502B11A8C600DE4FB1 /* CoreData Models */,
 				3AD9CC822B1D0AA100B9A23E /* Supporting Files */,
@@ -463,6 +491,7 @@
 			isa = PBXGroup;
 			children = (
 				3ABA27552B12914100DE4FB1 /* DailyLogManager.swift */,
+				3A8E44C52C4C346E007225F1 /* WeeklyLogManager.swift */,
 				3A0829ED2B2CB66B001EB95E /* UserSettingsManager.swift */,
 				3AF36CF92B106FEC00775DF6 /* NutritionDataStore.swift */,
 				3ABA27512B11A8FF00DE4FB1 /* PersistenceController.swift */,
@@ -653,9 +682,12 @@
 				3ABA27542B128E4C00DE4FB1 /* NutritionEntryView.swift in Sources */,
 				3AF36CAE2B106C2300775DF6 /* ContentView.swift in Sources */,
 				3ABA27672B13091300DE4FB1 /* MealType.swift in Sources */,
+				3A8E44C62C4C346E007225F1 /* WeeklyLogManager.swift in Sources */,
 				3A58D0A82BE7F4FD00CA243B /* MockNutritionDataStore.swift in Sources */,
 				3AC3C3BC2B229C8D00C5F751 /* DailySummaryView.swift in Sources */,
 				3AD9CC802B19449D00B9A23E /* AppTheme.swift in Sources */,
+				3A8E44C42C4C01DD007225F1 /* StackedBarChartView.swift in Sources */,
+				3A8E44C02C4BE239007225F1 /* BarDisplayView.swift in Sources */,
 				3A0829EE2B2CB66B001EB95E /* UserSettingsManager.swift in Sources */,
 				3A36794B2BEECEB900A5A918 /* iCloudRequiredView.swift in Sources */,
 				3AC3C3CB2B2B5E3900C5F751 /* PersonalHealthDataFormView.swift in Sources */,
@@ -663,6 +695,7 @@
 				3A0829F22B3DE9FD001EB95E /* GoalSelectionView.swift in Sources */,
 				3ABA27612B12B49400DE4FB1 /* NutritionEntry+CoreDataClass.swift in Sources */,
 				3AF36CDA2B106D6100775DF6 /* TopBarView.swift in Sources */,
+				3A8E44BC2C4B2CA5007225F1 /* AdBannerView.swift in Sources */,
 				3AF36CFA2B106FEC00775DF6 /* NutritionDataStore.swift in Sources */,
 				3A58D0AA2BE8019A00CA243B /* SFXManager.swift in Sources */,
 				3A22EACE2BD5677200E0CEBD /* Recipe+CoreDataClass.swift in Sources */,
@@ -670,6 +703,7 @@
 				3A52A8E52B5C5071001C7B47 /* ImagePicker.swift in Sources */,
 				3A9CAD5E2B5DB69300E4F306 /* ViewExtensions.swift in Sources */,
 				3AF67D6C2B509AFC0013F078 /* AppState.swift in Sources */,
+				3A8E44BA2C4B2C84007225F1 /* PurchaseManager.swift in Sources */,
 				3A22EACF2BD5677200E0CEBD /* Recipe+CoreDataProperties.swift in Sources */,
 				3AF36D0A2B119F9B00775DF6 /* NutritionTracker.xcdatamodeld in Sources */,
 				3AF36CDE2B106EED00775DF6 /* DateSelectorView.swift in Sources */,
@@ -685,6 +719,7 @@
 				3A4239312C37558F00C93BB4 /* AppTheme.swift in Sources */,
 				3AC3C3B62B1F936500C5F751 /* CustomTabBarView.swift in Sources */,
 				3A22EABF2BD41CD100E0CEBD /* HapticFeedbackProvider.swift in Sources */,
+				3A8E44C22C4BE26D007225F1 /* WaveDisplayView.swift in Sources */,
 				3AF67D682B4EA9200013F078 /* CaloricNeedsView.swift in Sources */,
 				3AC3C3C92B2B52C900C5F751 /* MainView.swift in Sources */,
 				3ABA275E2B12B49400DE4FB1 /* Meal+CoreDataProperties.swift in Sources */,
@@ -693,6 +728,7 @@
 				3A6CF4A32B6EE7EA00F45A1F /* DailySummaryViewModel.swift in Sources */,
 				3AC3C3BF2B242B4F00C5F751 /* TopBarType.swift in Sources */,
 				3A0829F02B3DE8EA001EB95E /* ProfileView.swift in Sources */,
+				3A8E44BE2C4B303F007225F1 /* PurchaseView.swift in Sources */,
 				3ABA27652B12CD4000DE4FB1 /* MealSelectionViewModel.swift in Sources */,
 				3AF36CDC2B106DCB00775DF6 /* MacroPieView.swift in Sources */,
 				3AF36CFE2B10750700775DF6 /* MealCardView.swift in Sources */,
@@ -953,7 +989,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = samroman.caloriecounter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -998,7 +1034,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = samroman.caloriecounter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
