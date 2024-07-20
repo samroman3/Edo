@@ -105,7 +105,6 @@ class NutritionDataStore: ObservableObject {
         if let entries = meal.entries as? Set<NutritionEntry>, !entries.contains(newEntry) {
             meal.addToEntries(newEntry)
         }
-        
         saveContext()
     }
     
@@ -167,7 +166,51 @@ class NutritionDataStore: ObservableObject {
         return []
     }
 }
-    
+
+    func fetchConsolidatedEntries(favorites: Bool = false, nameSearch: String? = nil) -> [NutritionEntry] {
+           let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+           var predicates: [NSPredicate] = []
+           
+           if favorites {
+               let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+               predicates.append(favoritePredicate)
+           }
+           
+           if let nameSearch = nameSearch, !nameSearch.isEmpty {
+               let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
+               predicates.append(namePredicate)
+           }
+           
+           if !predicates.isEmpty {
+               request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+           } else {
+               // If no search term is provided, return an empty array to avoid loading all entries
+               return []
+           }
+           
+           do {
+               let entries = try context.fetch(request)
+               var entryDictionary: [String: NutritionEntry] = [:]
+               
+               for entry in entries {
+                   let key = "\(entry.name)-\(entry.calories)"
+                   if let existingEntry = entryDictionary[key] {
+                       existingEntry.protein += entry.protein
+                       existingEntry.carbs += entry.carbs
+                       existingEntry.fat += entry.fat
+                   } else {
+                       entryDictionary[key] = entry
+                   }
+               }
+               
+               return Array(entryDictionary.values)
+               
+           } catch {
+               print("Error fetching entries for consolidation: \(error)")
+               return []
+           }
+       }
+
     func updateTodayGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
         let date = Date()
         let dailyLog = fetchOrCreateDailyLog(for: date)

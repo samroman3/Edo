@@ -26,6 +26,7 @@ struct MainView: View {
                     } else {
                         CustomTabBarView()
                             .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
+                            .environmentObject(WeeklyLogManager(context: nutritionDataStore.context))
                             .environmentObject(nutritionDataStore)
                     }
                 } else {

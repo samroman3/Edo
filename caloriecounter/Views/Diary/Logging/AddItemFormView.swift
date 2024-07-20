@@ -384,7 +384,6 @@ struct AddItemFormView: View {
     
 }
 
-
 struct PreviousEntriesView: View {
     @State private var selectedTab: Int = 0
     @Binding var name: String
@@ -427,10 +426,16 @@ struct PreviousEntriesView: View {
     }
     
     private func fetchEntries() {
+        if name.isEmpty {
+            entries = []
+            favoriteEntries = []
+            return
+        }
+        
         if selectedTab == 0 {
-            entries = dataStore?.fetchEntries(favorites: false, nameSearch: name) ?? []
+            entries = dataStore?.fetchConsolidatedEntries(favorites: false, nameSearch: name) ?? []
         } else {
-            favoriteEntries = dataStore?.fetchEntries(favorites: true, nameSearch: name) ?? []
+            favoriteEntries = dataStore?.fetchConsolidatedEntries(favorites: true, nameSearch: name) ?? []
         }
     }
     
@@ -444,6 +449,8 @@ struct PreviousEntriesView: View {
         dismiss()
     }
 }
+
+
 
 // MacroNutrientInputTile.swift
 struct MacroNutrientInputTile: View {
