@@ -388,8 +388,8 @@ struct PreviousEntriesView: View {
     @State private var selectedTab: Int = 0
     @Binding var name: String
     @State var dataStore: NutritionDataStore?
-    @State private var entries: [NutritionEntry] = []
-    @State private var favoriteEntries: [NutritionEntry] = []
+    @State private var entries: [NutritionEntrySummary] = []
+    @State private var favoriteEntries: [NutritionEntrySummary] = []
     @Binding var nutrientValues: [NutrientType: String]
     @Binding var userNote: String
     @Binding var mealPhoto: UIImage?
@@ -411,7 +411,7 @@ struct PreviousEntriesView: View {
                     Button(action: {
                         populateFields(with: entry)
                     }) {
-                        NutritionEntryView(entry: entry)
+                        HistoryEntryRow(entry: entry)
                     }
                     .buttonStyle(.plain)
                 }
@@ -439,9 +439,11 @@ struct PreviousEntriesView: View {
         }
     }
     
-    private func populateFields(with entry: NutritionEntry) {
+    private func populateFields(with entry: NutritionEntrySummary) {
         self.name = entry.name
         self.isFavorite = entry.isFavorite
+        self.userNote = ""
+        self.mealPhoto = nil
         nutrientValues[.calories] = String(entry.calories)
         nutrientValues[.protein] = String(entry.protein)
         nutrientValues[.carbs] = String(entry.carbs)
@@ -453,6 +455,42 @@ struct PreviousEntriesView: View {
 
 
 // MacroNutrientInputTile.swift
+struct HistoryEntryRow: View {
+    let entry: NutritionEntrySummary
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(entry.name)
+                .font(AppTheme.standardBookBody)
+            HStack {
+                HistoryMetricRow(color: AppTheme.sageGreen, text: String(format: "%.1f cal", entry.calories))
+                HistoryMetricRow(color: AppTheme.softPurple, text: String(format: "%.1fg prot", entry.protein))
+                HistoryMetricRow(color: AppTheme.goldenrod, text: String(format: "%.1fg carbs", entry.carbs))
+                HistoryMetricRow(color: AppTheme.carrot, text: String(format: "%.1fg fats", entry.fat))
+            }
+            .font(.caption)
+            .foregroundColor(.primary)
+            Divider().background(AppTheme.textColor)
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal)
+    }
+}
+
+private struct HistoryMetricRow: View {
+    let color: Color
+    let text: String
+
+    var body: some View {
+        HStack {
+            Text("*")
+                .font(.title2)
+                .foregroundStyle(color)
+            Text(text)
+        }
+    }
+}
+
 struct MacroNutrientInputTile: View {
     let nutrient: NutrientType
     var addItemEntry: Bool

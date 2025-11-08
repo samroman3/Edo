@@ -1,4 +1,4 @@
-# Edo 
+# EAZEAT
 <img src="https://github.com/samroman3/eazeat/assets/52180475/9fa792f1-1ea4-4ce1-82c1-3664e275ec6a" width = "200" height = "200">
 
 
@@ -7,7 +7,7 @@ An intuitive way to track your daily eating habits.
 ---
 
 ## About
-Edo is a calorie and nutrition tracking app designed to make meal tracking and dietary management both fun and easy. With a focus on simplicity and a user-friendly interface, Eazeat helps you stay on top of your eating habits without the hassle.
+EAZEAT is a calorie and nutrition tracking app designed to make meal tracking and dietary management both fun and easy. With a focus on simplicity and a user-friendly interface, EAZEAT helps you stay on top of your eating habits without the hassle.
 
 ## Features
 - 🥗 **Track Your Meals:** Log your breakfast, lunch, dinner, and snacks with ease.
@@ -33,6 +33,5 @@ App UI and design drew large inspiration from [Eat Fit](https://www.behance.net/
 <img src="https://github.com/samroman3/eazeat/assets/52180475/0f9edea8-742d-4987-8658-64ed0af3631d" width = "300" height = "650">
 <img src="https://github.com/samroman3/eazeat/assets/52180475/892c5cb1-962f-4963-8ea4-28485520ee7b" width = "300" height = "650">
 <img src="https://github.com/samroman3/eazeat/assets/52180475/5d117c70-4dfc-49f9-a85d-aeebfee5b6a5" width = "300" height = "650">
-
 
 

@@ -1,14 +1,7 @@
-//
-//  caloriecounterApp.swift
-//  caloriecounter
-//
-//  Created by Sam Roman on 11/24/23.
-//
-
 import SwiftUI
 
 @main
-struct caloriecounterApp: App {
+struct EAZEATApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject var dataStore = NutritionDataStore(context: PersistenceController.shared.container.viewContext)
     @StateObject var userSettingsManager = UserSettingsManager(context: PersistenceController.shared.container.viewContext)
@@ -23,4 +16,3 @@ struct caloriecounterApp: App {
         }
     }
 }
-

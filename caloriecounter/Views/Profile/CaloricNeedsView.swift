@@ -107,7 +107,6 @@ struct CaloricNeedsView: View {
             }
             .onAppear {
                 loadUserSettings()
-                calculateCaloricNeeds()
             }
             .alert(isPresented: $showAlert) {
                 Alert(
@@ -192,43 +191,108 @@ struct CaloricNeedsView: View {
        }
        
     
+    private struct MacroConfiguration {
+        let minProteinPerKilogram: Double
+        let minFatPerKilogram: Double
+        let leftoverDistribution: (protein: Double, fat: Double, carbs: Double)
+    }
+
+    private func macroConfiguration(for goal: GoalSelectionView.Goal) -> MacroConfiguration {
+        switch goal {
+        case .loseWeight:
+            return MacroConfiguration(
+                minProteinPerKilogram: 1.6,
+                minFatPerKilogram: 0.6,
+                leftoverDistribution: (protein: 0.1, fat: 0.2, carbs: 0.7)
+            )
+        case .gainWeight:
+            return MacroConfiguration(
+                minProteinPerKilogram: 1.6,
+                minFatPerKilogram: 0.9,
+                leftoverDistribution: (protein: 0.2, fat: 0.3, carbs: 0.5)
+            )
+        case .buildMuscle:
+            return MacroConfiguration(
+                minProteinPerKilogram: 1.8,
+                minFatPerKilogram: 0.9,
+                leftoverDistribution: (protein: 0.25, fat: 0.2, carbs: 0.55)
+            )
+        case .enhancePerformance:
+            return MacroConfiguration(
+                minProteinPerKilogram: 1.6,
+                minFatPerKilogram: 0.8,
+                leftoverDistribution: (protein: 0.2, fat: 0.25, carbs: 0.55)
+            )
+        case .maintainWeight:
+            return MacroConfiguration(
+                minProteinPerKilogram: 1.4,
+                minFatPerKilogram: 0.7,
+                leftoverDistribution: (protein: 0.2, fat: 0.25, carbs: 0.55)
+            )
+        case .custom:
+            return MacroConfiguration(
+                minProteinPerKilogram: 0.0,
+                minFatPerKilogram: 0.0,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
+            )
+        }
+    }
+
     private func updateMacros(for caloricNeeds: Double) {
-           guard let goal = selectedGoal else { return }
-           
-           let weightInKg = userSettingsManager.weight
-           
-           var proteinMultiplier: Double
-           var fatMultiplier: Double
-           
-           switch goal {
-           case .loseWeight:
-               proteinMultiplier = 1.6 // grams per kg of body weight
-               fatMultiplier = 0.8 // grams per kg of body weight
-           case .gainWeight, .buildMuscle:
-               proteinMultiplier = 2.0
-               fatMultiplier = 1.0
-           case .enhancePerformance:
-               proteinMultiplier = 1.8
-               fatMultiplier = 1.0
-           case .maintainWeight:
-               proteinMultiplier = 1.6
-               fatMultiplier = 0.9
-           case .custom:
-               // Use user-input values
-               return
-           }
+        guard let goal = selectedGoal, goal != .custom else { return }
+        guard caloricNeeds > 0 else {
+            nutrientValues[.protein] = "0"
+            nutrientValues[.carbs] = "0"
+            nutrientValues[.fats] = "0"
+            return
+        }
 
-           let proteinGrams = weightInKg * proteinMultiplier
-           let fatGrams = weightInKg * fatMultiplier
-           let proteinCalories = proteinGrams * proteinPerCalorie
-           let fatCalories = fatGrams * fatPerCalorie
-           let carbsCalories = caloricNeeds - proteinCalories - fatCalories
-           let carbsGrams = carbsCalories / carbsPerCalorie
+        let weightInKg = max(userSettingsManager.weight, 0)
+        guard weightInKg > 0 else {
+            nutrientValues[.protein] = "0"
+            nutrientValues[.carbs] = String(format: "%.0f", caloricNeeds / carbsPerCalorie)
+            nutrientValues[.fats] = "0"
+            return
+        }
 
-           nutrientValues[.protein] = String(format: "%.0f", proteinGrams)
-           nutrientValues[.carbs] = String(format: "%.0f", max(0, carbsGrams))
-           nutrientValues[.fats] = String(format: "%.0f", fatGrams)
-       }
+        let configuration = macroConfiguration(for: goal)
+
+        var proteinGrams = weightInKg * configuration.minProteinPerKilogram
+        var fatGrams = weightInKg * configuration.minFatPerKilogram
+
+        var proteinCalories = proteinGrams * proteinPerCalorie
+        var fatCalories = fatGrams * fatPerCalorie
+        let baselineCalories = proteinCalories + fatCalories
+
+        if baselineCalories >= caloricNeeds {
+            let scaleFactor = caloricNeeds / max(baselineCalories, 1)
+            if scaleFactor.isFinite && scaleFactor > 0 {
+                proteinGrams *= scaleFactor
+                fatGrams *= scaleFactor
+            } else {
+                proteinGrams = 0
+                fatGrams = 0
+            }
+
+            nutrientValues[.protein] = String(format: "%.0f", proteinGrams)
+            nutrientValues[.fats] = String(format: "%.0f", fatGrams)
+            nutrientValues[.carbs] = "0"
+            return
+        }
+
+        let remainingCalories = max(0, caloricNeeds - baselineCalories)
+        let extraProteinCalories = remainingCalories * configuration.leftoverDistribution.protein
+        let extraFatCalories = remainingCalories * configuration.leftoverDistribution.fat
+        let extraCarbCalories = max(0, remainingCalories - extraProteinCalories - extraFatCalories)
+
+        proteinGrams += extraProteinCalories / proteinPerCalorie
+        fatGrams += extraFatCalories / fatPerCalorie
+        let carbGrams = extraCarbCalories / carbsPerCalorie
+
+        nutrientValues[.protein] = String(format: "%.0f", proteinGrams)
+        nutrientValues[.fats] = String(format: "%.0f", fatGrams)
+        nutrientValues[.carbs] = String(format: "%.0f", max(0, carbGrams))
+    }
     
     private func saveCaloricNeeds() {
         guard let cal = nutrientValues[.calories], let caloricNeeds = Double(cal) else { return }
@@ -288,19 +352,14 @@ struct CaloricNeedsView: View {
     
     private func loadUserSettings() {
         userSettingsManager.loadUserSettings()
-        
-        if onboardEntry {
-            selectedGoal = determineDefaultGoal()
-        } else {
-            selectedGoal = determineGoalBasedOnSettings()
+        DispatchQueue.main.async {
+            if self.onboardEntry {
+                self.selectedGoal = self.determineDefaultGoal()
+            } else {
+                self.selectedGoal = self.determineGoalBasedOnSettings()
+            }
+            self.calculateCaloricNeeds()
         }
-        
-//        // Preload the macro values
-//        let caloricNeeds = userSettingsManager.dailyCaloricNeeds
-//        nutrientValues[.calories] = String(format: "%.0f", caloricNeeds)
-//        nutrientValues[.protein] = String(format: "%.0f", userSettingsManager.proteinGoal)
-//        nutrientValues[.carbs] = String(format: "%.0f", userSettingsManager.carbsGoal)
-//        nutrientValues[.fats] = String(format: "%.0f", userSettingsManager.fatGoal)
     }
     
     private func determineDefaultGoal() -> GoalSelectionView.Goal {

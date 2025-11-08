@@ -10,6 +10,17 @@ import Combine
 import CoreData
 import WidgetKit
 
+struct NutritionEntrySummary: Identifiable, Hashable {
+    let id: UUID
+    let name: String
+    let calories: Double
+    let protein: Double
+    let carbs: Double
+    let fat: Double
+    let isFavorite: Bool
+    let timestamp: Date
+}
+
 class NutritionDataStore: ObservableObject {
     let context: NSManagedObjectContext
     
@@ -167,49 +178,62 @@ class NutritionDataStore: ObservableObject {
     }
 }
 
-    func fetchConsolidatedEntries(favorites: Bool = false, nameSearch: String? = nil) -> [NutritionEntry] {
-           let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
-           var predicates: [NSPredicate] = []
-           
-           if favorites {
-               let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
-               predicates.append(favoritePredicate)
-           }
-           
-           if let nameSearch = nameSearch, !nameSearch.isEmpty {
-               let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
-               predicates.append(namePredicate)
-           }
-           
-           if !predicates.isEmpty {
-               request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-           } else {
-               // If no search term is provided, return an empty array to avoid loading all entries
-               return []
-           }
-           
-           do {
-               let entries = try context.fetch(request)
-               var entryDictionary: [String: NutritionEntry] = [:]
-               
-               for entry in entries {
-                   let key = "\(entry.name)-\(entry.calories)"
-                   if let existingEntry = entryDictionary[key] {
-                       existingEntry.protein += entry.protein
-                       existingEntry.carbs += entry.carbs
-                       existingEntry.fat += entry.fat
-                   } else {
-                       entryDictionary[key] = entry
-                   }
-               }
-               
-               return Array(entryDictionary.values)
-               
-           } catch {
-               print("Error fetching entries for consolidation: \(error)")
-               return []
-           }
-       }
+    func fetchConsolidatedEntries(favorites: Bool = false, nameSearch: String? = nil) -> [NutritionEntrySummary] {
+        let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+        var predicates: [NSPredicate] = []
+
+        if favorites {
+            let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+            predicates.append(favoritePredicate)
+        }
+
+        if let nameSearch = nameSearch, !nameSearch.isEmpty {
+            let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
+            predicates.append(namePredicate)
+        } else {
+            return []
+        }
+
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        if !predicates.isEmpty {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }
+
+        do {
+            let entries = try context.fetch(request)
+            var uniqueEntries: [String: NutritionEntrySummary] = [:]
+
+            for entry in entries {
+                let key = entry.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let summary = NutritionEntrySummary(
+                    id: entry.id,
+                    name: entry.name,
+                    calories: entry.calories,
+                    protein: entry.protein,
+                    carbs: entry.carbs,
+                    fat: entry.fat,
+                    isFavorite: entry.isFavorite,
+                    timestamp: entry.timestamp
+                )
+
+                if let existing = uniqueEntries[key] {
+                    if entry.timestamp > existing.timestamp {
+                        uniqueEntries[key] = summary
+                    }
+                } else {
+                    uniqueEntries[key] = summary
+                }
+            }
+
+            return uniqueEntries
+                .values
+                .sorted { $0.timestamp > $1.timestamp }
+
+        } catch {
+            print("Error fetching entries for consolidation: \(error)")
+            return []
+        }
+    }
 
     func updateTodayGoals(caloricNeeds: Double, protein: Double, carbs: Double, fat: Double) {
         let date = Date()
@@ -248,5 +272,4 @@ class NutritionDataStore: ObservableObject {
         }
     }
 }
-
 

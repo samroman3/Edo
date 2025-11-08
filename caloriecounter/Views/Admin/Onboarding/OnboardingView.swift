@@ -82,7 +82,7 @@ struct WelcomeScreen: View {
                 }
             }.padding(.leading,20)
             Spacer()
-                Text("EDO")
+                Text("EAZEAT")
                     .font(AppTheme.standardBookLargeTitle)
                     .foregroundColor(.white)
                 HStack{
@@ -216,4 +216,3 @@ struct WelcomeScreen_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
-
