@@ -229,11 +229,20 @@ struct PersonalHealthDataFormView: View {
     private func loadUserDataIfNeeded() {
         if !onBoardEntry { // Only load data if not in onboarding process
             age = String(userSettingsManager.age)
-            weight = String(userSettingsManager.weight)
-            height = String(userSettingsManager.height)
             sex = userSettingsManager.sex
             activityLevel = userSettingsManager.activity
             unitSystem = UnitSystem(rawValue: userSettingsManager.unitSystem) ?? .metric
+
+            if unitSystem == .imperial {
+                weight = String(format: "%.1f", userSettingsManager.convertKilogramsToPounds(userSettingsManager.weight))
+                let convertedHeight = userSettingsManager.convertCentimetersToFeetAndInches(userSettingsManager.height)
+                feet = convertedHeight.feet
+                inches = convertedHeight.inches
+                updateHeight()
+            } else {
+                weight = String(format: "%.1f", userSettingsManager.weight)
+                height = String(format: "%.1f", userSettingsManager.height)
+            }
         }
     }
 

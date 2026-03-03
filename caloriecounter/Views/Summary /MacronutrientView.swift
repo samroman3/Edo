@@ -58,12 +58,19 @@ struct MacronutrientRingView: View {
                     .font(AppTheme.standardBookBody)
                     .foregroundStyle(AppTheme.textColor)
                     .padding()
-                MacroLabel.shared.labelView(macro: label.lowercased(), value: Text("\(Int(consumed))/\(Int(goal))g"))
+                MacroLabel.shared.labelView(macro: label.lowercased(), value: macroSummary)
             }
                 
         }.padding()
         .background(isSelected ? color.opacity(0.5) : .clear)
         .clipShape(.rect(cornerRadius: 25))
+    }
+
+    private var macroSummary: String {
+        if label == "Calories" {
+            return "\(Int(consumed))/\(Int(goal))"
+        }
+        return "\(Int(consumed))/\(Int(goal))g"
     }
 }
 
@@ -119,4 +126,3 @@ struct RingView: View {
         )
     }
 }
-

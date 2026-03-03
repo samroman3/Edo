@@ -306,67 +306,67 @@ class DailyLogManager: ObservableObject {
         }
     }
     var breakfastCalPercentage: Double {
-        return breakfastCalories / calorieGoal
+        return safePercentage(value: breakfastCalories, goal: calorieGoal)
     }
 
     var lunchCalPercentage: Double {
-        return lunchCalories / calorieGoal
+        return safePercentage(value: lunchCalories, goal: calorieGoal)
     }
 
     var dinnerCalPercentage: Double {
-        return dinnerCalories / calorieGoal
+        return safePercentage(value: dinnerCalories, goal: calorieGoal)
     }
 
     var snackCalPercentage: Double {
-        return snackCalories / calorieGoal
+        return safePercentage(value: snackCalories, goal: calorieGoal)
     }
     
     var breakfastCarbPercentage: Double {
-        return breakfastCarbs / carbGoal
+        return safePercentage(value: breakfastCarbs, goal: carbGoal)
     }
 
     var lunchCarbPercentage: Double {
-        return lunchCarbs / carbGoal
+        return safePercentage(value: lunchCarbs, goal: carbGoal)
     }
 
     var dinnerCarbPercentage: Double {
-        return dinnerCarbs / carbGoal
+        return safePercentage(value: dinnerCarbs, goal: carbGoal)
     }
 
     var snackCarbPercentage: Double {
-        return snackCarbs / carbGoal
+        return safePercentage(value: snackCarbs, goal: carbGoal)
     }
     
     var breakfastProteinPercentage: Double {
-        return breakfastProtein / proteinGoal
+        return safePercentage(value: breakfastProtein, goal: proteinGoal)
     }
 
     var lunchProteinPercentage: Double {
-        return lunchProtein / proteinGoal
+        return safePercentage(value: lunchProtein, goal: proteinGoal)
     }
 
     var dinnerProteinPercentage: Double {
-        return dinnerProtein / proteinGoal
+        return safePercentage(value: dinnerProtein, goal: proteinGoal)
     }
 
     var snackProteinPercentage: Double {
-        return snackProtein / proteinGoal
+        return safePercentage(value: snackProtein, goal: proteinGoal)
     }
     
     var breakfastFatsPercentage: Double {
-        return breakfastFats / fatGoal
+        return safePercentage(value: breakfastFats, goal: fatGoal)
     }
 
     var lunchFatsPercentage: Double {
-        return lunchFats / fatGoal
+        return safePercentage(value: lunchFats, goal: fatGoal)
     }
 
     var dinnerFatsPercentage: Double {
-        return dinnerFats / fatGoal
+        return safePercentage(value: dinnerFats, goal: fatGoal)
     }
 
     var snackFatsPercentage: Double {
-        return snackFats / fatGoal
+        return safePercentage(value: snackFats, goal: fatGoal)
     }
     
     private let userDefaults: UserDefaults
@@ -444,10 +444,27 @@ class DailyLogManager: ObservableObject {
     }
     
     private func calculateAllMeals() {
-        calculateMealCalories()
-        calculateMealProtein()
-        calculateMealCarbs()
-        calculateMealFats()
+        let totalsByMeal = aggregatedMealTotals()
+
+        breakfastCalories = totalsByMeal[.breakfast]?.calories ?? 0.0
+        lunchCalories = totalsByMeal[.lunch]?.calories ?? 0.0
+        dinnerCalories = totalsByMeal[.dinner]?.calories ?? 0.0
+        snackCalories = totalsByMeal[.snack]?.calories ?? 0.0
+
+        breakfastProtein = totalsByMeal[.breakfast]?.protein ?? 0.0
+        lunchProtein = totalsByMeal[.lunch]?.protein ?? 0.0
+        dinnerProtein = totalsByMeal[.dinner]?.protein ?? 0.0
+        snackProtein = totalsByMeal[.snack]?.protein ?? 0.0
+
+        breakfastCarbs = totalsByMeal[.breakfast]?.carbs ?? 0.0
+        lunchCarbs = totalsByMeal[.lunch]?.carbs ?? 0.0
+        dinnerCarbs = totalsByMeal[.dinner]?.carbs ?? 0.0
+        snackCarbs = totalsByMeal[.snack]?.carbs ?? 0.0
+
+        breakfastFats = totalsByMeal[.breakfast]?.fat ?? 0.0
+        lunchFats = totalsByMeal[.lunch]?.fat ?? 0.0
+        dinnerFats = totalsByMeal[.dinner]?.fat ?? 0.0
+        snackFats = totalsByMeal[.snack]?.fat ?? 0.0
     }
     
     // Fetch goals based on the selected date
@@ -581,5 +598,34 @@ class DailyLogManager: ObservableObject {
                 print("Error saving context: \(error)")
             }
         }
+    }
+
+    private func safePercentage(value: Double, goal: Double) -> Double {
+        guard goal > 0 else {
+            return 0
+        }
+        return value / goal
+    }
+
+    private func aggregatedMealTotals() -> [MealType: (calories: Double, protein: Double, carbs: Double, fat: Double)] {
+        var totals: [MealType: (calories: Double, protein: Double, carbs: Double, fat: Double)] = [:]
+
+        for meal in meals {
+            guard let mealType = MealType(rawValue: meal.type ?? "") else {
+                continue
+            }
+
+            let mealEntries = meal.entries as? Set<NutritionEntry> ?? []
+            let aggregated = mealEntries.reduce(into: (calories: 0.0, protein: 0.0, carbs: 0.0, fat: 0.0)) { partialResult, entry in
+                partialResult.calories += entry.calories
+                partialResult.protein += entry.protein
+                partialResult.carbs += entry.carbs
+                partialResult.fat += entry.fat
+            }
+
+            totals[mealType] = aggregated
+        }
+
+        return totals
     }
 }

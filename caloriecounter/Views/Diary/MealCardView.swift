@@ -6,15 +6,17 @@
 
 import SwiftUI
 import CoreData
+import UniformTypeIdentifiers
 
 struct MealCardView: View {
     let mealType: String
     let entries: [NutritionEntry]
     @Binding var isExpanded: Bool
     var onAddTapped: () -> Void
-    var onDeleteEntry: (NutritionEntry) -> Void
+    var onEntryTapped: (NutritionEntry) -> Void
+    var onDropEntry: (UUID) -> Bool
     
-    @State private var swipedEntry: NutritionEntry?
+    @State private var isDropTargeted = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -25,7 +27,6 @@ struct MealCardView: View {
                 Spacer()
                 Button(action:{
                     let _ = HapticFeedbackProvider.impact()
-                    onAddTapped()
                     onAddTapped()
                 }
                 ) {
@@ -42,55 +43,57 @@ struct MealCardView: View {
             .contentShape(Rectangle())
             if isExpanded {
                 ForEach(entries, id: \.self) { entry in
-                    HStack{
-                        NutritionEntryView(entry: entry)
-                            .offset(x: swipedEntry == entry ? -30 : 0)
-                            .animation(.easeInOut, value: swipedEntry == entry)//
-                            .gesture(
-                                DragGesture()
-                                    .onChanged { gesture in
-                                        if gesture.translation.width < -30 { // Swipe left
-                                            swipedEntry = entry
-                                        }
-                                        if gesture.translation.width > 30 { //swipe right
-                                            swipedEntry = nil
-                                        }
-                                    }
-                                    .onEnded { _ in
-                                
-                                    }
-                            )
-                        if swipedEntry == entry {
-                            // Show the delete button or tray
-                            withAnimation(.interpolatingSpring(.smooth, initialVelocity: 0.02)) {
-                                HStack {
-                                    Button(action: {
-                                        onDeleteEntry(entry)
-                                        swipedEntry = nil
-                                    }) {
-                                        Image(systemName: "minus")
-                                            .foregroundStyle(AppTheme.textColor)
-                                            .frame(width: 50, height: 50)
-                                            .background(AppTheme.carrot)
-                                    }
-                                    .padding(.leading)
-                                    .transition(.slide)
-                                    .animation(.easeInOut, value: swipedEntry == entry)
-                                }
-                            }
-                           
+                    NutritionEntryView(entry: entry)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            onEntryTapped(entry)
                         }
-                    }
-                    
+                        .onDrag {
+                            HapticFeedbackProvider.impact()
+                            return dragProvider(for: entry.id)
+                        }
                 }
             }
-        }.onAppear(){
-            
-            print(entries)
         }
-        .onDisappear(){
-            swipedEntry = nil
+        .padding(.vertical, 8)
+        .background(isDropTargeted ? AppTheme.grayLight.opacity(0.25) : .clear)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .onDrop(of: [UTType.plainText], isTargeted: $isDropTargeted) { providers in
+            handleDrop(providers: providers)
         }
+    }
+
+    private func handleDrop(providers: [NSItemProvider]) -> Bool {
+        guard let provider = providers.first,
+              provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) else {
+            return false
+        }
+
+        provider.loadDataRepresentation(forTypeIdentifier: UTType.plainText.identifier) { data, _ in
+            guard let data,
+                  let identifier = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  let entryID = UUID(uuidString: identifier) else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                if onDropEntry(entryID) {
+                    HapticFeedbackProvider.impact()
+                }
+            }
+        }
+
+        return true
+    }
+
+    private func dragProvider(for id: UUID) -> NSItemProvider {
+        let provider = NSItemProvider()
+        let data = Data(id.uuidString.utf8)
+        provider.registerDataRepresentation(forTypeIdentifier: UTType.plainText.identifier, visibility: .all) { completion in
+            completion(data, nil)
+            return nil
+        }
+        return provider
     }
     
     
@@ -111,10 +114,10 @@ struct ChevronView: View {
             Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                 .font(.system(size: 25))
             HStack(alignment: .firstTextBaseline, spacing: 3){
-                MacroLabel.shared.labelView(macro: "calories", value:  Text("\(Int(totalCalories))g"))
-                MacroLabel.shared.labelView(macro: "protein", value:  Text("\(Int(totalProtein))g"))
-                MacroLabel.shared.labelView(macro: "carbs", value:  Text("\(Int(totalCarbs))g"))
-                MacroLabel.shared.labelView(macro: "fats", value:  Text("\(Int(totalFats))g"))
+                MacroLabel.shared.labelView(macro: "calories", value: "\(Int(totalCalories))g")
+                MacroLabel.shared.labelView(macro: "protein", value: "\(Int(totalProtein))g")
+                MacroLabel.shared.labelView(macro: "carbs", value: "\(Int(totalCarbs))g")
+                MacroLabel.shared.labelView(macro: "fats", value: "\(Int(totalFats))g")
             }.padding()
             Spacer()
         }
@@ -130,7 +133,7 @@ class MacroLabel {
     
     static let shared = MacroLabel()
     
-    func labelView(macro: String, value: Text) -> some View {
+    func labelView(macro: String, value: String) -> some View {
         switch macro {
         case "calories":
             return AnyView(
@@ -138,13 +141,17 @@ class MacroLabel {
                     Image(systemName: "c.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
-                    value
+                    Text(value)
                         .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
-                    Spacer()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
                 }
-                    .background(AppTheme.sageGreen)
-                    .cornerRadius(15)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(AppTheme.sageGreen)
+                .cornerRadius(15)
             )
         case "protein":
             return AnyView(
@@ -152,13 +159,17 @@ class MacroLabel {
                     Image(systemName: "p.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
-                    value
+                    Text(value)
                         .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
-                    Spacer()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
                 }
-                    .background(AppTheme.softPurple)
-                    .cornerRadius(15)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(AppTheme.softPurple)
+                .cornerRadius(15)
             )
         case "carbs":
             return AnyView(
@@ -166,13 +177,17 @@ class MacroLabel {
                     Image(systemName: "c.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
-                    value
+                    Text(value)
                         .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
-                    Spacer()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
                 }
-                    .background(AppTheme.goldenrod)
-                    .cornerRadius(15)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(AppTheme.goldenrod)
+                .cornerRadius(15)
             )
         case "fats":
             return AnyView(
@@ -180,13 +195,17 @@ class MacroLabel {
                     Image(systemName: "f.circle")
                         .font(.title2)
                         .foregroundStyle(.black)
-                    value
+                    Text(value)
                         .font(AppTheme.standardBookCaption)
                         .foregroundStyle(.black)
-                    Spacer()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
                 }
-                    .background(AppTheme.carrot)
-                    .cornerRadius(15)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(AppTheme.carrot)
+                .cornerRadius(15)
             )
         default:
             return AnyView(EmptyView())
@@ -202,5 +221,3 @@ class MacroLabel {
 //#Preview {
 //    MealEntryView()
 //}
-
-

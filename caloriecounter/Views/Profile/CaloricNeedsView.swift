@@ -28,6 +28,7 @@ struct CaloricNeedsView: View {
     @FocusState private var isInputActive: Bool
     @State private var selectedNutrient: NutrientType?
     @State private var showAlert = false
+    @State private var calorieAdjustment: Double = 0
     
     var body: some View {
         NavigationView {
@@ -137,58 +138,64 @@ struct CaloricNeedsView: View {
                 }
                 .frame(minWidth: 100, minHeight: 100)
                 .padding(.vertical)
+
+            VStack(spacing: 8) {
+                HStack {
+                    Text("Maintenance Range")
+                        .font(AppTheme.standardBookCaption)
+                    Spacer()
+                    Text(userSettingsManager.maintenanceRangeText())
+                        .font(AppTheme.standardBookBody)
+                }
+
+                HStack {
+                    Text("Daily Adjustment")
+                        .font(AppTheme.standardBookCaption)
+                    Spacer()
+                    Text(calorieAdjustmentLabel)
+                        .font(AppTheme.standardBookBody)
+                }
+
+                Stepper(value: $calorieAdjustment, in: -400...400, step: 50) {
+                    Text("Fine tune")
+                        .font(AppTheme.standardBookCaption)
+                }
+                .onChange(of: calorieAdjustment) { newValue in
+                    userSettingsManager.saveCalorieAdjustmentOffset(newValue)
+                    calculateCaloricNeeds()
+                }
+            }
+            .padding()
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 18))
         }
     }
     
-    private func calculateBMR() -> Double {
-          let weightInKg = userSettingsManager.weight
-          let heightInCm = userSettingsManager.height
-          let age = Double(userSettingsManager.age)
-          
-          if userSettingsManager.sex == "Female" {
-              return 447.593 + (9.247 * weightInKg) + (3.098 * heightInCm) - (4.330 * age)
-          } else {
-              return 88.362 + (13.397 * weightInKg) + (4.799 * heightInCm) - (5.677 * age)
-          }
-      }
-      
-      private func getActivityMultiplier() -> Double {
-          switch userSettingsManager.activity {
-          case "Sedentary": return 1.2
-          case "Lightly Active": return 1.375
-          case "Moderately Active": return 1.55
-          case "Very Active": return 1.725
-          default: return 1.2
-          }
-      }
-    
     private func calculateCaloricNeeds() {
-          let bmr = calculateBMR()
-          let activityMultiplier = getActivityMultiplier()
-          var adjustedCaloricNeeds = bmr * activityMultiplier
+        var adjustedCaloricNeeds = userSettingsManager.estimatedMaintenanceCalories(adjustment: calorieAdjustment)
           
-          adjustCaloricNeedsBasedOnGoal(&adjustedCaloricNeeds)
+        adjustCaloricNeedsBasedOnGoal(&adjustedCaloricNeeds)
           
-          nutrientValues[.calories] = String(format: "%.0f", adjustedCaloricNeeds)
-          updateMacros(for: adjustedCaloricNeeds)
+        nutrientValues[.calories] = String(format: "%.0f", adjustedCaloricNeeds)
+        updateMacros(for: adjustedCaloricNeeds)
       }
        
     private func adjustCaloricNeedsBasedOnGoal(_ caloricNeeds: inout Double) {
-           guard let goal = selectedGoal else { return }
-           
-           switch goal {
-           case .loseWeight:
-               caloricNeeds = max(1200, caloricNeeds * 0.85) // 15% deficit, but not below 1200
-           case .gainWeight:
-               caloricNeeds *= 1.1 // 10% surplus for gradual weight gain
-           case .buildMuscle:
-               caloricNeeds *= 1.05 // 5% surplus for lean muscle gain
-           case .enhancePerformance, .maintainWeight:
-               break // No change
-           case .custom:
-               break // No change, user will input their own values
-           }
-       }
+        guard let goal = selectedGoal else { return }
+
+        switch goal {
+        case .loseWeight:
+            caloricNeeds = max(userSettingsManager.minimumSuggestedCalories(), caloricNeeds * 0.8)
+        case .gainWeight:
+            caloricNeeds *= 1.12
+        case .buildMuscle:
+            caloricNeeds *= 1.08
+        case .enhancePerformance:
+            caloricNeeds *= 1.05
+        case .maintainWeight, .custom:
+            break
+        }
+    }
        
     
     private struct MacroConfiguration {
@@ -201,33 +208,33 @@ struct CaloricNeedsView: View {
         switch goal {
         case .loseWeight:
             return MacroConfiguration(
-                minProteinPerKilogram: 1.6,
-                minFatPerKilogram: 0.6,
-                leftoverDistribution: (protein: 0.1, fat: 0.2, carbs: 0.7)
+                minProteinPerKilogram: 1.9,
+                minFatPerKilogram: 0.7,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
             )
         case .gainWeight:
             return MacroConfiguration(
-                minProteinPerKilogram: 1.6,
-                minFatPerKilogram: 0.9,
-                leftoverDistribution: (protein: 0.2, fat: 0.3, carbs: 0.5)
+                minProteinPerKilogram: 1.8,
+                minFatPerKilogram: 0.8,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
             )
         case .buildMuscle:
             return MacroConfiguration(
-                minProteinPerKilogram: 1.8,
-                minFatPerKilogram: 0.9,
-                leftoverDistribution: (protein: 0.25, fat: 0.2, carbs: 0.55)
+                minProteinPerKilogram: 2.0,
+                minFatPerKilogram: 0.8,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
             )
         case .enhancePerformance:
             return MacroConfiguration(
                 minProteinPerKilogram: 1.6,
-                minFatPerKilogram: 0.8,
-                leftoverDistribution: (protein: 0.2, fat: 0.25, carbs: 0.55)
+                minFatPerKilogram: 0.7,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
             )
         case .maintainWeight:
             return MacroConfiguration(
-                minProteinPerKilogram: 1.4,
-                minFatPerKilogram: 0.7,
-                leftoverDistribution: (protein: 0.2, fat: 0.25, carbs: 0.55)
+                minProteinPerKilogram: 1.6,
+                minFatPerKilogram: 0.75,
+                leftoverDistribution: (protein: 0.0, fat: 0.0, carbs: 1.0)
             )
         case .custom:
             return MacroConfiguration(
@@ -293,7 +300,7 @@ struct CaloricNeedsView: View {
         nutrientValues[.fats] = String(format: "%.0f", fatGrams)
         nutrientValues[.carbs] = String(format: "%.0f", max(0, carbGrams))
     }
-    
+
     private func saveCaloricNeeds() {
         guard let cal = nutrientValues[.calories], let caloricNeeds = Double(cal) else { return }
         guard let protein = nutrientValues[.protein], let proteinToSave = Double(protein) else { return }
@@ -353,6 +360,7 @@ struct CaloricNeedsView: View {
     private func loadUserSettings() {
         userSettingsManager.loadUserSettings()
         DispatchQueue.main.async {
+            self.calorieAdjustment = self.userSettingsManager.calorieAdjustmentOffset
             if self.onboardEntry {
                 self.selectedGoal = self.determineDefaultGoal()
             } else {
@@ -360,6 +368,11 @@ struct CaloricNeedsView: View {
             }
             self.calculateCaloricNeeds()
         }
+    }
+
+    private var calorieAdjustmentLabel: String {
+        let value = Int(calorieAdjustment.rounded())
+        return value == 0 ? "0 cal" : "\(value > 0 ? "+" : "")\(value) cal"
     }
     
     private func determineDefaultGoal() -> GoalSelectionView.Goal {

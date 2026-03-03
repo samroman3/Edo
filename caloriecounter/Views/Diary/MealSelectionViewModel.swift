@@ -31,6 +31,10 @@ class MealSelectionViewModel: ObservableObject {
     func selectEntry(_ entry: NutritionEntry) {
         selectedEntry = entry
     }
+
+    func clearSelectedEntry() {
+        selectedEntry = nil
+    }
     
     func deleteEntry(_ entry: NutritionEntry) {
         dataStore.deleteEntry(entry)

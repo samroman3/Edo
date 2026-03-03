@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct MealsView: View {
     
@@ -37,7 +38,7 @@ struct MealsView: View {
     
     
     
-    @State private var expandedStates: [MealType: Bool] = Dictionary(uniqueKeysWithValues: MealType.allCases.map { ($0, false) })
+    @State private var expandedStates: [MealType: Bool] = Dictionary(uniqueKeysWithValues: MealType.allCases.map { ($0, true) })
     
     var body: some View {
         VStack {
@@ -56,8 +57,14 @@ struct MealsView: View {
                             mealType: mealType.displayName,
                             entries: entries,
                             isExpanded: isExpandedBinding,
-                            onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)}, onDeleteEntry: { entry in
-                                deleteEntry(entry)})
+                            onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue)},
+                            onEntryTapped: { entry in
+                                mealSelectionViewModel.selectEntry(entry)
+                            },
+                            onDropEntry: { entryID in
+                                moveEntry(entryID, to: mealType)
+                            }
+                        )
 
                         if !entries.isEmpty {
                             ChevronView(isExpanded: isExpandedBinding, 
@@ -75,7 +82,10 @@ struct MealsView: View {
                         } else {
                             PlaceholderMealView(
                                 mealType: mealType.displayName,
-                                onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) }
+                                onAddTapped: { mealSelectionViewModel.selectMealType(mealType.rawValue) },
+                                onDropEntry: { entryID in
+                                    moveEntry(entryID, to: mealType)
+                                }
                             )
                         }
                         Divider().background(AppTheme.textColor)
@@ -86,18 +96,24 @@ struct MealsView: View {
             }
         }
     }
-    
-    
-    private func deleteEntry(_ entry: NutritionEntry) {
-        withAnimation{
-            nutritionDataStore.deleteEntry(entry)
-            dailyLogManager.fetchDailyLogForSelectedDate()
+    private func moveEntry(_ entryID: UUID, to mealType: MealType) -> Bool {
+        guard mealType != .water, let entry = nutritionDataStore.entry(with: entryID) else {
+            return false
         }
+
+        withAnimation {
+            nutritionDataStore.moveEntry(entry, to: mealType.rawValue, on: dailyLogManager.selectedDate)
+            dailyLogManager.refreshData()
+        }
+
+        return true
     }
     
     struct PlaceholderMealView: View {
         let mealType: String
         var onAddTapped: () -> Void
+        var onDropEntry: (UUID) -> Bool
+        @State private var isDropTargeted = false
         
         var body: some View {
             VStack() {
@@ -119,7 +135,35 @@ struct MealsView: View {
                 .padding(.horizontal)
                 .contentShape(Rectangle())
             }
-            
+            .padding(.vertical, 8)
+            .background(isDropTargeted ? AppTheme.grayLight.opacity(0.25) : .clear)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .onDrop(of: [UTType.plainText], isTargeted: $isDropTargeted) { providers in
+                handleDrop(providers: providers)
+            }
+        }
+
+        private func handleDrop(providers: [NSItemProvider]) -> Bool {
+            guard let provider = providers.first,
+                  provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) else {
+                return false
+            }
+
+            provider.loadDataRepresentation(forTypeIdentifier: UTType.plainText.identifier) { data, _ in
+                guard let data,
+                      let identifier = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      let entryID = UUID(uuidString: identifier) else {
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    if onDropEntry(entryID) {
+                        HapticFeedbackProvider.impact()
+                    }
+                }
+            }
+
+            return true
         }
     }
   

@@ -23,8 +23,8 @@ struct NutritionEntrySummary: Identifiable, Hashable {
 
 class NutritionDataStore: ObservableObject {
     let context: NSManagedObjectContext
-    
-    
+    private let timestampKey = "timeStamp"
+
     
     private let userDefaults: UserDefaults
     
@@ -46,6 +46,7 @@ class NutritionDataStore: ObservableObject {
         
         let newEntry = NutritionEntry(context: context)
         newEntry.id = UUID()
+        newEntry.timestamp = Date()
         newEntry.calories = calories
         newEntry.protein = protein
         newEntry.carbs = carbs
@@ -101,6 +102,7 @@ class NutritionDataStore: ObservableObject {
         
         let newEntry = NutritionEntry(context: context)
         newEntry.id = UUID()
+        newEntry.timestamp = Date()
         newEntry.calories = calories
         newEntry.name = name
         newEntry.protein = protein
@@ -113,9 +115,7 @@ class NutritionDataStore: ObservableObject {
         newEntry.mealPhotoLink = mealPhotoLink ?? ""
         newEntry.isFavorite = isFavorite
                 
-        if let entries = meal.entries as? Set<NutritionEntry>, !entries.contains(newEntry) {
-            meal.addToEntries(newEntry)
-        }
+        meal.addToEntries(newEntry)
         saveContext()
     }
     
@@ -140,6 +140,9 @@ class NutritionDataStore: ObservableObject {
     // Read entries for a specific date
     func readEntries(for date: Date) -> [NutritionEntry] {
         let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+        let (startOfDay, endOfDay) = dayBounds(for: date)
+        request.predicate = NSPredicate(format: "(meals.date >= %@) AND (meals.date < %@)", startOfDay as NSDate, endOfDay as NSDate)
+        request.sortDescriptors = [NSSortDescriptor(key: timestampKey, ascending: false)]
         do {
             return try context.fetch(request)
         } catch {
@@ -149,34 +152,35 @@ class NutritionDataStore: ObservableObject {
     }
 
     func fetchEntries(favorites: Bool, nameSearch: String? = nil) -> [NutritionEntry] {
-    let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
-    var predicates: [NSPredicate] = []
-    
-    // Adding a predicate to filter for favorite entries
-    if favorites {
-        let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
-        predicates.append(favoritePredicate)
+        let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+        var predicates: [NSPredicate] = []
+        
+        // Adding a predicate to filter for favorite entries
+        if favorites {
+            let favoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+            predicates.append(favoritePredicate)
+        }
+        
+        // Adding a predicate to filter by name if nameSearch is not nil and not empty
+        if let nameSearch = nameSearch, !nameSearch.isEmpty {
+            let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
+            predicates.append(namePredicate)
+        }
+        
+        // Combine all predicates
+        if !predicates.isEmpty {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }
+        request.sortDescriptors = [NSSortDescriptor(key: timestampKey, ascending: false)]
+        
+        do {
+            let entries = try context.fetch(request)
+            return entries
+        } catch {
+            print("Error fetching entries: \(error)")
+            return []
+        }
     }
-    
-    // Adding a predicate to filter by name if nameSearch is not nil and not empty
-    if let nameSearch = nameSearch, !nameSearch.isEmpty {
-        let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
-        predicates.append(namePredicate)
-    }
-    
-    // Combine all predicates
-    if !predicates.isEmpty {
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-    }
-    
-    do {
-        let entries = try context.fetch(request)
-        return entries
-    } catch {
-        print("Error fetching entries: \(error)")
-        return []
-    }
-}
 
     func fetchConsolidatedEntries(favorites: Bool = false, nameSearch: String? = nil) -> [NutritionEntrySummary] {
         let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
@@ -190,48 +194,47 @@ class NutritionDataStore: ObservableObject {
         if let nameSearch = nameSearch, !nameSearch.isEmpty {
             let namePredicate = NSPredicate(format: "name CONTAINS[cd] %@", nameSearch)
             predicates.append(namePredicate)
-        } else {
-            return []
         }
 
-        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        request.sortDescriptors = [NSSortDescriptor(key: timestampKey, ascending: false)]
         if !predicates.isEmpty {
             request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }
 
         do {
             let entries = try context.fetch(request)
-            var uniqueEntries: [String: NutritionEntrySummary] = [:]
-
-            for entry in entries {
-                let key = entry.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-                let summary = NutritionEntrySummary(
-                    id: entry.id,
-                    name: entry.name,
-                    calories: entry.calories,
-                    protein: entry.protein,
-                    carbs: entry.carbs,
-                    fat: entry.fat,
-                    isFavorite: entry.isFavorite,
-                    timestamp: entry.timestamp
-                )
-
-                if let existing = uniqueEntries[key] {
-                    if entry.timestamp > existing.timestamp {
-                        uniqueEntries[key] = summary
-                    }
-                } else {
-                    uniqueEntries[key] = summary
-                }
-            }
-
-            return uniqueEntries
-                .values
-                .sorted { $0.timestamp > $1.timestamp }
+            return consolidate(entries: entries)
 
         } catch {
             print("Error fetching entries for consolidation: \(error)")
             return []
+        }
+    }
+
+    func recentQuickEntries(limit: Int = 6, favoritesOnly: Bool = false) -> [NutritionEntrySummary] {
+        var results = fetchConsolidatedEntries(favorites: favoritesOnly)
+        if results.count > limit {
+            results = Array(results.prefix(limit))
+        }
+        return results
+    }
+
+    func mostRecentEntrySummary(for mealType: String? = nil) -> NutritionEntrySummary? {
+        let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+        if let mealType, !mealType.isEmpty {
+            request.predicate = NSPredicate(format: "meals.type == %@", mealType)
+        }
+        request.sortDescriptors = [NSSortDescriptor(key: timestampKey, ascending: false)]
+        request.fetchLimit = 1
+
+        do {
+            guard let entry = try context.fetch(request).first else {
+                return nil
+            }
+            return makeSummary(from: entry)
+        } catch {
+            print("Error fetching most recent entry: \(error)")
+            return nil
         }
     }
 
@@ -254,6 +257,53 @@ class NutritionDataStore: ObservableObject {
         // Update entry properties as needed
         saveContext()
     }
+
+    func updateEntry(
+        _ entry: NutritionEntry,
+        name: String,
+        calories: Double,
+        protein: Double,
+        carbs: Double,
+        fat: Double,
+        userNotes: String,
+        isFavorite: Bool
+    ) {
+        entry.name = name
+        entry.calories = calories
+        entry.protein = protein
+        entry.carbs = carbs
+        entry.fat = fat
+        entry.userNotes = userNotes
+        entry.isFavorite = isFavorite
+        entry.timestamp = Date()
+        saveContext()
+    }
+
+    func moveEntry(_ entry: NutritionEntry, to mealType: String, on date: Date) {
+        let dailyLog = fetchOrCreateDailyLog(for: date)
+        let targetMeal = fetchOrCreateMeal(in: dailyLog, type: mealType)
+
+        if let currentMeal = entry.meals as Meal? {
+            currentMeal.removeFromEntries(entry)
+        }
+
+        targetMeal.addToEntries(entry)
+        entry.timestamp = Date()
+        saveContext()
+    }
+
+    func entry(with id: UUID) -> NutritionEntry? {
+        let request: NSFetchRequest<NutritionEntry> = NutritionEntry.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+
+        do {
+            return try context.fetch(request).first
+        } catch {
+            print("Error fetching entry by id: \(error)")
+            return nil
+        }
+    }
     
     // Delete an entry
     func deleteEntry(_ entry: NutritionEntry) {
@@ -271,5 +321,45 @@ class NutritionDataStore: ObservableObject {
             }
         }
     }
-}
 
+    private func dayBounds(for date: Date) -> (Date, Date) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        return (startOfDay, endOfDay)
+    }
+
+    private func consolidate(entries: [NutritionEntry]) -> [NutritionEntrySummary] {
+        var uniqueEntries: [String: NutritionEntrySummary] = [:]
+
+        for entry in entries {
+            let key = entry.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            let summary = makeSummary(from: entry)
+
+            if let existing = uniqueEntries[key] {
+                if entry.timestamp > existing.timestamp {
+                    uniqueEntries[key] = summary
+                }
+            } else {
+                uniqueEntries[key] = summary
+            }
+        }
+
+        return uniqueEntries
+            .values
+            .sorted { $0.timestamp > $1.timestamp }
+    }
+
+    private func makeSummary(from entry: NutritionEntry) -> NutritionEntrySummary {
+        NutritionEntrySummary(
+            id: entry.id,
+            name: entry.name,
+            calories: entry.calories,
+            protein: entry.protein,
+            carbs: entry.carbs,
+            fat: entry.fat,
+            isFavorite: entry.isFavorite,
+            timestamp: entry.timestamp
+        )
+    }
+}

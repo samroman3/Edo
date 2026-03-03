@@ -11,33 +11,33 @@ struct StackedBarChartView: View {
     @EnvironmentObject var dailyLogManager: DailyLogManager
     @ObservedObject var summaryViewModel: DailySummaryViewModel
     
-    private let barWidth: CGFloat = 20
-    private let chartHeight: CGFloat = 200 // Fixed height for the chart
+    private let chartHeight: CGFloat = 260
     
     var body: some View {
-        VStack {
-            Text("Weekly Stacked Bar Chart")
-                .font(AppTheme.standardBookBody)
-                .foregroundColor(AppTheme.textColor)
-            
+        VStack(spacing: 8) {
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .bottom, spacing: 16) {
+                HStack(alignment: .bottom, spacing: 18) {
                     ForEach((0..<7).reversed(), id: \.self) { index in
                         let date = Calendar.current.date(byAdding: .day, value: -index, to: dailyLogManager.selectedDate)!
                         let dailyCalories = weeklyLogManager.totalNutrients(for: date, macro: .calories)
                         let calorieGoal = dailyLogManager.calorieGoal
+                        let carbCalories = weeklyLogManager.totalNutrients(for: date, macro: .carbs) * 4
+                        let proteinCalories = weeklyLogManager.totalNutrients(for: date, macro: .protein) * 4
+                        let fatCalories = weeklyLogManager.totalNutrients(for: date, macro: .fats) * 9
                         
-                        VStack {
+                        VStack(spacing: 10) {
                             Text(dateFormatter.string(from: date))
                                 .font(.caption)
                                 .foregroundColor(AppTheme.textColor)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                             
                             HStack(spacing: 8) {
                                 StackedBar(
                                     data: [
-                                        weeklyLogManager.totalNutrients(for: date, macro: .carbs),
-                                        weeklyLogManager.totalNutrients(for: date, macro: .protein),
-                                        weeklyLogManager.totalNutrients(for: date, macro: .fats)
+                                        carbCalories,
+                                        proteinCalories,
+                                        fatCalories
                                     ],
                                     colors: [AppTheme.goldenrod, AppTheme.lavender, AppTheme.carrot],
                                     maxHeight: chartHeight,
@@ -54,10 +54,13 @@ struct StackedBarChartView: View {
                         }
                     }
                 }
-                .frame(height: chartHeight)
+                .padding(.horizontal, 12)
+                .frame(height: chartHeight + 48, alignment: .bottom)
             }
         }
-        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
         .onAppear {
             weeklyLogManager.fetchWeeklyLogs(from: dailyLogManager.selectedDate)
         }
@@ -68,7 +71,7 @@ struct StackedBarChartView: View {
     
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.dateFormat = "EEE"
         return formatter
     }
 }
@@ -90,19 +93,26 @@ struct StackedBar: View {
                     ForEach(0..<data.count, id: \.self) { index in
                         Rectangle()
                             .fill(colors[index % colors.count])
-                            .frame(width: 20, height: CGFloat(data[index] / calorieGoal) * maxHeight)
+                            .frame(width: 22, height: segmentHeight(for: data[index]))
                     }
                 }
-                .frame(width: 20)
+                .frame(width: 22)
                 .clipShape(RoundedRectangle(cornerRadius: 5))
             } else {
                 Rectangle()
                     .fill(Color.gray)
-                    .frame(width: 20, height: maxHeight)
+                    .frame(width: 22, height: maxHeight)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
             }
         }
         .frame(maxHeight: maxHeight)
+    }
+
+    private func segmentHeight(for value: Double) -> CGFloat {
+        guard calorieGoal > 0 else {
+            return 0
+        }
+        return CGFloat(value / calorieGoal) * maxHeight
     }
 }
 
@@ -115,8 +125,15 @@ struct Bar: View {
     var body: some View {
         Rectangle()
             .fill(color)
-            .frame(width: 20, height: CGFloat(value / maxValue) * maxHeight)
+            .frame(width: 22, height: barHeight)
             .clipShape(RoundedRectangle(cornerRadius: 5))
             .frame(maxHeight: maxHeight)
+    }
+
+    private var barHeight: CGFloat {
+        guard maxValue > 0 else {
+            return 0
+        }
+        return CGFloat(value / maxValue) * maxHeight
     }
 }

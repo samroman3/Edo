@@ -29,7 +29,7 @@
         <attribute name="isFavorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="mealPhoto" optional="YES" attributeType="Binary"/>
         <attribute name="mealPhotoLink" optional="YES" attributeType="String"/>
-        <attribute name="minerals" optional="YES" attributeType="Transformable"/>
+        <attribute name="minerals" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="protein" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="servingSize" optional="YES" attributeType="String"/>
@@ -38,7 +38,7 @@
         <attribute name="sugars" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="timeStamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userNotes" optional="YES" attributeType="String"/>
-        <attribute name="vitamins" optional="YES" attributeType="Transformable"/>
+        <attribute name="vitamins" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <relationship name="meals" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meal" inverseName="entries" inverseEntity="Meal"/>
         <relationship name="recipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="entries" inverseEntity="Recipe"/>
     </entity>

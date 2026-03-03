@@ -37,6 +37,10 @@ struct MacronutrientView: View {
         .background(.clear)
     }
 
+    private var widgetSurface: some ShapeStyle {
+        AppTheme.reverse.opacity(0.9)
+    }
+
     var smallWidget: some View {
            let macro = forcedMacro ?? .calories
            return MacronutrientRingView(
@@ -48,6 +52,7 @@ struct MacronutrientView: View {
            )
            .frame(width: 130, height: 130)
            .padding(10)
+           .background(widgetSurface, in: RoundedRectangle(cornerRadius: 24))
        }
     
     
@@ -84,6 +89,7 @@ struct MacronutrientView: View {
              }
          }
          .padding(15)
+         .background(widgetSurface, in: RoundedRectangle(cornerRadius: 28))
      }
 
     func macroValue(for macro: MacroType) -> Double {
@@ -117,6 +123,10 @@ struct MacronutrientView: View {
 class MacroLabel {
     
     static let shared = MacroLabel()
+
+    private var chipTextColor: Color {
+        AppTheme.prunes
+    }
     
     func labelView(macro: String, value: Text) -> some View {
         switch macro {
@@ -125,10 +135,10 @@ class MacroLabel {
                 HStack(alignment: .center) {
                     Image(systemName: "c.circle")
                         .font(.title2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     value
                         .font(AppTheme.standardBookCaption)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     Spacer()
                 }
                     .background(AppTheme.sageGreen)
@@ -139,13 +149,13 @@ class MacroLabel {
                 HStack(alignment: .center) {
                     Image(systemName: "p.circle")
                         .font(.title2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     value
                         .font(AppTheme.standardBookCaption)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     Spacer()
                 }
-                    .background(AppTheme.softPurple)
+                    .background(AppTheme.lavender)
                     .cornerRadius(15)
             )
         case "carbs":
@@ -153,10 +163,10 @@ class MacroLabel {
                 HStack(alignment: .center) {
                     Image(systemName: "c.circle")
                         .font(.title2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     value
                         .font(AppTheme.standardBookCaption)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     Spacer()
                 }
                     .background(AppTheme.goldenrod)
@@ -167,10 +177,10 @@ class MacroLabel {
                 HStack(alignment: .center) {
                     Image(systemName: "f.circle")
                         .font(.title2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     value
                         .font(AppTheme.standardBookCaption)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     Spacer()
                 }
                     .background(AppTheme.carrot)
@@ -181,10 +191,10 @@ class MacroLabel {
                 HStack(alignment: .center) {
                     Image(systemName: "w.circle")
                         .font(.title2)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     value
                         .font(AppTheme.standardBookCaption)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(chipTextColor)
                     Spacer()
                 }
                     .background(AppTheme.skyBlue)
@@ -229,8 +239,25 @@ struct RingView: View {
     var isSelected: Bool
     
     var percentageFilled: String {
+        guard goal > 0 else {
+            return "0.0%"
+        }
         let percentage = (consumed / goal) * 100
         return String(format: "%.1f%%", percentage)
+    }
+
+    private var progress: CGFloat {
+        guard goal > 0 else {
+            return 0
+        }
+        return min(CGFloat(consumed / goal), 1)
+    }
+
+    private var overflowProgress: Double {
+        guard goal > 0 else {
+            return 0
+        }
+        return min(max((consumed - goal) / goal, 0), 1)
     }
     
     var body: some View {
@@ -239,11 +266,11 @@ struct RingView: View {
             Circle()
                 .stroke(lineWidth: 8)
                 .opacity(0.5)
-                .foregroundColor(AppTheme.dynamicGray)
+                .foregroundColor(AppTheme.grayLight)
             
             // Filled portion of the circle
             Circle()
-                .trim(from: 0, to: min(CGFloat(consumed / goal), 1))
+                .trim(from: 0, to: progress)
                 .stroke(color, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             
@@ -257,18 +284,18 @@ struct RingView: View {
             // Overlay for the portion exceeding 100%
             GeometryReader { geometry in
                 let radius = geometry.size.width / 2
-                let excessPercentage = min(max((consumed - goal) / goal, 0), 1)
+                let excessPercentage = overflowProgress
                 
                 // Calculate start and end angles for the excess portion
                 let startAngle = Angle(degrees: 360 * (1 - excessPercentage) - 90)
                 let endAngle = Angle(degrees: 360 * -90)
-                if consumed > goal {
+                if goal > 0 && consumed > goal {
                     Path { path in
                         path.addArc(center: CGPoint(x: radius, y: radius), radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
                     }
                     .trim(from: 0, to: 1)
                     .stroke(style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [5]))
-                    .foregroundColor(AppTheme.grayExtra)
+                    .foregroundColor(AppTheme.coolGrey)
                 }
             }
         )
@@ -472,16 +499,20 @@ struct MacronutrientWidgetEntryView : View {
     }
 }
 
-#Preview(as: .systemSmall) {
-    MacronutrientWidget()
-} timeline: {
-    MacroEntry(date: .now, dailyLogManager: SimplifiedDailyLogManager())
-}
+struct MacroWidget_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            MacronutrientWidgetEntryView(
+                entry: MacroEntry(date: .now, dailyLogManager: SimplifiedDailyLogManager())
+            )
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
 
-#Preview(as: .systemMedium) {
-    MacronutrientWidget()
-} timeline: {
-    MacroEntry(date: .now, dailyLogManager: SimplifiedDailyLogManager())
+            MacronutrientWidgetEntryView(
+                entry: MacroEntry(date: .now, dailyLogManager: SimplifiedDailyLogManager())
+            )
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+        }
+    }
 }
 
 

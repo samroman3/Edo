@@ -77,6 +77,7 @@ enum ProfileItemType {
 
 struct ProfileView: View {
     @EnvironmentObject private var userSettingsManager: UserSettingsManager
+    @EnvironmentObject private var themeManager: ThemeManager
     
     @Binding var profileEditing: Bool
 
@@ -112,6 +113,8 @@ struct ProfileView: View {
                 header
                     .padding()
                 profileInfoSection
+                focusSection
+                themeSection
                 if !isEditMode {
                     menuSection
                 } else {
@@ -254,7 +257,23 @@ struct ProfileView: View {
                     Text("BMI:")
                         .font(AppTheme.standardBookBody)
                     Spacer()
-                    Text("\(userSettingsManager.calculateBMI() ?? 0, specifier: "%.f")")
+                    Text(String(format: "%.1f", userSettingsManager.calculateBMI() ?? 0))
+                        .font(AppTheme.standardBookTitle)
+                }
+
+                HStack {
+                    Text("Category:")
+                        .font(AppTheme.standardBookBody)
+                    Spacer()
+                    Text(userSettingsManager.bmiCategory())
+                        .font(AppTheme.standardBookBody)
+                }
+
+                HStack {
+                    Text("Healthy Range:")
+                        .font(AppTheme.standardBookBody)
+                    Spacer()
+                    Text(userSettingsManager.healthyWeightRangeText())
                         .font(AppTheme.standardBookTitle)
                 }
             }
@@ -332,6 +351,77 @@ struct ProfileView: View {
             }
         }
     }
+
+    private var focusSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Today")
+                .font(AppTheme.standardBookBody)
+            HStack {
+                focusMetric(title: "Goal", value: "\(Int(userSettingsManager.dailyCaloricNeeds)) cal")
+                focusMetric(title: "Plan", value: userSettingsManager.dietaryPlan.isEmpty ? "Custom" : userSettingsManager.dietaryPlan)
+                focusMetric(title: "Health", value: userSettingsManager.canReadFromHealthApp || userSettingsManager.canWriteToHealthApp ? "Connected" : "Manual")
+            }
+        }
+        .padding()
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .padding(.horizontal)
+    }
+
+    private var themeSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Theme")
+                .font(AppTheme.standardBookBody)
+
+            ForEach(AppTheme.ThemeOption.allCases) { option in
+                Button {
+                    themeManager.apply(option)
+                } label: {
+                    HStack(spacing: 12) {
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(option.palette.sageGreen)
+                                .frame(width: 14, height: 14)
+                            Circle()
+                                .fill(option.palette.lavender)
+                                .frame(width: 14, height: 14)
+                            Circle()
+                                .fill(option.palette.carrot)
+                                .frame(width: 14, height: 14)
+                        }
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(option.palette.name)
+                                .font(AppTheme.standardBookBody)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: themeManager.selectedThemeID == option.rawValue ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(themeManager.selectedThemeID == option.rawValue ? AppTheme.carrot : AppTheme.grayMiddle)
+                    }
+                    .foregroundStyle(AppTheme.textColor)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal)
+    }
+
+    private func focusMetric(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(AppTheme.standardBookCaption)
+                .foregroundStyle(AppTheme.textColor.opacity(0.7))
+            Text(value)
+                .font(AppTheme.standardBookBody)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
     
     private func profileInfoRow(label: String, value: String) -> some View {
         HStack {
@@ -362,6 +452,10 @@ struct ProfileView: View {
     }
     
     private func saveProfile() {
+        let previousWeight = userSettingsManager.weight
+        let previousHeight = userSettingsManager.height
+        let previousActivity = userSettingsManager.activity
+
         if let inputImage {
             userSettingsManager.uploadProfileImage(inputImage)
         }
@@ -391,8 +485,7 @@ struct ProfileView: View {
         
         userSettingsManager.loadUserSettings()
         
-        //Show Caloric needs view if weight or height was changed with updated goals:
-        if weightToSave != userSettingsManager.weight || heightToSave != userSettingsManager.height || editingActivityLevel != userSettingsManager.activity {
+        if weightToSave != previousWeight || heightToSave != previousHeight || editingActivityLevel != previousActivity {
             showCaloricNeedsView.toggle()
         }
     }

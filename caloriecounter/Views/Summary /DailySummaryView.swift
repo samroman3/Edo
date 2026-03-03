@@ -7,20 +7,18 @@
 import SwiftUI
 
 enum DisplayMode {
-    case rings, bars, stackedBarChart
+    case rings, bars
 }
 
 struct DailySummaryView: View {
     @ObservedObject private var dailyLogManager: DailyLogManager
-    @ObservedObject private var nutritionDataStore: NutritionDataStore
     @ObservedObject private var viewModel: DailySummaryViewModel
     @EnvironmentObject var weeklyLogManager: WeeklyLogManager
     @State private var displayMode: DisplayMode = .bars
     @State private var isPieChartExpanded: Bool = false
     
-    init(dailyLogManager: DailyLogManager, dataStore: NutritionDataStore) {
+    init(dailyLogManager: DailyLogManager) {
         self.dailyLogManager = dailyLogManager
-        self.nutritionDataStore = dataStore
         self.viewModel = DailySummaryViewModel(dailyLogManager: dailyLogManager)
     }
     
@@ -45,15 +43,6 @@ struct DailySummaryView: View {
                         .foregroundColor(displayMode == .bars ? AppTheme.textColor : .gray)
                         .padding()
                 }
-                Button(action: {
-                    withAnimation {
-                        displayMode = .stackedBarChart
-                    }
-                }) {
-                    Image(systemName: "chart.bar.fill")
-                        .foregroundColor(displayMode == .stackedBarChart ? AppTheme.textColor : .gray)
-                        .padding()
-                }
                 Spacer()
                 Button(action: {
                     withAnimation {
@@ -70,13 +59,14 @@ struct DailySummaryView: View {
                 }
             }
             .padding(.horizontal)
+            weeklySnapshotCard
+                .padding(.horizontal)
             
             ScrollView(showsIndicators: false) {
                 VStack {
                     Divider().background(AppTheme.textColor)
                     
                     VStack(spacing: 10) {
-                        Spacer()
                         Group {
                             switch displayMode {
                             case .rings:
@@ -85,10 +75,6 @@ struct DailySummaryView: View {
                             case .bars:
                                 BarDisplayView(summaryViewModel: viewModel)
                                     .environmentObject(dailyLogManager)
-                            case .stackedBarChart:
-                                StackedBarChartView(summaryViewModel: viewModel)
-                                    .environmentObject(dailyLogManager)
-                                    .environmentObject(weeklyLogManager)
                             }
                         }
                         .transition(.slide)
@@ -113,7 +99,7 @@ struct DailySummaryView: View {
                             
                             if isPieChartExpanded {
                                 MacroPieView(
-                                    percentages: withAnimation { dailyLogManager.getPercentages(for: viewModel.selectedMacro) }
+                                    percentages: dailyLogManager.getPercentages(for: viewModel.selectedMacro)
                                 )
                                 .padding(.vertical)
                                 .frame(maxWidth: 200, maxHeight: .infinity)
@@ -124,11 +110,15 @@ struct DailySummaryView: View {
                         }
                         .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
                 }
             }
             .onAppear {
                 dailyLogManager.refreshData()
+                refreshWeeklySnapshot()
+            }
+            .onChange(of: dailyLogManager.selectedDate) { _ in
+                refreshWeeklySnapshot()
             }
         }
     }
@@ -138,8 +128,6 @@ struct DailySummaryView: View {
         case .rings:
             displayMode = .bars
         case .bars:
-            displayMode = .stackedBarChart
-        case .stackedBarChart:
             displayMode = .rings
         }
     }
@@ -151,6 +139,86 @@ struct DailySummaryView: View {
         case .fats: return AppTheme.carrot
         case .protein: return AppTheme.lavender
         }
+    }
+
+    private var weeklySnapshotCard: some View {
+        HStack(spacing: 12) {
+            snapshotMetric(title: "7-Day Avg", value: averageText, tint: macroColor())
+            snapshotMetric(title: "Days Logged", value: "\(loggedDaysCount)/7", tint: AppTheme.goldenrod)
+            snapshotMetric(title: "Streak", value: "\(currentLoggingStreak)d", tint: AppTheme.sageGreen)
+        }
+        .padding()
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+    }
+
+    private func snapshotMetric(title: String, value: String, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(AppTheme.standardBookCaption)
+                .foregroundStyle(AppTheme.textColor.opacity(0.7))
+            Text(value)
+                .font(AppTheme.standardBookBody)
+                .foregroundStyle(tint)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var trailingWeekDates: [Date] {
+        let calendar = Calendar.current
+        return (0..<7).compactMap { offset in
+            calendar.date(byAdding: .day, value: -offset, to: dailyLogManager.selectedDate)
+        }.reversed()
+    }
+
+    private var loggedDaysCount: Int {
+        trailingWeekDates.reduce(0) { partialResult, date in
+            partialResult + (weeklyLogManager.totalNutrients(for: date, macro: .calories) > 0 ? 1 : 0)
+        }
+    }
+
+    private var currentLoggingStreak: Int {
+        var streak = 0
+
+        for date in trailingWeekDates.reversed() {
+            if weeklyLogManager.totalNutrients(for: date, macro: .calories) > 0 {
+                streak += 1
+            } else {
+                break
+            }
+        }
+
+        return streak
+    }
+
+    private var averageValue: Double {
+        let loggedDates = trailingWeekDates.filter { weeklyLogManager.totalNutrients(for: $0, macro: viewModel.selectedMacro) > 0 }
+        guard !loggedDates.isEmpty else {
+            return 0
+        }
+
+        let total = loggedDates.reduce(0.0) { partialResult, date in
+            partialResult + weeklyLogManager.totalNutrients(for: date, macro: viewModel.selectedMacro)
+        }
+
+        return total / Double(loggedDates.count)
+    }
+
+    private var averageText: String {
+        switch viewModel.selectedMacro {
+        case .calories:
+            return "\(Int(averageValue)) cal"
+        case .protein:
+            return "\(Int(averageValue))g prot"
+        case .carbs:
+            return "\(Int(averageValue))g carbs"
+        case .fats:
+            return "\(Int(averageValue))g fats"
+        }
+    }
+
+    private func refreshWeeklySnapshot() {
+        weeklyLogManager.fetchWeeklyLogs(from: dailyLogManager.selectedDate)
     }
     
     struct MealSummaryRow: View {

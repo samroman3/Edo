@@ -10,7 +10,6 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var userSettingsManager: UserSettingsManager
-    @EnvironmentObject var nutritionDataStore: NutritionDataStore
 
     @State private var iCloudAvailable: Bool?
 
@@ -25,9 +24,6 @@ struct MainView: View {
                         })
                     } else {
                         CustomTabBarView()
-                            .environmentObject(DailyLogManager(context: nutritionDataStore.context, userSettings: userSettingsManager))
-                            .environmentObject(WeeklyLogManager(context: nutritionDataStore.context))
-                            .environmentObject(nutritionDataStore)
                     }
                 } else {
                     iCloudRequiredView()

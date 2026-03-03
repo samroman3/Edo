@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var dataStore: NutritionDataStore
-
     var body: some View {
         MainView()
-            .environmentObject(MealSelectionViewModel(dataStore: dataStore, context: viewContext))
     }
 }

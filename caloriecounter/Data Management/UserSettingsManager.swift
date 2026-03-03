@@ -11,6 +11,10 @@ import CloudKit
 import HealthKit
 
 class UserSettingsManager: ObservableObject {
+    private enum PreferenceKeys {
+        static let calorieAdjustmentOffset = "calorieAdjustmentOffset"
+    }
+
     private let context: NSManagedObjectContext
     private var userSettings: UserSettings?
 
@@ -29,11 +33,16 @@ class UserSettingsManager: ObservableObject {
     @Published var carbsGoal: Double = 0.0
     @Published var fatGoal: Double = 0.0
     @Published var dietaryPlan: String = ""
+    @Published var calorieAdjustmentOffset: Double = 0.0
     
     private var healthStore: HKHealthStore?
     
     @Published var canWriteToHealthApp: Bool = false
     @Published var canReadFromHealthApp: Bool = false
+
+    var usesMetric: Bool {
+        unitSystem.lowercased() != "imperial"
+    }
 
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -145,6 +154,7 @@ class UserSettingsManager: ObservableObject {
                 self.carbsGoal = settings.carbsGoal
                 self.fatGoal = settings.fatsGoal
                 self.dietaryPlan = settings.dietaryPlan ?? "Custom Goal"
+                self.calorieAdjustmentOffset = UserDefaults.standard.double(forKey: PreferenceKeys.calorieAdjustmentOffset)
                 self.canWriteToHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canWriteToHealthApp")
                 self.canReadFromHealthApp = NSUbiquitousKeyValueStore.default.bool(forKey: "canReadFromHealthApp")
             }
@@ -167,6 +177,54 @@ class UserSettingsManager: ObservableObject {
         guard let settings = userSettings, settings.height > 0, settings.weight > 0 else { return nil }
         let heightInMeters = settings.height / 100 // Convert cm to m
         return settings.weight / (heightInMeters * heightInMeters)
+    }
+
+    func calculateBMRValue() -> Double {
+        guard weight > 0, height > 0, age > 0 else {
+            return 0
+        }
+
+        let base = (10 * weight) + (6.25 * height) - (5 * Double(age))
+        switch sex {
+        case "Male":
+            return base + 5
+        case "Female":
+            return base - 161
+        default:
+            return base - 78
+        }
+    }
+
+    func activityMultiplier() -> Double {
+        switch activity {
+        case "Sedentary":
+            return 1.25
+        case "Lightly Active":
+            return 1.4
+        case "Moderately Active":
+            return 1.6
+        case "Very Active":
+            return 1.8
+        default:
+            return 1.25
+        }
+    }
+
+    func estimatedMaintenanceCalories(adjustment: Double? = nil) -> Double {
+        let appliedAdjustment = adjustment ?? calorieAdjustmentOffset
+        let maintenance = calculateBMRValue() * activityMultiplier()
+        return max(minimumSuggestedCalories(), maintenance + appliedAdjustment)
+    }
+
+    func maintenanceRangeText() -> String {
+        let baseline = estimatedMaintenanceCalories(adjustment: 0)
+        guard baseline > 0 else {
+            return "--"
+        }
+
+        let lower = max(minimumSuggestedCalories(), baseline - 125)
+        let upper = baseline + 125
+        return "\(Int(lower.rounded()))-\(Int(upper.rounded())) cal"
     }
 
     func saveUserSettings(age: Int, weight: Double, height: Double, sex: String, activity: String, unitSystem: String, userName: String, userEmail: String) {
@@ -246,6 +304,11 @@ class UserSettingsManager: ObservableObject {
         loadUserSettings()
     }
 
+    func saveCalorieAdjustmentOffset(_ value: Double) {
+        calorieAdjustmentOffset = value
+        UserDefaults.standard.set(value, forKey: PreferenceKeys.calorieAdjustmentOffset)
+    }
+
     private func fetchOrCreateUserSettings() -> UserSettings {
         if let settings = userSettings {
             return settings
@@ -277,16 +340,59 @@ class UserSettingsManager: ObservableObject {
     }
 
     func calculateBMI(isMetric: Bool) -> Double? {
-        guard let settings = userSettings, settings.height > 0, settings.weight > 0 else { return nil }
-        
-        if isMetric {
-            // Metric calculation (kg/m^2)
-            let heightInMeters = settings.height / 100
-            return settings.weight / (heightInMeters * heightInMeters)
-        } else {
-            // Imperial calculation (lbs/in^2) and then converted to BMI by multiplying by 703
-            let heightInInches = settings.height
-            return (settings.weight / (heightInInches * heightInInches)) * 703
+        calculateBMI()
+    }
+
+    func bmiCategory() -> String {
+        guard let bmi = calculateBMI() else {
+            return "--"
+        }
+
+        switch bmi {
+        case ..<18.5:
+            return "Underweight"
+        case ..<25:
+            return "Healthy"
+        case ..<30:
+            return "Overweight"
+        default:
+            return "Obese"
+        }
+    }
+
+    func healthyWeightRange() -> ClosedRange<Double>? {
+        guard let settings = userSettings, settings.height > 0 else {
+            return nil
+        }
+
+        let heightInMeters = settings.height / 100
+        let minWeight = 18.5 * heightInMeters * heightInMeters
+        let maxWeight = 24.9 * heightInMeters * heightInMeters
+        return minWeight...maxWeight
+    }
+
+    func healthyWeightRangeText() -> String {
+        guard let range = healthyWeightRange() else {
+            return "--"
+        }
+
+        if usesMetric {
+            return "\(Int(range.lowerBound.rounded()))-\(Int(range.upperBound.rounded())) kg"
+        }
+
+        let minPounds = convertKilogramsToPounds(range.lowerBound)
+        let maxPounds = convertKilogramsToPounds(range.upperBound)
+        return "\(Int(minPounds.rounded()))-\(Int(maxPounds.rounded())) lb"
+    }
+
+    func minimumSuggestedCalories() -> Double {
+        switch sex {
+        case "Male":
+            return 1500
+        case "Female":
+            return 1200
+        default:
+            return 1350
         }
     }
 
@@ -309,5 +415,3 @@ class UserSettingsManager: ObservableObject {
         return (feet, inches)
     }
 }
-
-

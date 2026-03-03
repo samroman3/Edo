@@ -29,7 +29,7 @@ struct CustomTabBarView: View {
             case .diary:
                 DiaryView()
             case .statistics:
-                DailySummaryView(dailyLogManager: dailyLogManager, dataStore: nutritionDataStore)
+                DailySummaryView(dailyLogManager: dailyLogManager)
             case .profile:
                 ProfileView(profileEditing: $profileEditing)
 //            case .quick:
