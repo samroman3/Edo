@@ -48,7 +48,7 @@ struct DateSelectorView: View {
             .onAppear {
                 generateWeekDates()
             }
-            .onChange(of: selectedDate) { newDate in
+            .onChange(of: selectedDate) { _, newDate in
                 if !weekDates.contains(where: { calendar.isDate($0, inSameDayAs: newDate) }) {
                         generateWeekDates(from: newDate)
                     }

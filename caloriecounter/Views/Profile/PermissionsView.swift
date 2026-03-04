@@ -24,7 +24,7 @@ struct PermissionsView: View {
             Toggle("Write to Health App", isOn: $userSettingsManager.canWriteToHealthApp)
                 .toggleStyle(SwitchToggleStyle(tint: AppTheme.carrot))
                 .font(AppTheme.standardBookBody)
-                .onChange(of: userSettingsManager.canWriteToHealthApp) { newValue in
+                .onChange(of: userSettingsManager.canWriteToHealthApp) { _, newValue in
                     userSettingsManager.saveHealthAppPermissions(write: newValue, read: userSettingsManager.canReadFromHealthApp)
                 }
                 .padding(.vertical, 8)
@@ -32,7 +32,7 @@ struct PermissionsView: View {
             Toggle("Read from Health App", isOn: $userSettingsManager.canReadFromHealthApp)
                 .toggleStyle(SwitchToggleStyle(tint: AppTheme.carrot))
                 .font(AppTheme.standardBookBody)
-                .onChange(of: userSettingsManager.canReadFromHealthApp) { newValue in
+                .onChange(of: userSettingsManager.canReadFromHealthApp) { _, newValue in
                     userSettingsManager.saveHealthAppPermissions(write: userSettingsManager.canWriteToHealthApp, read: newValue)
                 }
                 .padding(.vertical, 8)

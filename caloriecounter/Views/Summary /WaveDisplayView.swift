@@ -42,7 +42,7 @@ struct WaveView: View {
                         Wave(offSet: Angle(degrees: waveOffset.degrees), percent: self.percentage())
                             .fill(self.color())
                              .clipShape(Rectangle())
-                             .animation(.linear(duration: 1.5).repeatForever(autoreverses: false))
+                             .animation(.linear(duration: 1.5).repeatForever(autoreverses: false), value: waveOffset)
                      ))
             }
             .frame(height: 100)

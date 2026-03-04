@@ -57,7 +57,7 @@ struct PersonalHealthDataFormView: View {
                                     Text(unit.rawValue).tag(unit)
                                 }
                             }
-                            .onChange(of: unitSystem) { newValue in
+                            .onChange(of: unitSystem) { _, newValue in
                                 convertValuesForUnitSystem(newValue)
                             }
                             
@@ -81,8 +81,8 @@ struct PersonalHealthDataFormView: View {
                                         }
                                     }
                                 }
-                                .onChange(of: feet) { _ in updateHeight() }
-                                .onChange(of: inches) { _ in updateHeight() }
+                                .onChange(of: feet) { _, _ in updateHeight() }
+                                .onChange(of: inches) { _, _ in updateHeight() }
                             }
                             
                             Picker("Sex", selection: $sex) {

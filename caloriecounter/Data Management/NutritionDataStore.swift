@@ -24,6 +24,7 @@ struct NutritionEntrySummary: Identifiable, Hashable {
 class NutritionDataStore: ObservableObject {
     let context: NSManagedObjectContext
     private let timestampKey = "timeStamp"
+    private static let multiImageMetadataPrefix = "images:"
 
     
     private let userDefaults: UserDefaults
@@ -265,16 +266,26 @@ class NutritionDataStore: ObservableObject {
         protein: Double,
         carbs: Double,
         fat: Double,
+        servingSize: String,
+        servingUnit: String,
         userNotes: String,
-        isFavorite: Bool
+        isFavorite: Bool,
+        imageData: [Data]? = nil
     ) {
         entry.name = name
         entry.calories = calories
         entry.protein = protein
         entry.carbs = carbs
         entry.fat = fat
+        entry.servingSize = servingSize
+        entry.servingUnit = servingUnit
         entry.userNotes = userNotes
         entry.isFavorite = isFavorite
+        if let imageData {
+            let normalizedImages = Array(imageData.prefix(4))
+            entry.mealPhoto = normalizedImages.first ?? Data()
+            entry.mealPhotoLink = Self.encodedImageMetadata(from: normalizedImages)
+        }
         entry.timestamp = Date()
         saveContext()
     }
@@ -361,5 +372,47 @@ class NutritionDataStore: ObservableObject {
             isFavorite: entry.isFavorite,
             timestamp: entry.timestamp
         )
+    }
+
+    static func storedImageData(for entry: NutritionEntry) -> [Data] {
+        storedImageData(primaryData: entry.mealPhoto, metadata: entry.mealPhotoLink)
+    }
+
+    static func storedImageData(primaryData: Data, metadata: String) -> [Data] {
+        var images: [Data] = []
+
+        if !primaryData.isEmpty {
+            images.append(primaryData)
+        }
+
+        guard metadata.hasPrefix(multiImageMetadataPrefix) else {
+            return Array(images.prefix(4))
+        }
+
+        let payload = String(metadata.dropFirst(multiImageMetadataPrefix.count))
+        guard let payloadData = payload.data(using: .utf8),
+              let encodedImages = try? JSONDecoder().decode([String].self, from: payloadData) else {
+            return Array(images.prefix(4))
+        }
+
+        for encodedImage in encodedImages {
+            guard let data = Data(base64Encoded: encodedImage), !data.isEmpty else {
+                continue
+            }
+            images.append(data)
+        }
+
+        return Array(images.prefix(4))
+    }
+
+    static func encodedImageMetadata(from images: [Data]) -> String {
+        let extraImages = Array(images.dropFirst().prefix(3))
+        guard !extraImages.isEmpty,
+              let payloadData = try? JSONEncoder().encode(extraImages.map { $0.base64EncodedString() }),
+              let payload = String(data: payloadData, encoding: .utf8) else {
+            return ""
+        }
+
+        return multiImageMetadataPrefix + payload
     }
 }

@@ -16,37 +16,42 @@ struct CustomTabBarView: View {
     @State var profileEditing: Bool = false
     
     var body: some View {
-        VStack {
-            if selectedTab != .profile /*&& selectedTab != .quick */{
-                TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
-                    withAnimation {
-                        dailyLogManager.updateSelectedDate(newDate: Date())
-                    }
-                }, onCalendarTapped: {})
-                .frame(maxWidth: .infinity)
-            }
-            switch selectedTab {
-            case .diary:
-                DiaryView()
-            case .statistics:
-                DailySummaryView(dailyLogManager: dailyLogManager)
-            case .profile:
-                ProfileView(profileEditing: $profileEditing)
-//            case .quick:
-//                BarcodeScannerView()
-            }
-            if !profileEditing {
-                // Custom Tab Bar
-                HStack(spacing: 50) {
-                    TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: AppTheme.sageGreen)
-//                    TabBarButton(icon: "bolt", selectedIcon: "bolt.fill", tab: .quick, selectedTab: $selectedTab, color: AppTheme.goldenrod)
-                    TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.lavender)
-                    TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.carrot)
-                    
+        ZStack {
+            ThemedAppBackground()
+
+            VStack {
+                if selectedTab != .profile /*&& selectedTab != .quick */{
+                    TopBarView(dailyLogManager: dailyLogManager, nutritionDataStore: nutritionDataStore, selectedDate: $dailyLogManager.selectedDate, onDateTapped: {
+                        withAnimation {
+                            dailyLogManager.updateSelectedDate(newDate: Date())
+                        }
+                    }, onCalendarTapped: {})
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal)
+                switch selectedTab {
+                case .diary:
+                    DiaryView()
+                case .statistics:
+                    DailySummaryView(dailyLogManager: dailyLogManager)
+                case .profile:
+                    ProfileView(profileEditing: $profileEditing)
+    //            case .quick:
+    //                BarcodeScannerView()
+                }
+                if !profileEditing {
+                    // Custom Tab Bar
+                    HStack(spacing: 50) {
+                        TabBarButton(icon: "square", selectedIcon: "square.fill", tab: .diary, selectedTab: $selectedTab, color: AppTheme.sageGreen)
+    //                    TabBarButton(icon: "bolt", selectedIcon: "bolt.fill", tab: .quick, selectedTab: $selectedTab, color: AppTheme.goldenrod)
+                        TabBarButton(icon: "circle", selectedIcon: "circle.fill", tab: .statistics, selectedTab: $selectedTab, color: AppTheme.lavender)
+                        TabBarButton(icon: "triangle", selectedIcon: "triangle.fill", tab: .profile, selectedTab: $selectedTab, color: AppTheme.carrot)
+                        
+                    }
+                    .padding(.horizontal)
+                }
             }
-        }.onAppear(){
+        }
+        .onAppear(){
             dailyLogManager.refreshData()
         }
     }

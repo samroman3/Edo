@@ -78,6 +78,7 @@ enum ProfileItemType {
 struct ProfileView: View {
     @EnvironmentObject private var userSettingsManager: UserSettingsManager
     @EnvironmentObject private var themeManager: ThemeManager
+    @Environment(\.colorScheme) private var colorScheme
     
     @Binding var profileEditing: Bool
 
@@ -331,7 +332,7 @@ struct ProfileView: View {
                 Text("Imperial").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: isMetric) { newValue in
+            .onChange(of: isMetric) { _, newValue in
                 userSettingsManager.unitSystem = newValue ? "metric" : "imperial"
                 convertUnits()
             }
@@ -373,6 +374,23 @@ struct ProfileView: View {
             Text("Theme")
                 .font(AppTheme.standardBookBody)
 
+            HStack(spacing: 8) {
+                ForEach(AppTheme.BackgroundMode.allCases) { mode in
+                    Button {
+                        themeManager.applyBackgroundMode(mode)
+                    } label: {
+                        Text(mode.title)
+                            .font(AppTheme.standardBookCaption)
+                            .foregroundStyle(themeManager.selectedBackgroundMode == mode ? AppTheme.reverse : AppTheme.textColor)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(themeManager.selectedBackgroundMode == mode ? AppTheme.basic : AppTheme.reverse)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
             ForEach(AppTheme.ThemeOption.allCases) { option in
                 Button {
                     themeManager.apply(option)
@@ -393,6 +411,19 @@ struct ProfileView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(option.palette.name)
                                 .font(AppTheme.standardBookBody)
+
+                            if themeManager.selectedBackgroundMode == .gradient {
+                                LinearGradient(
+                                    colors: AppTheme.gradientColors(
+                                        for: option,
+                                        colorScheme: colorScheme
+                                    ),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                                .frame(width: 72, height: 10)
+                                .clipShape(Capsule())
+                            }
                         }
 
                         Spacer()

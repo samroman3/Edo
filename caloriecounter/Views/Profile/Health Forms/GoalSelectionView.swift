@@ -58,7 +58,7 @@ struct GoalSelectionView: View {
                    .padding()
                }
                .background(Material.ultraThick)
-               .onChange(of: selectedGoal) { newValue in
+               .onChange(of: selectedGoal) { _, newValue in
                                if newValue == .custom {
                                    withAnimation {
                                        scrollProxy.scrollTo(Goal.custom, anchor: .trailing)

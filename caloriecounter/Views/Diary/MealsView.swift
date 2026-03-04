@@ -51,7 +51,13 @@ struct MealsView: View {
                     )
                     if let meal = dailyLogManager.meals.first(where: { $0.type == mealType.rawValue }) {
                         let entries = Array(meal.entries as? Set<NutritionEntry> ?? []).sorted { n1, n2 in
-                            n1.calories < n2.calories
+                            if n1.timestamp != n2.timestamp {
+                                return n1.timestamp > n2.timestamp
+                            }
+                            if n1.name != n2.name {
+                                return n1.name.localizedCaseInsensitiveCompare(n2.name) == .orderedAscending
+                            }
+                            return n1.id.uuidString < n2.id.uuidString
                         }
                         MealCardView(
                             mealType: mealType.displayName,
@@ -94,7 +100,9 @@ struct MealsView: View {
                     
                 }
             }
+            .background(Color.clear)
         }
+        .background(Color.clear)
     }
     private func moveEntry(_ entryID: UUID, to mealType: MealType) -> Bool {
         guard mealType != .water, let entry = nutritionDataStore.entry(with: entryID) else {
@@ -134,6 +142,9 @@ struct MealsView: View {
                 }
                 .padding(.horizontal)
                 .contentShape(Rectangle())
+                .onTapGesture {
+                    onAddTapped()
+                }
             }
             .padding(.vertical, 8)
             .background(isDropTargeted ? AppTheme.grayLight.opacity(0.25) : .clear)

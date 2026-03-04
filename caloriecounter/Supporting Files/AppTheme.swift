@@ -42,11 +42,13 @@ final class ThemeManager: ObservableObject {
 
     private enum Keys {
         static let selectedThemeID = "selectedThemeID"
+        static let selectedBackgroundMode = "selectedBackgroundMode"
         static let appGroupIdentifier = "group.com.samroman.caloriecounter"
     }
 
     private let userDefaults: UserDefaults
     @Published private(set) var selectedThemeID: String
+    @Published private(set) var selectedBackgroundMode: AppTheme.BackgroundMode
 
     var selectedTheme: ThemePalette {
         let persistedID = userDefaults.string(forKey: Keys.selectedThemeID) ?? selectedThemeID
@@ -57,11 +59,21 @@ final class ThemeManager: ObservableObject {
         self.userDefaults = userDefaults
         let savedID = userDefaults.string(forKey: Keys.selectedThemeID) ?? AppTheme.ThemeOption.classic.rawValue
         self.selectedThemeID = AppTheme.ThemeOption(rawValue: savedID)?.rawValue ?? AppTheme.ThemeOption.classic.rawValue
+        let savedBackgroundMode = userDefaults.string(forKey: Keys.selectedBackgroundMode) ?? AppTheme.BackgroundMode.monochrome.rawValue
+        self.selectedBackgroundMode = AppTheme.BackgroundMode(rawValue: savedBackgroundMode) ?? .monochrome
     }
 
     func apply(_ theme: AppTheme.ThemeOption) {
         selectedThemeID = theme.rawValue
         userDefaults.set(theme.rawValue, forKey: Keys.selectedThemeID)
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
+    }
+
+    func applyBackgroundMode(_ mode: AppTheme.BackgroundMode) {
+        selectedBackgroundMode = mode
+        userDefaults.set(mode.rawValue, forKey: Keys.selectedBackgroundMode)
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
         #endif
@@ -76,6 +88,22 @@ final class ThemeManager: ObservableObject {
 }
 
 struct AppTheme {
+    enum BackgroundMode: String, CaseIterable, Identifiable {
+        case monochrome
+        case gradient
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .monochrome:
+                return "Solid"
+            case .gradient:
+                return "Gradient"
+            }
+        }
+    }
+
     enum ThemeOption: String, CaseIterable, Identifiable {
         case classic
         case sunrise
@@ -192,6 +220,10 @@ struct AppTheme {
         ThemeManager.shared.selectedTheme
     }
 
+    static var currentBackgroundMode: BackgroundMode {
+        ThemeManager.shared.selectedBackgroundMode
+    }
+
     static let basic = Color(UIColor { traitCollection in
         switch traitCollection.userInterfaceStyle {
         case .dark:
@@ -201,14 +233,27 @@ struct AppTheme {
         }
     })
 
-    static let reverse = Color(UIColor { traitCollection in
-        switch traitCollection.userInterfaceStyle {
-        case .dark:
-            return .black
-        default:
-            return .white
+    static var reverse: Color {
+        if currentBackgroundMode == .gradient {
+            return Color(UIColor { traitCollection in
+                switch traitCollection.userInterfaceStyle {
+                case .dark:
+                    return UIColor(red: 12 / 255, green: 12 / 255, blue: 12 / 255, alpha: 0.72)
+                default:
+                    return UIColor(red: 1, green: 1, blue: 1, alpha: 0.76)
+                }
+            })
         }
-    })
+
+        return Color(UIColor { traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return .black
+            default:
+                return .white
+            }
+        })
+    }
 
     static let dynamicGray = Color(UIColor { traitCollection in
         switch traitCollection.userInterfaceStyle {
@@ -257,4 +302,47 @@ struct AppTheme {
     static let titleFont = Font.system(size: 28, weight: .bold, design: .default)
     static let bodyFont = Font.system(size: 17, weight: .regular, design: .default)
     static let captionFont = Font.system(size: 15, weight: .regular, design: .default)
+
+    static func gradientColors(for theme: ThemeOption, colorScheme: ColorScheme) -> [Color] {
+        switch theme {
+        case .classic:
+            if colorScheme == .dark {
+                return [Color(red: 18 / 255, green: 22 / 255, blue: 34 / 255), Color(red: 36 / 255, green: 34 / 255, blue: 55 / 255)]
+            }
+            return [Color(red: 246 / 255, green: 248 / 255, blue: 255 / 255), Color(red: 225 / 255, green: 234 / 255, blue: 248 / 255)]
+        case .sunrise:
+            if colorScheme == .dark {
+                return [Color(red: 54 / 255, green: 24 / 255, blue: 18 / 255), Color(red: 86 / 255, green: 44 / 255, blue: 28 / 255)]
+            }
+            return [Color(red: 255 / 255, green: 240 / 255, blue: 224 / 255), Color(red: 255 / 255, green: 216 / 255, blue: 188 / 255)]
+        case .forest:
+            if colorScheme == .dark {
+                return [Color(red: 10 / 255, green: 31 / 255, blue: 24 / 255), Color(red: 18 / 255, green: 55 / 255, blue: 44 / 255)]
+            }
+            return [Color(red: 230 / 255, green: 242 / 255, blue: 233 / 255), Color(red: 206 / 255, green: 229 / 255, blue: 218 / 255)]
+        }
+    }
+}
+
+struct ThemedAppBackground: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Group {
+            if themeManager.selectedBackgroundMode == .gradient {
+                LinearGradient(
+                    colors: AppTheme.gradientColors(
+                        for: AppTheme.ThemeOption(rawValue: themeManager.selectedThemeID) ?? .classic,
+                        colorScheme: colorScheme
+                    ),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            } else {
+                AppTheme.reverse
+            }
+        }
+        .ignoresSafeArea()
+    }
 }

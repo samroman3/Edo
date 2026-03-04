@@ -16,9 +16,9 @@ enum NutrientType: String, CaseIterable {
 }
 
 enum AddFoodLookupMode: String, CaseIterable, Identifiable {
+    case quick
     case diary
     case barcode
-    case quick
 
     var id: String { rawValue }
 
@@ -54,13 +54,13 @@ struct AddItemFormView: View {
     let onDismiss: () -> Void
     
     @State private var userNote: String = ""
-    @State private var mealPhoto: UIImage?
-    @State private var showImageView: Bool = false
+    @State private var mealImages: [UIImage] = []
     @State private var showImagePicker = false
+    @State private var selectedPickerImage: UIImage?
+    @State private var pendingReplacementIndex: Int?
     @State private var microNutrientsExpanded = false
     @State private var notesExpanded = false
-    @State private var servingExpanded = false
-    @State private var servingSize: Int = 1
+    @State private var servingSize: String = "1"
     @State private var selectedUnit: String = "Serving" // Default unit
     let unitsOfMeasurement = ["Serving", "Grams", "Ounces", "Cups", "Pieces", "Slices"]
     @FocusState private var focusedField: FocusableField?
@@ -69,7 +69,8 @@ struct AddItemFormView: View {
     @State private var isFavorite: Bool = false
     @State private var validationMessage: String?
     @State private var quickRecentEntries: [NutritionEntrySummary] = []
-    @State private var lookupMode: AddFoodLookupMode = .diary
+    @State private var quickFavoriteEntries: [NutritionEntrySummary] = []
+    @State private var lookupMode: AddFoodLookupMode = .quick
     
     enum FocusableField {
         case name, nutrientInput
@@ -89,8 +90,16 @@ struct AddItemFormView: View {
     @FocusState private var isInputActive: Bool
     @FocusState private var isNameTextFieldFocused: Bool
     @FocusState private var isUserNoteFocused: Bool
+    @FocusState private var isServingFieldFocused: Bool
     @State private var isEditing: Bool = false
     let columns: [GridItem] = Array(repeating: .init(.adaptive(minimum: 200, maximum: 500)), count: 2)
+
+    private enum ScrollAnchor: String {
+        case macroGrid
+        case serving
+        case image
+        case notes
+    }
 
     private var canSave: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -117,13 +126,12 @@ struct AddItemFormView: View {
                         .fontWeight(.light)
                         .multilineTextAlignment(.leading)
                         .padding(.horizontal)
-                        .onChange(of: isNameTextFieldFocused,
-                                  perform: { isFocused in
+                        .onChange(of: isNameTextFieldFocused) { _, isFocused in
                             showingPreviousEntries = isFocused
                             if isFocused {
                                 lookupMode = .diary
                             }
-                        })
+                        }
                 }
             }
             .padding([.horizontal, .vertical])
@@ -140,9 +148,10 @@ struct AddItemFormView: View {
                                     dataStore: dataStore,
                                     nutrientValues: $nutrientValues,
                                     userNote: $userNote,
-                                    mealPhoto: $mealPhoto,
+                                    mealImages: $mealImages,
                                     isFavorite: $isFavorite,
                                     quickRecentEntries: quickRecentEntries,
+                                    quickFavoriteEntries: quickFavoriteEntries,
                                     dismiss: {
                     withAnimation{
                         showingPreviousEntries = false
@@ -162,13 +171,12 @@ struct AddItemFormView: View {
                 })
                 .padding([.vertical,.horizontal])
             } else {
-                ZStack(alignment: .bottom){
-                    ScrollView(.vertical){
-                        if !isUserNoteFocused && !isNameTextFieldFocused {
-                            quickAddSection
-                        }
-                        if !isUserNoteFocused {
-                            // Nutrient input section
+                ScrollViewReader { scrollProxy in
+                    ZStack(alignment: .bottom){
+                        ScrollView(.vertical){
+                            if !isNameTextFieldFocused {
+                                quickAddSection
+                            }
                             LazyVGrid(columns: columns, spacing: 3) {
                                 ForEach(macroNutrientTypes, id: \.self) { nutrient in
                                     MacroNutrientInputTile(
@@ -178,177 +186,104 @@ struct AddItemFormView: View {
                                             get: { selectedNutrient == nutrient },
                                             set: { _ in selectedNutrient = nutrient }
                                         ),
-                                        isInputActive: _isInputActive
+                                        isInputActive: _isInputActive,
+                                        onSelect: {
+                                            withAnimation(.easeInOut) {
+                                                scrollProxy.scrollTo(ScrollAnchor.macroGrid.rawValue, anchor: .center)
+                                            }
+                                        }
                                     )
                                 }
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-                        VStack(alignment:.center, spacing: 20) {
-                            if isInputActive == false {
-                                
-                                Button {
-                                    notesExpanded.toggle()
-                                } label: {
-                                    Image(systemName:"square.and.pencil.circle")
-                                        .resizable()
-                                        .frame(width: 35, height: 35)
-                                        .foregroundStyle(AppTheme.basic)
-                                }
-                                if isNameTextFieldFocused == false && notesExpanded == true {
-                                    TextField("Enter a note...", text: $userNote)
-                                        .focused($isUserNoteFocused)
-                                        .foregroundColor(AppTheme.textColor)
-                                        .font(AppTheme.standardBookBody)
-                                        .fontWeight(.light)
-                                        .multilineTextAlignment(.leading)
-                                        .padding(.horizontal)
-                                        .frame(maxWidth: .infinity, maxHeight: isUserNoteFocused ? .infinity : 100)
-                                        .background(AppTheme.reverse.edgesIgnoringSafeArea(.all))
-                                        .clipShape(.rect(cornerRadius: 25))
-                                }
-                                if !isUserNoteFocused {
-                                    Button {
-                                        withAnimation(.bouncy){
-                                            self.servingExpanded.toggle()
-                                        }
-                                    } label: {
-                                        Image(systemName: "fork.knife.circle")
-                                            .resizable()
-                                            .frame(width: 35, height: 35)
-                                            .foregroundStyle(AppTheme.basic)
-                                    }
-                                    
-                                    if servingExpanded {
-                                        HStack {
-                                            Text("\(servingSize)")
-                                                .fontWeight(.light)
-                                                .frame(width: 50, alignment: .trailing)
-                                            Picker("Unit", selection: $selectedUnit) {
-                                                ForEach(unitsOfMeasurement, id: \.self) { unit in
-                                                    Text(unit).tag(unit)
-                                                }
-                                            }
-                                            .pickerStyle(MenuPickerStyle())
-                                            .tint(AppTheme.textColor)
-                                        }
-                                        .frame(maxWidth: .infinity)
-                                        
-                                        Stepper(value: $servingSize, in: 1...20) {
-                                            Text("")
-                                        }.labelsHidden()
-                                    }
-                                }
-                                if !isUserNoteFocused {
-                                    // Button to toggle the visibility of the image view
-                                    Button(action: {
-                                        self.showImageView.toggle()
-                                    }) {
-                                        Image(systemName: "photo.artframe.circle")
-                                            .resizable()
-                                            .frame(width: 35, height: 35)
-                                            .foregroundStyle(AppTheme.textColor)
-                                    }
-                                    if showImageView {
-                                        // View for selected image
-                                        if let image = mealPhoto {
-                                            VStack{
-                                                ZStack(alignment: .topTrailing) {
-                                                    Image(uiImage: image)
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                                    
-                                                    Button(action: {
-                                                        self.showImageView = false
-                                                        self.mealPhoto = nil
-                                                    }) {
-                                                        Image(systemName: "xmark.circle")
-                                                            .foregroundColor(AppTheme.grayDark)
-                                                            .padding()
-                                                            .frame(maxWidth:30, maxHeight: 30)
-                                                            .background(Color.white.opacity(0.9))
-                                                            .clipShape(Circle())
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Button(action: {
-                                                self.showImagePicker.toggle() // Show the image picker to add an image
-                                            }) {
-                                                HStack {
-                                                    Spacer()
-                                                    Text("+ Add Image")
-                                                        .font(AppTheme.standardBookLargeTitle)
-                                                        .foregroundColor(AppTheme.textColor)
-                                                    Spacer()
-                                                }
-                                                .padding()
-                                                .background(RoundedRectangle(cornerRadius: 10).stroke(AppTheme.textColor, lineWidth: 2))
-                                            }
-                                        }
-                                    }
-                                }
+                            .id(ScrollAnchor.macroGrid.rawValue)
+
+                            VStack(alignment: .center, spacing: 20) {
+                                servingSection(scrollProxy: scrollProxy)
+                                    .id(ScrollAnchor.serving.rawValue)
+
+                                imageSection(scrollProxy: scrollProxy)
+                                    .id(ScrollAnchor.image.rawValue)
+
+                                notesSection(scrollProxy: scrollProxy)
+                                    .id(ScrollAnchor.notes.rawValue)
                             }
-                            
-                        }.padding(.horizontal)
-                        Spacer(minLength: 200)
-                    }
-                    
-                    VStack{
-                        
-                        HStack {
-                            if !isNameTextFieldFocused && !isUserNoteFocused {
-                                TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
-                                    if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
-                                        self.nutrientValues[selectedNutrient!] = ""
-                                    }
-                                })
-                                .keyboardType(.decimalPad)
-                                .focused($isInputActive)
-                                .font(AppTheme.standardBookLargeTitle)
-                                .frame(height: 70)
-                                .padding(.horizontal)
-                                .foregroundColor(AppTheme.textColor)
-                                Spacer()
-                            }
-                            if keyBoardOpen() {
-                                Button(action: {
-                                    hideKeyboard()
-                                }, label: {
-                                    Image(systemName: "keyboard.chevron.compact.down")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundStyle(AppTheme.textColor)
-                                })
-                                .padding([.vertical,.horizontal])
-                            }
+                            .padding(.horizontal)
+
+                            Spacer(minLength: 200)
                         }
                         
-                        // 'Add' button
-                        if !keyBoardOpen() {
-                            Button(action: saveFoodItem) {
-                                Text("Add +")
+                        VStack{
+                        
+                            HStack {
+                                if !isNameTextFieldFocused && !isUserNoteFocused && !isServingFieldFocused {
+                                    TextField("Enter value", text: selectedNutrientTextBinding(), onEditingChanged: { isEditing in
+                                        if isEditing && self.nutrientValues[selectedNutrient!] == "0" {
+                                            self.nutrientValues[selectedNutrient!] = ""
+                                        }
+                                    })
+                                    .keyboardType(.decimalPad)
+                                    .focused($isInputActive)
                                     .font(AppTheme.standardBookLargeTitle)
                                     .frame(height: 70)
-                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal)
                                     .foregroundColor(AppTheme.textColor)
+                                    .onTapGesture {
+                                        withAnimation(.easeInOut) {
+                                            scrollProxy.scrollTo(ScrollAnchor.macroGrid.rawValue, anchor: .center)
+                                        }
+                                    }
+                                    Spacer()
+                                }
+                                if keyBoardOpen() {
+                                    Button(action: {
+                                        hideKeyboard()
+                                    }, label: {
+                                        Image(systemName: "keyboard.chevron.compact.down")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundStyle(AppTheme.textColor)
+                                    })
+                                    .padding([.vertical,.horizontal])
+                                }
                             }
-                            .disabled(!canSave)
-                            .opacity(canSave ? 1.0 : 0.55)
+
+                            if !keyBoardOpen() {
+                                Button(action: saveFoodItem) {
+                                    Text("Add +")
+                                        .font(AppTheme.standardBookLargeTitle)
+                                        .frame(height: 70)
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(AppTheme.textColor)
+                                }
+                                .disabled(!canSave)
+                                .opacity(canSave ? 1.0 : 0.55)
+                            }
                         }
-                    }.background(.ultraThinMaterial)
+                        .background(.ultraThinMaterial)
+                    }
+                    .onChange(of: selectedNutrient) { _, _ in
+                        withAnimation(.easeInOut) {
+                            scrollProxy.scrollTo(ScrollAnchor.macroGrid.rawValue, anchor: .center)
+                        }
+                    }
                 }
             }
         }
         .sheet(isPresented: $showImagePicker) {
-            ImagePicker(image: self.$mealPhoto)
+            ImagePicker(image: self.$selectedPickerImage)
         }
         .onAppear {
             selectedNutrient = .calories
             refreshQuickPicks()
         }
-        .onChange(of: mealType) { _ in
+        .onChange(of: selectedPickerImage) { _, newImage in
+            guard let newImage else {
+                return
+            }
+            applySelectedImage(newImage)
+        }
+        .onChange(of: mealType) { _, _ in
             refreshQuickPicks()
         }
     }
@@ -360,8 +295,242 @@ struct AddItemFormView: View {
         )
     }
 
+    private func servingSection(scrollProxy: ScrollViewProxy) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Serving")
+                .font(AppTheme.standardBookCaption)
+                .foregroundStyle(AppTheme.textColor.opacity(0.7))
+
+            HStack(spacing: 12) {
+                TextField("1", text: $servingSize)
+                    .keyboardType(.decimalPad)
+                    .focused($isServingFieldFocused)
+                    .font(AppTheme.standardBookBody)
+                    .foregroundStyle(AppTheme.textColor)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(AppTheme.reverse)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(AppTheme.grayLight.opacity(0.8), lineWidth: 1)
+                    )
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            scrollProxy.scrollTo(ScrollAnchor.serving.rawValue, anchor: .center)
+                        }
+                        isServingFieldFocused = true
+                        if servingSize == "0" || servingSize == "0.0" {
+                            servingSize = ""
+                        }
+                    }
+
+                Picker("Unit", selection: $selectedUnit) {
+                    ForEach(unitsOfMeasurement, id: \.self) { unit in
+                        Text(unit).tag(unit)
+                    }
+                }
+                .pickerStyle(.menu)
+                .tint(AppTheme.textColor)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(AppTheme.reverse)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(AppTheme.grayLight.opacity(0.8), lineWidth: 1)
+                )
+                .onTapGesture {
+                    withAnimation(.easeInOut) {
+                        scrollProxy.scrollTo(ScrollAnchor.serving.rawValue, anchor: .center)
+                    }
+                }
+            }
+        }
+    }
+
+    private func imageSection(scrollProxy: ScrollViewProxy) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Image")
+                .font(AppTheme.standardBookCaption)
+                .foregroundStyle(AppTheme.textColor.opacity(0.7))
+
+            if !mealImages.isEmpty {
+                HStack(alignment: .top, spacing: 12) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(Array(mealImages.enumerated()), id: \.offset) { index, image in
+                                addItemImageCard(image: image, index: index)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+
+                    if mealImages.count < 4 {
+                        Button(action: {
+                            withAnimation(.easeInOut) {
+                                scrollProxy.scrollTo(ScrollAnchor.image.rawValue, anchor: .center)
+                            }
+                            presentImagePicker(for: nil)
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundStyle(AppTheme.textColor)
+                                .frame(width: 48, height: 48)
+                                .background(AppTheme.reverse)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(AppTheme.grayLight.opacity(0.8), lineWidth: 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 12)
+                    }
+                }
+            } else {
+                Button(action: {
+                    withAnimation(.easeInOut) {
+                        scrollProxy.scrollTo(ScrollAnchor.image.rawValue, anchor: .center)
+                    }
+                    presentImagePicker(for: nil)
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "plus")
+                        Text("Add Image")
+                    }
+                    .font(AppTheme.standardBookBody)
+                    .foregroundStyle(AppTheme.textColor)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(AppTheme.textColor, lineWidth: 1.5)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func notesSection(scrollProxy: ScrollViewProxy) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(.easeInOut) {
+                    notesExpanded.toggle()
+                }
+                if notesExpanded {
+                    DispatchQueue.main.async {
+                        withAnimation(.easeInOut) {
+                            scrollProxy.scrollTo(ScrollAnchor.notes.rawValue, anchor: .center)
+                        }
+                        isServingFieldFocused = false
+                        isInputActive = false
+                        isUserNoteFocused = true
+                    }
+                }
+            } label: {
+                HStack {
+                    Label("Notes", systemImage: "square.and.pencil")
+                        .font(AppTheme.standardBookBody)
+                    Spacer()
+                    Image(systemName: notesExpanded ? "chevron.up" : "chevron.down")
+                }
+                .foregroundStyle(AppTheme.textColor)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(AppTheme.reverse)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(AppTheme.grayLight.opacity(0.8), lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+
+            if notesExpanded {
+                TextField("Enter a note...", text: $userNote, axis: .vertical)
+                    .focused($isUserNoteFocused)
+                    .foregroundColor(AppTheme.textColor)
+                    .font(AppTheme.standardBookBody)
+                    .fontWeight(.light)
+                    .multilineTextAlignment(.leading)
+                    .padding()
+                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+                    .background(AppTheme.reverse)
+                    .clipShape(.rect(cornerRadius: 20))
+            }
+        }
+    }
+
+    private func addItemImageCard(image: UIImage, index: Int) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 220, height: 220)
+                .background(
+                    RoundedRectangle(cornerRadius: 22)
+                        .fill(AppTheme.reverse)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 22))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22)
+                        .stroke(AppTheme.grayLight.opacity(0.7), lineWidth: 1)
+                )
+
+            HStack(spacing: 10) {
+                if index == 0 {
+                    Image(systemName: "star.circle.fill")
+                        .font(.system(size: 22))
+                        .foregroundStyle(AppTheme.sageGreen)
+                }
+
+                Spacer()
+                addItemImageActionButton(systemImage: "arrow.triangle.2.circlepath.circle.fill", tint: AppTheme.prunes) {
+                    presentImagePicker(for: index)
+                }
+                if index != 0 {
+                    addItemImageActionButton(systemImage: "arrow.up.circle.fill", tint: AppTheme.sageGreen) {
+                        moveImageToFront(from: index)
+                    }
+                }
+                addItemImageActionButton(systemImage: "trash.circle.fill", tint: AppTheme.carrot) {
+                    removeImage(at: index)
+                }
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(AppTheme.reverse.opacity(0.82))
+        )
+    }
+
+    private func addItemImageActionButton(systemImage: String, tint: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 22))
+                .foregroundStyle(tint)
+                .frame(width: 34, height: 34)
+                .background(AppTheme.reverse)
+                .clipShape(Circle())
+        }
+        .buttonStyle(.plain)
+    }
+
     private var quickAddSection: some View {
         VStack(alignment: .leading, spacing: 12) {
+            if !quickFavoriteEntries.isEmpty {
+                quickPickScroller(title: "Favorites", entries: quickFavoriteEntries)
+            }
             if !quickRecentEntries.isEmpty {
                 quickPickScroller(title: "Recent", entries: quickRecentEntries)
             }
@@ -437,7 +606,7 @@ struct AddItemFormView: View {
     }
     
     private func keyBoardOpen() -> Bool {
-        return focusedField != nil || isInputActive || isNameTextFieldFocused || isUserNoteFocused
+        return focusedField != nil || isInputActive || isNameTextFieldFocused || isUserNoteFocused || isServingFieldFocused
     }
     
     enum KeyboardType {
@@ -477,10 +646,10 @@ struct AddItemFormView: View {
             carbs: carbsValue,
             fat: fatValue,
             servingUnit: selectedUnit,
-            servingSize: String(servingSize),
+            servingSize: servingSize.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "1" : servingSize,
             userNotes: userNote,
-            mealPhoto: mealPhoto?.jpegData(compressionQuality: 1.0) ?? Data(),
-            mealPhotoLink: "",
+            mealPhoto: currentImageData.first ?? Data(),
+            mealPhotoLink: NutritionDataStore.encodedImageMetadata(from: currentImageData),
             isFavorite: isFavorite
         )
         refreshQuickPicks()
@@ -489,16 +658,56 @@ struct AddItemFormView: View {
 
     private func refreshQuickPicks() {
         quickRecentEntries = dataStore.recentQuickEntries(limit: 6)
+        quickFavoriteEntries = dataStore.recentQuickEntries(limit: 6, favoritesOnly: true)
     }
 
     private func apply(_ entry: NutritionEntrySummary) {
         validationMessage = nil
         name = entry.name
         isFavorite = entry.isFavorite
+        mealImages = []
         nutrientValues[.calories] = String(entry.calories)
         nutrientValues[.protein] = String(entry.protein)
         nutrientValues[.carbs] = String(entry.carbs)
         nutrientValues[.fats] = String(entry.fat)
+    }
+
+    private var currentImageData: [Data] {
+        mealImages.compactMap { $0.jpegData(compressionQuality: 0.9) }
+    }
+
+    private func presentImagePicker(for index: Int?) {
+        pendingReplacementIndex = index
+        selectedPickerImage = nil
+        showImagePicker = true
+    }
+
+    private func applySelectedImage(_ image: UIImage) {
+        if let index = pendingReplacementIndex, mealImages.indices.contains(index) {
+            mealImages[index] = image
+        } else if mealImages.count < 4 {
+            mealImages.append(image)
+        }
+
+        pendingReplacementIndex = nil
+        selectedPickerImage = nil
+    }
+
+    private func moveImageToFront(from index: Int) {
+        guard mealImages.indices.contains(index) else {
+            return
+        }
+
+        let image = mealImages.remove(at: index)
+        mealImages.insert(image, at: 0)
+    }
+
+    private func removeImage(at index: Int) {
+        guard mealImages.indices.contains(index) else {
+            return
+        }
+
+        mealImages.remove(at: index)
     }
     
 }
@@ -510,9 +719,10 @@ struct PreviousEntriesView: View {
     @State private var entries: [NutritionEntrySummary] = []
     @Binding var nutrientValues: [NutrientType: String]
     @Binding var userNote: String
-    @Binding var mealPhoto: UIImage?
+    @Binding var mealImages: [UIImage]
     @Binding var isFavorite: Bool
     let quickRecentEntries: [NutritionEntrySummary]
+    let quickFavoriteEntries: [NutritionEntrySummary]
     var dismiss: () -> Void
 
     @State private var barcodeResults: [RemoteFoodSearchResult] = []
@@ -539,12 +749,12 @@ struct PreviousEntriesView: View {
                 }
             }
         }
-        .onChange(of: name) { _ in
+        .onChange(of: name) { _, _ in
             if lookupMode == .diary {
                 fetchEntries()
             }
         }
-        .onChange(of: lookupMode) { newMode in
+        .onChange(of: lookupMode) { _, newMode in
             remoteStatusMessage = nil
             if newMode == .diary {
                 fetchEntries()
@@ -698,21 +908,38 @@ struct PreviousEntriesView: View {
     private var quickResultsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                if quickRecentEntries.isEmpty {
+                if quickRecentEntries.isEmpty && quickFavoriteEntries.isEmpty {
                     emptyState(
                         title: "Quick picks will show up once you log a few foods.",
-                        subtitle: "Your recent items live here for fast repeat logging."
+                        subtitle: "Your recent items and favorites live here for fast repeat logging."
                     )
-                } else {
-                    ForEach(quickRecentEntries) { entry in
-                        Button {
-                            populateFields(with: entry)
-                        } label: {
-                            HistoryEntryRow(entry: entry)
-                        }
-                        .buttonStyle(.plain)
-                    }
                 }
+
+                if !quickFavoriteEntries.isEmpty {
+                    quickSection(title: "Favorites", entries: quickFavoriteEntries)
+                }
+
+                if !quickRecentEntries.isEmpty {
+                    quickSection(title: "Recent", entries: quickRecentEntries)
+                }
+            }
+        }
+    }
+
+    private func quickSection(title: String, entries: [NutritionEntrySummary]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(AppTheme.standardBookCaption)
+                .foregroundStyle(AppTheme.textColor.opacity(0.7))
+                .padding(.horizontal)
+
+            ForEach(entries) { entry in
+                Button {
+                    populateFields(with: entry)
+                } label: {
+                    HistoryEntryRow(entry: entry)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -730,7 +957,7 @@ struct PreviousEntriesView: View {
         self.name = entry.name
         self.isFavorite = entry.isFavorite
         self.userNote = ""
-        self.mealPhoto = nil
+        self.mealImages = []
         nutrientValues[.calories] = String(entry.calories)
         nutrientValues[.protein] = String(entry.protein)
         nutrientValues[.carbs] = String(entry.carbs)
@@ -742,7 +969,7 @@ struct PreviousEntriesView: View {
         name = result.name
         isFavorite = false
         userNote = ""
-        mealPhoto = nil
+        mealImages = []
         nutrientValues[.calories] = result.formattedCalories
         nutrientValues[.protein] = result.formattedProtein
         nutrientValues[.carbs] = result.formattedCarbs
@@ -1349,6 +1576,7 @@ struct MacroNutrientInputTile: View {
     @Binding var value: String?
     @Binding var isSelected: Bool
     @FocusState var isInputActive: Bool
+    var onSelect: (() -> Void)? = nil
     //Wave Animation
     // Define maximum values for each nutrient for the purpose of the animation
 //    private let maxValues: [NutrientType: Double] = [
@@ -1367,8 +1595,13 @@ struct MacroNutrientInputTile: View {
 
     var body: some View {
         Button(action: {
+            if let currentValue = value,
+               currentValue == "0" || currentValue == "0.0" {
+                value = ""
+            }
             isSelected = true
             isInputActive = true
+            onSelect?()
         }) {
             ZStack {
                 HStack(alignment: .center) {

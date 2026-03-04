@@ -7,6 +7,7 @@
 import SwiftUI
 import CoreData
 import UniformTypeIdentifiers
+import UIKit
 
 struct MealCardView: View {
     let mealType: String
@@ -17,13 +18,50 @@ struct MealCardView: View {
     var onDropEntry: (UUID) -> Bool
     
     @State private var isDropTargeted = false
+
+    private var previewEntries: [(entry: NutritionEntry, image: UIImage)] {
+        entries.compactMap { entry in
+            guard let imageData = NutritionDataStore.storedImageData(for: entry).first,
+                  let image = UIImage(data: imageData) else {
+                return nil
+            }
+            return (entry, image)
+        }
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text(mealType)
-                    .font(AppTheme.standardBookLargeTitle)
-                    .foregroundStyle(AppTheme.textColor)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(mealType)
+                        .font(AppTheme.standardBookLargeTitle)
+                        .foregroundStyle(AppTheme.textColor)
+
+                    if !isExpanded && !previewEntries.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(Array(previewEntries.enumerated()), id: \.element.entry.objectID) { _, item in
+                                    Button {
+                                        onEntryTapped(item.entry)
+                                    } label: {
+                                        Image(uiImage: item.image)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 44, height: 44)
+                                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 14)
+                                                    .stroke(AppTheme.grayLight.opacity(0.55), lineWidth: 1)
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                        .frame(height: 44)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
                 Spacer()
                 Button(action:{
                     let _ = HapticFeedbackProvider.impact()
@@ -41,9 +79,13 @@ struct MealCardView: View {
             
             .padding(.horizontal)
             .contentShape(Rectangle())
+            .onTapGesture {
+                onAddTapped()
+            }
             if isExpanded {
                 ForEach(entries, id: \.self) { entry in
                     NutritionEntryView(entry: entry)
+                        .transition(.move(edge: .top).combined(with: .opacity))
                         .contentShape(Rectangle())
                         .onTapGesture {
                             onEntryTapped(entry)

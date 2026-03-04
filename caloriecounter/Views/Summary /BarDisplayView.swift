@@ -50,14 +50,14 @@ struct MacroBarView: View {
                     Rectangle()
                         .frame(width: min(CGFloat(self.percentage()) * geometry.size.width, geometry.size.width), height: 20)
                         .foregroundColor(self.color())
-                        .animation(.linear)
+                        .animation(.linear, value: percentage())
                     Text("\(Int(self.percentage() * 100))%")
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(AppTheme.textColor)
                         .frame(width: geometry.size.width, height: 20, alignment: .leading)
                         .padding(.leading, max(min(CGFloat(self.percentage()) * geometry.size.width - 30, geometry.size.width - 100), 5))
-                        .animation(.none)
+                        .animation(.none, value: percentage())
                 }
             }
             .frame(height: 20)
@@ -137,7 +137,7 @@ struct MealBarView: View {
                        Rectangle()
                            .frame(width: min(CGFloat(self.percentage()) * geometry.size.width, geometry.size.width), height: 20)
                            .foregroundColor(self.color())
-                           .animation(.linear)
+                           .animation(.linear, value: percentage())
                            // Text outside the bar if the percentage is less than 50%
                            Text("\(self.macroValue())")
                                .font(.caption)
@@ -145,7 +145,7 @@ struct MealBarView: View {
                                .foregroundColor(AppTheme.textColor)
                                .frame(width: geometry.size.width, height: 20, alignment: .leading)
                                .padding(.leading, 5)
-                               .animation(.none)
+                               .animation(.none, value: percentage())
                    }
                }
                .frame(height: 20)

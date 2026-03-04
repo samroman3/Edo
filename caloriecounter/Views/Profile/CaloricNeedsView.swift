@@ -133,7 +133,7 @@ struct CaloricNeedsView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2, reservesSpace: true)
             GoalSelectionView(selectedGoal: $selectedGoal)
-                .onChange(of: selectedGoal) { _ in
+                .onChange(of: selectedGoal) { _, _ in
                     calculateCaloricNeeds()
                 }
                 .frame(minWidth: 100, minHeight: 100)
@@ -160,7 +160,7 @@ struct CaloricNeedsView: View {
                     Text("Fine tune")
                         .font(AppTheme.standardBookCaption)
                 }
-                .onChange(of: calorieAdjustment) { newValue in
+                .onChange(of: calorieAdjustment) { _, newValue in
                     userSettingsManager.saveCalorieAdjustmentOffset(newValue)
                     calculateCaloricNeeds()
                 }
@@ -267,8 +267,8 @@ struct CaloricNeedsView: View {
         var proteinGrams = weightInKg * configuration.minProteinPerKilogram
         var fatGrams = weightInKg * configuration.minFatPerKilogram
 
-        var proteinCalories = proteinGrams * proteinPerCalorie
-        var fatCalories = fatGrams * fatPerCalorie
+        let proteinCalories = proteinGrams * proteinPerCalorie
+        let fatCalories = fatGrams * fatPerCalorie
         let baselineCalories = proteinCalories + fatCalories
 
         if baselineCalories >= caloricNeeds {

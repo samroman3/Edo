@@ -64,7 +64,7 @@ struct StackedBarChartView: View {
         .onAppear {
             weeklyLogManager.fetchWeeklyLogs(from: dailyLogManager.selectedDate)
         }
-        .onChange(of: dailyLogManager.selectedDate) { newDate in
+        .onChange(of: dailyLogManager.selectedDate) { _, newDate in
             weeklyLogManager.fetchWeeklyLogs(from: newDate)
         }
     }

@@ -11,18 +11,15 @@ import UIKit
 struct NutritionEntryView: View {
     let entry: NutritionEntry
 
-    private var mealImage: UIImage? {
-        guard !entry.mealPhoto.isEmpty else {
-            return nil
-        }
-        return UIImage(data: entry.mealPhoto)
+    private var primaryMealImage: UIImage? {
+        NutritionDataStore.storedImageData(for: entry).first.flatMap { UIImage(data: $0) }
     }
 
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top, spacing: 12) {
-                if let mealImage {
-                    Image(uiImage: mealImage)
+                if let primaryMealImage {
+                    Image(uiImage: primaryMealImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 64, height: 64)
@@ -41,7 +38,7 @@ struct NutritionEntryView: View {
                             Text("*")
                                 .font(.title2)
                                 .foregroundStyle(AppTheme.sageGreen)
-                            Text("\(entry.calories, specifier: "%.1f") cal")
+                            Text("\(entry.calories, specifier: "%.1f")g")
                         }
                         HStack{
                             Text("*")

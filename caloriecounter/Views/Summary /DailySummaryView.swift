@@ -117,7 +117,7 @@ struct DailySummaryView: View {
                 dailyLogManager.refreshData()
                 refreshWeeklySnapshot()
             }
-            .onChange(of: dailyLogManager.selectedDate) { _ in
+            .onChange(of: dailyLogManager.selectedDate) { _, _ in
                 refreshWeeklySnapshot()
             }
         }

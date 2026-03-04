@@ -28,7 +28,7 @@ struct EAZEATApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .id(themeManager.selectedThemeID)
+                .id("\(themeManager.selectedThemeID)-\(themeManager.selectedBackgroundMode.rawValue)")
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(dataStore)
                 .environmentObject(userSettingsManager)
